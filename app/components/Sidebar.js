@@ -1,11 +1,11 @@
 import Link from "next/link"
 export default function Sidebar(){
     return(
-        <div className = "bg-white h-screen flex flex-col p-4 w-64 gap-2 text-black">
+        <div className = "bg-white h-screen flex flex-col p-4 w-64 gap-2 text-black border-r">
             
             <img src="/Logo/ToothPeakLogo.jpg" className= ""/>
             <div className="bg-[#00685F] p-2">
-                <button type ="button">Add Patient</button>
+                <button type ="button">New Appointment</button>
             </div>
             <Link href="/dashboard">Dashboard</Link>
             <Link href="/patient">Patient Records</Link>
