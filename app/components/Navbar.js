@@ -1,6 +1,6 @@
 export default function Navbar(){
     return(
-        <div className="bg-white h-16 w-full flex items-center text-black gap-2 px-4 justify-between border-b">
+        <div className="bg-white h-16 w-full flex items-center text-black gap-2 px-4 justify-between border-b border-gray-500">
 
             <div>
                 <input 
