@@ -4,7 +4,7 @@ export default function Sidebar(){
         <div className = "bg-white h-screen flex flex-col p-4 w-64 gap-2 text-black border-r border-gray-500">
             
             <img src="/Logo/ToothPeakLogo.jpg" className= "rounded-lg"/>
-            <div className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
+            <div className="bg-[#00685F] px-4 py-2 ">
                 <button type ="button" className="w-full">New Appointment</button>
             </div>
             <Link href="/dashboard">Dashboard</Link>
