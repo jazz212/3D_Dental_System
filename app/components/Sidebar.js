@@ -7,9 +7,8 @@ export default function Sidebar(){
             <div className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
                 <button type ="button" className="w-full">New Appointment</button>
             </div>
-            <Link href="/dashboard">Dashboard</Link>
-            <Link href="/patient">Patient Records</Link>
             <Link href="/calendar">Calendar</Link>
+            <Link href="/patient">Patient Records</Link>
             <Link href="/3dchart">3D Chart</Link>
             <Link href="/settings">Setttings</Link>
             <Link href="/logout" className="mt-auto">Logout</Link>    
