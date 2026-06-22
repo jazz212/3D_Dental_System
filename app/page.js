@@ -1,19 +1,17 @@
 import Sidebar from "./components/Sidebar"
 import Navbar from "./components/Navbar"
 import Dashboard from "./components/Dashboard"
+
 export default function Home() {
   return (
-    <div className="bg-gray-100 flex">
-      <div className="flex h-screen">
-          <Sidebar/>
-      </div>
-      <div className="flex flex-1 flex-col">
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar/>
+      <div className="flex flex-1 flex-col overflow-hidden">
           <Navbar/>
-          <Dashboard/>
+          <div className="overflow-y-auto flex-1">
+              <Dashboard/>
+          </div>
       </div>
-        
-        
-        
     </div>
   )
 }

@@ -1,1 +1,9 @@
 @import "tailwindcss";
+/*for the buttons in the calendar to be green cant change fullcalendar css using tailwind*/
+:root {
+  --fc-button-bg-color: #00685F;
+  --fc-button-border-color: #00685F;
+  --fc-button-hover-bg-color: #004d45;
+  --fc-button-hover-border-color: #004d45;
+  --fc-button-active-bg-color: #004d45;
+}

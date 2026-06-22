@@ -1,3 +1,4 @@
+import CalendarView from "./CalendarView"
 export default function Dashboard(){
 
     const today = new Date().toLocaleDateString('en-US',{
@@ -32,6 +33,23 @@ export default function Dashboard(){
                 </div>       
 
             </div>
+            <div className="flex gap-4 mt-4">
+                <div className="flex-1">
+                    <CalendarView/>
+                </div>
+
+                <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch">
+                     <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
+                     <div className="flex flex-col gap-4">
+                        <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
+                        <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
+                        <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
+                     </div>
+                     
+                </div>
+
+            </div>
+                
             
         </div>
         
