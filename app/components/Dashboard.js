@@ -41,8 +41,11 @@ export default function Dashboard(){
                 <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch">
                      <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
                      <div className="flex flex-col gap-4">
+                        <p>2:30</p>
                         <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
+                        <p>3:00</p>
                         <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
+                        <p>4:00</p>
                         <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
                      </div>
                      
