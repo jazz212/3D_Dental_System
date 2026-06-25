@@ -7,6 +7,15 @@ export default function Dashboard(){
         day: 'numeric'
 
     })
+    const visits = [
+                        {time: "2:30 PM", patient:"Juan Dela Cruz", Appointment:"Cleaning" },
+                        {time: "3:30 PM", patient:"Juan Dela Cruz", Appointment:"Cleaning" },
+                        {time: "4:30 PM", patient:"Juan Dela Cruz", Appointment:"Cleaning" },
+                        {time: "5:30 PM", patient:"Juan Dela Cruz", Appointment:"Cleaning" }
+
+                        
+                       ]
+
     return(
         <div className="bg-white h-full w-full p-4 pt-2">
             <div className="flex justify-between items-center">
@@ -41,12 +50,24 @@ export default function Dashboard(){
                 <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch">
                      <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
                      <div className="flex flex-col gap-4">
-                        <p>2:30</p>
-                        <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
-                        <p>3:00</p>
-                        <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
-                        <p>4:00</p>
-                        <div className="bg-gray-100 rounded-lg border border-gray-500 p-16"></div>
+
+                       {visits.map((visit) => (
+                            <div key= {visit.time} className="flex gap-2 items-stretch">
+                                <div className="flex flex-col items-center">
+                                    <p className="text-sm">{visit.time}</p>
+                                    <div className="w-3 h-3 rounded-full bg-[#00685F] mt-1 shrink-0"></div>
+                                     <div className="w-px bg-gray-300 grow"></div>
+                                </div>
+
+                                <div className="bg-gray-200 rounded-lg border border-gray-500 p-4 mb-4">
+                                    <p>{visit.patient}</p>
+                                    <p>{visit.Appointment}</p>
+                                </div>
+                                    
+                            </div>
+                       ))}
+
+
                      </div>
                      
                 </div>
