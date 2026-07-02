@@ -10,7 +10,6 @@ export default function Sidebar() {
       </div>
       <Link href="/calendar">Calendar</Link>
       <Link href="/patient">Patient Records</Link>
-      <Link href="/3dchart">3D Chart</Link>
       <Link href="/settings">Setttings</Link>
       <Link href="/logout" className="mt-auto">
         Logout
