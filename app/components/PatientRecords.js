@@ -44,55 +44,62 @@ export default function PatientRecords() {
           <thead>
             <tr>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
+                Patient ID
+              </th>
+              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
                 Patient Name
               </th>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Date
+                Age
               </th>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Time
+                Contact
               </th>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Service
+                Last Visit
               </th>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
                 Status
               </th>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Actions
+                Action
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
+              <td className="p-3 border-b border-gray-200">ID1</td>
               <td className="p-3 border-b border-gray-200">Juan Dela Cruz</td>
-              <td className="p-3 border-b border-gray-200">Jan 1, 2026</td>
-              <td className="p-3 border-b border-gray-200">9:00 AM</td>
-              <td className="p-3 border-b border-gray-200">Dental Cleaning</td>
+              <td className="p-3 border-b border-gray-200">11</td>
+              <td className="p-3 border-b border-gray-200">09111111111</td>
+              <td className="p-3 border-b border-gray-200">January 2, 2026</td>
               <td className="p-3 border-b border-gray-200">Pending</td>
               <td className="p-3 border-b border-gray-200">actions</td>
             </tr>
             <tr>
+              <td className="p-3 border-b border-gray-200">ID2</td>
               <td className="p-3 border-b border-gray-200">Maria Santos</td>
-              <td className="p-3 border-b border-gray-200">Jan 2, 2026</td>
-              <td className="p-3 border-b border-gray-200">10:00 AM</td>
-              <td className="p-3 border-b border-gray-200">Root Canal</td>
+              <td className="p-3 border-b border-gray-200">14</td>
+              <td className="p-3 border-b border-gray-200">09222222222</td>
+              <td className="p-3 border-b border-gray-200">January 2, 2026</td>
               <td className="p-3 border-b border-gray-200">Confirmed</td>
               <td className="p-3 border-b border-gray-200">actions</td>
             </tr>
             <tr>
+              <td className="p-3 border-b border-gray-200">ID3</td>
               <td className="p-3 border-b border-gray-200">Pedro Reyes</td>
-              <td className="p-3 border-b border-gray-200">Jan 3, 2026</td>
-              <td className="p-3 border-b border-gray-200">11:00 AM</td>
-              <td className="p-3 border-b border-gray-200">Tooth Filling</td>
+              <td className="p-3 border-b border-gray-200">18</td>
+              <td className="p-3 border-b border-gray-200">09333333333</td>
+              <td className="p-3 border-b border-gray-200">January 2, 2026</td>
               <td className="p-3 border-b border-gray-200">Cancelled</td>
               <td className="p-3 border-b border-gray-200">actions</td>
             </tr>
             <tr>
+              <td className="p-3 border-b border-gray-200">ID4</td>
               <td className="p-3 border-b border-gray-200">Ana Garcia</td>
-              <td className="p-3 border-b border-gray-200">Jan 4, 2026</td>
-              <td className="p-3 border-b border-gray-200">1:00 PM</td>
-              <td className="p-3 border-b border-gray-200">Consultation</td>
+              <td className="p-3 border-b border-gray-200">22</td>
+              <td className="p-3 border-b border-gray-200">09444444444</td>
+              <td className="p-3 border-b border-gray-200">January 2, 2026</td>
               <td className="p-3 border-b border-gray-200">Pending</td>
               <td className="p-3 border-b border-gray-200">actions</td>
             </tr>
