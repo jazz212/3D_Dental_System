@@ -10,7 +10,7 @@ export default function AddPatient() {
           </p>
         </div>
         <div className="border w-full border-gray-300 overflow-hidden mt-2 rounded-lg">
-          <div className="bg-[#E6EEFF] flex items-center justify-between border  border-gray-300 p-2 rounded-t-lg">
+          <div className="bg-blue-200 flex items-center justify-between border border-gray-300 p-2 rounded-t-lg">
             <h1 className="text-[#00685F] text-2xl font-bold">
               Patient's Information Form
             </h1>
@@ -18,16 +18,17 @@ export default function AddPatient() {
               Rec: #New
             </span>
           </div>
+
           <div className="p-2 mx-2">
             <div className="font-bold">Basic Information</div>
-            <hr className="border border-gray-200"></hr>
+            <hr className="border border-gray-200" />
             <div className="grid grid-cols-4 mt-2 gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-sm">Full Name</label>
                 <input
                   type="text"
                   placeholder="Last, First, M.I."
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -35,7 +36,7 @@ export default function AddPatient() {
                 <input
                   type="text"
                   placeholder="mm/dd/yyyy"
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -43,68 +44,121 @@ export default function AddPatient() {
                 <input
                   type="text"
                   placeholder="0"
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                 />
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-sm">Sex</label>
-                <select className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full">
+                <select className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]">
                   <option value="">Select</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
               </div>
             </div>
-            <div className="flex gap-4">
-              <div className="flex flex-col gap-1">
+
+            <div className="flex gap-4 mt-4">
+              <div className="flex flex-col gap-1 w-72">
                 <label className="text-sm">Tel/CP No.</label>
                 <input
                   type="text"
                   placeholder="09XX-XXX-XXXX"
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-74"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                 />
               </div>
-              <div className="flex flex-1 flex-col gap-1">
+              <div className="flex flex-col gap-1 flex-1">
                 <label className="text-sm">Complete Address</label>
                 <input
                   type="text"
                   placeholder="Street, City, State, Zip"
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                 />
               </div>
             </div>
             <div className="grid grid-cols-4 mt-2 gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-sm">Full Name</label>
+                <label className="text-sm">Occupation</label>
                 <input
                   type="text"
-                  placeholder="Last, First, M.I."
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-sm">Birth Date</label>
-                <input
-                  type="text"
-                  placeholder="mm/dd/yyyy"
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-sm">Age</label>
-                <input
-                  type="text"
-                  placeholder="0"
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-sm">Sex</label>
-                <select className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full">
-                  <option value="">Select</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                <label className="text-sm">Civil Status</label>
+                <select className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]">
+                  <option value="">Single</option>
+                  <option value="male">Maried</option>
+                  <option value="female">Widowed</option>
+                  <option value="female">Separated </option>
                 </select>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-sm">Nationality</label>
+                <input
+                  type="text"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm">Religion</label>
+                <input
+                  type="text"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="p-2 mx-2">
+            <div className="font-bold mt-2">Chief Complaint</div>
+            <hr className="border border-gray-200" />
+            <div className="flex gap-4 mt-2">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm">
+                  CHIEF COMPLAINT (Patient's own words)
+                </label>
+                <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm">History of Present Illness</label>
+                <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
+              </div>
+            </div>
+          </div>
+
+          <div className="p-2 mx-2">
+            <div className="font-bold mt-2">Medical History</div>
+            <hr className="border border-gray-200" />
+            <div className="bg-[#EFF4FF] border-gray-200 p-4 mt-2 rounded-lg">
+              <label className="text-sm">
+                Check all conditions that apply to the patient:
+              </label>
+              <div className="grid grid-cols-5 gap-4 mt-3">
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Heart Disease
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Stroke
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Asthma
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Diabetes
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Hypertension
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Bleeding Disorder
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Epilepsy
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Hepatitis
+                </label>
               </div>
             </div>
           </div>
