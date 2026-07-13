@@ -108,9 +108,6 @@ export default function AddPatient() {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="p-2 mx-2">
             <div className="font-bold mt-2">Chief Complaint</div>
             <hr className="border border-gray-200" />
             <div className="flex gap-4 mt-2">
@@ -125,9 +122,6 @@ export default function AddPatient() {
                 <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
               </div>
             </div>
-          </div>
-
-          <div className="p-2 mx-2">
             <div className="font-bold mt-2">Medical History</div>
             <hr className="border border-gray-200" />
             <div className="bg-[#EFF4FF] border-gray-200 p-4 mt-2 rounded-lg">
@@ -136,29 +130,128 @@ export default function AddPatient() {
               </label>
               <div className="grid grid-cols-5 gap-4 mt-3">
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" /> Heart Disease
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" /> Stroke
+                  <input type="checkbox" /> Rheumatic Heart Disease
                 </label>
                 <label className="flex items-center gap-2">
                   <input type="checkbox" /> Asthma
                 </label>
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" /> Diabetes
+                  <input type="checkbox" /> Stomach Ulcer
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Liver Disease
                 </label>
                 <label className="flex items-center gap-2">
                   <input type="checkbox" /> Hypertension
                 </label>
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" /> Bleeding Disorder
+                  <input type="checkbox" /> Coronary Artery Disease
                 </label>
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" /> Epilepsy
+                  <input type="checkbox" /> Diabetes
                 </label>
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" /> Hepatitis
+                  <input type="checkbox" /> Kidney Disease
                 </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Persistent Cough
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Hypotension
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Stroke(CVA)
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Arthritis
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> STD
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" /> Pregnant(For Women)
+                </label>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <label>1. Are you under any medication/s?</label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="medication" value="yes" /> Yes
+                </label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="medication" value="no" /> No
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label>2. Do your gums bleed easily when brushing?</label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="gums" value="yes" /> Yes
+                </label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="gums" value="no" /> No
+                </label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label>3. Do you smoke?</label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="smoke" value="yes" /> Yes
+                </label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="smoke" value="no" /> No
+                </label>
+                <input
+                  type="text"
+                  placeholder="If yes, how many sticks per day?"
+                  className="border-b border-gray-300 outline-none ml-2 w-58 min-w-0"
+                />
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label>4. Do you have any known ALLERGY/ies?</label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="allergy" value="yes" /> Yes
+                </label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="allergy" value="no" /> No
+                </label>
+              </div>
+            </div>
+            <div className="flex gap-4 mt-2">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm">Current Medications</label>
+                <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-sm text-red-700">Known Allergies</label>
+                <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
+              </div>
+            </div>
+            <div className="flex gap-8 mt-2">
+              <div className="flex flex-col gap-1 flex-1">
+                <div className="font-bold">Dental History</div>
+                <hr className="border border-gray-200 w-full" />
+                <div className="flex flex-col gap-2 mt-2">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" id="prevOral" />
+                    Previous Oral Prophylaxis
+                    <input
+                      type="text"
+                      placeholder="If yes, when?"
+                      className="border-b border-gray-300 outline-none ml-2 w-58 min-w-0"
+                    />
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" id="prevExtract" />
+                    Previous Extraction
+                  </label>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 flex-1">
+                <div className="font-bold">Clinical / Vital Signs</div>
+                <hr className="border border-gray-200 w-full" />
               </div>
             </div>
           </div>
