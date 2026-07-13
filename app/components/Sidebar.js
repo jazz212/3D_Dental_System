@@ -8,10 +8,10 @@ export default function Sidebar() {
           New Appointment
         </button>
       </div>
-      <Link href="/calendar">Calendar</Link>
-      <Link href="/patient">Patient Records</Link>
+      <Link href="/dashboard">Calendar</Link>
+      <Link href="/dashboard/patientrecords">Patient Records</Link>
       <Link href="/settings">Setttings</Link>
-      <Link href="/logout" className="mt-auto">
+      <Link href="/login" className="mt-auto">
         Logout
       </Link>
     </div>

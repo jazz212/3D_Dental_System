@@ -233,25 +233,315 @@ export default function AddPatient() {
               <div className="flex flex-col gap-1 flex-1">
                 <div className="font-bold">Dental History</div>
                 <hr className="border border-gray-200 w-full" />
-                <div className="flex flex-col gap-2 mt-2">
+                <div className="flex flex-col gap-2">
+                  <label>Previous Oral Prophylaxis</label>
                   <label className="flex items-center gap-2">
-                    <input type="checkbox" id="prevOral" />
-                    Previous Oral Prophylaxis
-                    <input
-                      type="text"
-                      placeholder="If yes, when?"
-                      className="border-b border-gray-300 outline-none ml-2 w-58 min-w-0"
-                    />
+                    <input type="radio" name="cleaning" value="yes" /> Yes
                   </label>
                   <label className="flex items-center gap-2">
-                    <input type="checkbox" id="prevExtract" />
-                    Previous Extraction
+                    <input type="radio" name="cleaning" value="no" /> No
                   </label>
+                  <input
+                    type="text"
+                    placeholder="If yes, when?"
+                    className="border-b border-gray-300 outline-none w-58 min-w-0"
+                  />
+                  <label>Previous Dental Extraction</label>
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="extraction" value="yes" /> Yes
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="extraction" value="no" /> No
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="If yes, when?"
+                    className="border-b border-gray-300 outline-none w-58 min-w-0"
+                  />
+                  <label className="text-sm">
+                    Denture Type (if applicable)
+                  </label>
+                  <select className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2">
+                    <option value="">Select</option>
+                    <option value="male">None</option>
+                    <option value="female">Partial</option>
+                    <option value="female">Full</option>
+                  </select>
                 </div>
               </div>
               <div className="flex flex-col gap-1 flex-1">
                 <div className="font-bold">Clinical / Vital Signs</div>
                 <hr className="border border-gray-200 w-full" />
+                <div className="flex gap-4">
+                  <div className="flex flex-col flex-1">
+                    <label className="text-sm">Blood Pressure(mmHg)</label>
+                    <input
+                      type="text"
+                      placeholder="120/80"
+                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                    />
+                    <label className="text-sm">Respiratory Rate (cpm)</label>
+                    <input
+                      type="text"
+                      placeholder="16"
+                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                    />
+                  </div>
+
+                  <div className="flex flex-col  flex-1">
+                    <label className="text-sm">Pulse Rate (bpm)</label>
+                    <input
+                      type="text"
+                      placeholder="72"
+                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                    />
+                    <label className="text-sm">Temperature (°C)</label>
+                    <input
+                      type="text"
+                      placeholder="36.5"
+                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                    />
+                  </div>
+                </div>
+                <div className="font-bold">Extraoral</div>
+                <hr className="border border-gray-200 w-full" />
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="flex items-center gap-2">
+                    <label className="w-16">Head:</label>
+                    <label className="flex items-center gap-1">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormality, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <label className="w-16">Eyes:</label>
+                    <label className="flex items-center gap-1">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormality, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <label className="w-16">TMJ:</label>
+                    <label className="flex items-center gap-1">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormality, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="font-bold">Intraoral Examination</div>
+            <hr className="border border-gray-200 w-full" />
+            <div className="grid grid-cols-2 gap-8 mt-2">
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium">Lips</label>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormal, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium">Palate</label>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormal, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium">Tongue</label>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormal, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium">
+                    Floor of the mouth
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="checkbox" /> Normal
+                    </label>
+                    <label className="text-sm">Abnormal, specify</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 mt-4">
+                  <div className="text-sm font-medium">Occlusion</div>
+                  <div className="flex items-center gap-2">
+                    <label className="w-40 text-sm">
+                      1st Molar Relationship
+                    </label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="w-40 text-sm">Canine Relationship</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="w-40 text-sm">Classification</label>
+                    <input
+                      type="text"
+                      className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium">Gingiva</label>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="gingiva" /> Normal
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="gingiva" /> Inflamed
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="gingiva" /> Receded
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm text-gray-500">Color</label>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="g_color" /> Coral Pink
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="g_color" /> Bright Red
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="g_color" /> Bluish Red
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm text-gray-500">Consistency</label>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="g_cons" /> Firm
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="g_cons" /> Hyperplastic
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="g_cons" /> Smooth
+                    </label>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1 mt-2">
+                  <label className="text-sm font-medium">Oral Hygiene</label>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hygiene" /> Healthy
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hygiene" /> Gingivitis
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hygiene" /> Periodontitis
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-4 flex-wrap pl-4">
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="severity" /> Mild
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="severity" /> Moderate
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="severity" /> Severe
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="severity" /> Aggressive
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="severity" /> Chronic
+                    </label>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1 mt-2">
+                  <label className="text-sm font-medium">Deposits</label>
+                  <div className="flex items-center gap-2">
+                    <label className="w-12 text-sm">Soft:</label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="soft" /> None
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="soft" /> Slight
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="soft" /> Moderate
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="soft" /> Severe
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label className="w-12 text-sm">Hard:</label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hard" /> None
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hard" /> Slight
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hard" /> Moderate
+                    </label>
+                    <label className="flex items-center gap-1 text-sm">
+                      <input type="radio" name="hard" /> Severe
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

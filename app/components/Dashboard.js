@@ -1,4 +1,5 @@
 import CalendarView from "./CalendarView";
+import Link from "next/link";
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -22,9 +23,12 @@ export default function Dashboard() {
         </div>
 
         <div className="flex gap-4">
-          <button className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
-            Add New Patient
-          </button>
+          <Link href="/dashboard/addpatient">
+            <button className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
+              Add New Patient
+            </button>
+          </Link>
+
           <button className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
             Add Appointment
           </button>
