@@ -25,9 +25,12 @@ export default function Login() {
             Remember me on this device
           </label>
         </div>
-        <button className="w-full bg-[#00685F] text-white py-2 rounded-lg">
-          Secure Login
-        </button>
+        <Link href="/dashboard">
+          <button className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90">
+            Secure Login
+          </button>
+        </Link>
+
         <Link
           href="/forgotpass"
           className="flex text-sm text-gray-600 items-center justify-center"
