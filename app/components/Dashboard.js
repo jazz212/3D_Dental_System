@@ -1,3 +1,4 @@
+import { Pencil, Eye, Trash2 } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 export default function Dashboard() {
@@ -35,19 +36,17 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-8 mt-6">
-        <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
-          TODAY'S EXPECTED VISITS
-        </div>
-        <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
-          PENDING APPOINTMENTS
-        </div>
-        <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
-          APPOINTMENT DURATION
-        </div>
-      </div>
       <div className="flex gap-4 mt-4">
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col gap-6">
+          <div className="flex gap-8">
+            <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
+              TODAY'S EXPECTED VISITS
+            </div>
+            <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
+              PENDING APPOINTMENTS
+            </div>
+          </div>
+
           <CalendarView />
         </div>
 
@@ -111,32 +110,64 @@ export default function Dashboard() {
               <td className="p-3 border-b border-gray-200">Jan 1, 2026</td>
               <td className="p-3 border-b border-gray-200">9:00 AM</td>
               <td className="p-3 border-b border-gray-200">Dental Cleaning</td>
-              <td className="p-3 border-b border-gray-200">Pending</td>
-              <td className="p-3 border-b border-gray-200">actions</td>
+              <td className="p-3 border-b border-gray-200">
+                <span className="bg-orange-700 text-white px-3 py-1 rounded-full text-sm">
+                  Pending
+                </span>
+              </td>
+              <td className="p-3 border-b border-gray-200 flex gap-2">
+                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
+              </td>
             </tr>
             <tr>
               <td className="p-3 border-b border-gray-200">Maria Santos</td>
               <td className="p-3 border-b border-gray-200">Jan 2, 2026</td>
               <td className="p-3 border-b border-gray-200">10:00 AM</td>
               <td className="p-3 border-b border-gray-200">Root Canal</td>
-              <td className="p-3 border-b border-gray-200">Confirmed</td>
-              <td className="p-3 border-b border-gray-200">actions</td>
+              <td className="p-3 border-b border-gray-200">
+                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                  Cancelled
+                </span>
+              </td>
+              <td className="p-3 border-b border-gray-200 flex gap-2">
+                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
+              </td>
             </tr>
             <tr>
               <td className="p-3 border-b border-gray-200">Pedro Reyes</td>
               <td className="p-3 border-b border-gray-200">Jan 3, 2026</td>
               <td className="p-3 border-b border-gray-200">11:00 AM</td>
               <td className="p-3 border-b border-gray-200">Tooth Filling</td>
-              <td className="p-3 border-b border-gray-200">Cancelled</td>
-              <td className="p-3 border-b border-gray-200">actions</td>
+              <td className="p-3 border-b border-gray-200">
+                <span className="bg-green-700 text-white px-3 py-1 rounded-full text-sm">
+                  Confirmed
+                </span>
+              </td>
+              <td className="p-3 border-b border-gray-200 flex gap-2">
+                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
+              </td>
             </tr>
             <tr>
               <td className="p-3 border-b border-gray-200">Ana Garcia</td>
               <td className="p-3 border-b border-gray-200">Jan 4, 2026</td>
               <td className="p-3 border-b border-gray-200">1:00 PM</td>
               <td className="p-3 border-b border-gray-200">Consultation</td>
-              <td className="p-3 border-b border-gray-200">Pending</td>
-              <td className="p-3 border-b border-gray-200">actions</td>
+              <td className="p-3 border-b border-gray-200 ">
+                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                  Cancelled
+                </span>
+              </td>
+              <td className="p-3 border-b border-gray-200 flex gap-2">
+                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
+              </td>
             </tr>
           </tbody>
           <tfoot>

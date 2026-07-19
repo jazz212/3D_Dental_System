@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import { Pencil, Eye, Delete } from "lucide-react";
 export default function PatientRecords() {
   const pages = [1, 2, 3];
   return (
