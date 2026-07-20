@@ -26,7 +26,7 @@ export default function Login() {
           </label>
         </div>
         <Link href="/dashboard">
-          <button className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90">
+          <button className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 cursor-pointer">
             Secure Login
           </button>
         </Link>

@@ -1,4 +1,4 @@
-import { Pencil, Eye, Trash2 } from "lucide-react";
+import { Pencil, Eye, Trash2, Plus } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 export default function Dashboard() {
@@ -24,15 +24,25 @@ export default function Dashboard() {
         </div>
 
         <div className="flex gap-4">
-          <Link href="/dashboard/addpatient">
-            <button className="bg-[#00685F] px-4 py-2 text-white rounded-lg transition-all duration-100 active:scale-95 active:brightness-90">
+          <Link
+            href="/dashboard/addpatient"
+            className="bg-[#00685F] px-4 py-2 text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
+          >
+            <div className="flex items-center gap-2 w-full cursor-pointer">
+              <Plus className="w-4 h-4" />
               Add New Patient
-            </button>
+            </div>
           </Link>
 
-          <button className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
-            Add Appointment
-          </button>
+          <Link
+            href=""
+            className="bg-[#00685F] px-4 py-2 text-white rounded-lg"
+          >
+            <div className="flex items-center gap-2 w-full cursor-pointer">
+              <Plus className="w-4 h-4" />
+              Add Appointment
+            </div>
+          </Link>
         </div>
       </div>
 
