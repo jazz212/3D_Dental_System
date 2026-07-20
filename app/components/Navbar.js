@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function Navbar() {
   return (
     <div className="bg-white h-16 w-full flex items-center text-black gap-2 px-4 justify-between border-b border-gray-500">
@@ -10,8 +11,10 @@ export default function Navbar() {
       </div>
 
       <div className="flex gap-4 items-center">
-        <button>notif</button>
-        <button className="">help</button>
+        <Link href="">notif</Link>
+        <Link href="" className="">
+          help
+        </Link>
         <div className="border-l border-gray-600 h-8   "></div>
         <span>Support</span>
         <div className="w-8 h-8 rounded-full bg-gray-300"></div>
