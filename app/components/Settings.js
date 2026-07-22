@@ -4,7 +4,14 @@ import { useState } from "react";
 
 /* ---------- Inline SVG icons (no external library needed) ---------- */
 const IconInfo = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.75"
+  >
     <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
     <circle cx="8.5" cy="10.5" r="2" />
     <path d="M5.5 16.2c0-1.8 1.4-3 3-3s3 1.2 3 3" />
@@ -15,51 +22,109 @@ const IconInfo = () => (
 );
 
 const IconTooth = () => (
-   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <path d="M12 21c-1 0-1.3-2.2-1.8-3.8-.2-.7-.5-1.2-1.2-1.2s-1 .5-1.2 1.2C7.3 18.8 7 21 6 21c-1.3 0-1.7-2.1-2.1-4.5C3.4 14 3 11.8 3 9.5 3 6.5 4.8 3 8 3c1.1 0 1.9.5 2.8.9.4.2.8.1 1.2-.1C13 3.4 13.8 3 14.9 3c3.3 0 5.1 3.5 5.1 6.5 0 2.3-.4 4.5-.9 7-.4 2.4-.8 4.5-2.1 4.5-1 0-1.3-2.2-1.8-3.8-.2-.7-.6-1.2-1.2-1.2s-1 .5-1.2 1.2C12.3 18.8 13 21 12 21Z" />
   </svg>
 );
 
 const IconPin = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
     <circle cx="12" cy="10" r="3" />
   </svg>
 );
 const IconClock = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
 );
 const IconImage = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <rect x="3" y="3" width="18" height="18" rx="2" />
     <circle cx="8.5" cy="8.5" r="1.5" />
     <path d="M21 15l-5-5L5 21" />
   </svg>
 );
 const IconUpload = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
     <polyline points="17 8 12 3 7 8" />
     <line x1="12" y1="3" x2="12" y2="15" />
   </svg>
 );
 const IconTrash = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <polyline points="3 6 5 6 21 6" />
     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
   </svg>
 );
 const IconMail = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <path d="m22 6-10 7L2 6" />
   </svg>
 );
 const IconPhone = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
   </svg>
 );
@@ -145,9 +210,12 @@ export default function Settings() {
         {/* Page heading + Save/Discard */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900">Clinic Settings</h2>
+            <h2 className="text-3xl font-bold text-slate-900">
+              Clinic Settings
+            </h2>
             <p className="mt-1 text-slate-500">
-              Manage your clinic profile, staff permissions, and system preferences.
+              Manage your clinic profile, staff permissions, and system
+              preferences.
             </p>
           </div>
           <div className="flex gap-3">
@@ -169,12 +237,12 @@ export default function Settings() {
         </div>
 
         {/* Tab */}
-       <div className="mb-8 flex items-center gap-2 border-b-2 border-teal-700 pb-3 text-lg font-semibold text-teal-700 w-fit">
-  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-teal-700 text-white">
-    <IconTooth />
-  </span>
-  Clinic Profile
-</div>
+        <div className="mb-8 flex items-center gap-2 border-b-2 border-teal-700 pb-3 text-lg font-semibold text-teal-700 w-fit">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-teal-700 text-white">
+            <IconTooth />
+          </span>
+          Clinic Profile
+        </div>
 
         {/* Content grid */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -184,7 +252,9 @@ export default function Settings() {
             <section className="rounded-xl border-l-4 border-l-teal-700 border-y border-r border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-1 flex items-center gap-2 text-teal-700">
                 <IconInfo />
-                <h3 className="text-lg font-bold text-slate-900">General Information</h3>
+                <h3 className="text-lg font-bold text-slate-900">
+                  General Information
+                </h3>
               </div>
               <p className="mb-5 text-sm text-slate-500">
                 Public details displayed to patients on receipts and portals.
@@ -192,25 +262,35 @@ export default function Settings() {
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">Clinic Name</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Clinic Name
+                  </label>
                   <input
                     type="text"
                     value={generalInfo.clinicName}
-                    onChange={(e) => updateGeneral("clinicName", e.target.value)}
+                    onChange={(e) =>
+                      updateGeneral("clinicName", e.target.value)
+                    }
                     className={inputBox}
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700">Registration Number</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Registration Number
+                  </label>
                   <input
                     type="text"
                     value={generalInfo.registrationNumber}
-                    onChange={(e) => updateGeneral("registrationNumber", e.target.value)}
+                    onChange={(e) =>
+                      updateGeneral("registrationNumber", e.target.value)
+                    }
                     className={inputBox}
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="mb-1 block text-sm font-medium text-slate-700">Tagline / Specialization</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Tagline / Specialization
+                  </label>
                   <input
                     type="text"
                     value={generalInfo.tagline}
@@ -225,13 +305,17 @@ export default function Settings() {
             <section className="rounded-xl border-l-4 border-l-teal-700 border-y border-r border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-5 flex items-center gap-2 text-teal-700">
                 <IconPin />
-                <h3 className="text-lg font-bold text-slate-900">Contact &amp; Location</h3>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Contact &amp; Location
+                </h3>
               </div>
 
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-[1fr_220px]">
                 <div className="space-y-4">
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-slate-700">Primary Email</label>
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
+                      Primary Email
+                    </label>
                     <div className={inputWrapper}>
                       <span className="shrink-0 text-slate-400">
                         <IconMail />
@@ -245,7 +329,9 @@ export default function Settings() {
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-slate-700">Phone Number</label>
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
+                      Phone Number
+                    </label>
                     <div className={inputWrapper}>
                       <span className="shrink-0 text-slate-400">
                         <IconPhone />
@@ -259,7 +345,9 @@ export default function Settings() {
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1 block text-sm font-medium text-slate-700">Street Address</label>
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
+                      Street Address
+                    </label>
                     <textarea
                       rows={2}
                       value={contactInfo.address}
@@ -272,7 +360,9 @@ export default function Settings() {
                 {/* Map placeholder */}
                 <div className="flex flex-col items-center justify-center rounded-lg bg-indigo-100 text-teal-700">
                   <IconPin />
-                  <span className="mt-1 text-sm font-bold uppercase">Seattle</span>
+                  <span className="mt-1 text-sm font-bold uppercase">
+                    Olivarez, Tagaytay
+                  </span>
                 </div>
               </div>
             </section>
@@ -284,7 +374,9 @@ export default function Settings() {
             <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2 text-teal-700">
                 <IconClock />
-                <h3 className="text-lg font-bold text-slate-900">Operating Hours</h3>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Operating Hours
+                </h3>
               </div>
               <div className="divide-y divide-slate-100 text-sm">
                 <HourRow day="Monday" hours="08:00 - 18:00" />
@@ -300,7 +392,9 @@ export default function Settings() {
             <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2 text-teal-700">
                 <IconImage />
-                <h3 className="text-lg font-bold text-slate-900">Brand Assets</h3>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Brand Assets
+                </h3>
               </div>
 
               <label
@@ -337,7 +431,9 @@ export default function Settings() {
                       </div>
                     )}
                     <div>
-                      <p className="text-sm font-medium text-slate-800">{logo.fileName}</p>
+                      <p className="text-sm font-medium text-slate-800">
+                        {logo.fileName}
+                      </p>
                       <p className="text-xs text-slate-500">
                         {logo.size} • {logo.type}
                       </p>
@@ -364,7 +460,9 @@ export default function Settings() {
 function HourRow({ day, hours, closed }) {
   return (
     <div className="flex items-center gap-3 py-3">
-      <span className="min-w-[92px] shrink-0 font-medium text-slate-700">{day}</span>
+      <span className="min-w-[92px] shrink-0 font-medium text-slate-700">
+        {day}
+      </span>
       <div className="flex-1 text-right">
         {closed ? (
           <span className="inline-block rounded-md bg-red-100 px-2 py-1 text-xs font-semibold text-red-600">
