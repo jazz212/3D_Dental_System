@@ -37,7 +37,7 @@ export default function Sidebar() {
       </Link>
       <Link
         href="/dashboard/settingpage"
-        className={`px-3 py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settings" ? "bg-[#00685F] text-white" : "text-black"}`}
+        className={`px-3 py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settingpage" ? "bg-[#00685F] text-white" : "text-black"}`}
       >
         <div className="flex items-center gap-2">
           <Settings className="w-4 h-4 " />

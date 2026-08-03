@@ -460,7 +460,7 @@ export default function Settings() {
 function HourRow({ day, hours, closed }) {
   return (
     <div className="flex items-center gap-3 py-3">
-      <span className="min-w-[92px] shrink-0 font-medium text-slate-700">
+      <span className="min-w-23 shrink-0 font-medium text-slate-700">
         {day}
       </span>
       <div className="flex-1 text-right">
