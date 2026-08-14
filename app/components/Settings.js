@@ -21,18 +21,18 @@ const IconInfo = () => (
   </svg>
 );
 
-const IconTooth = () => (
+const IconClinic = () => (
   <svg
-    width="16"
-    height="16"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
   >
-    <path d="M12 21c-1 0-1.3-2.2-1.8-3.8-.2-.7-.5-1.2-1.2-1.2s-1 .5-1.2 1.2C7.3 18.8 7 21 6 21c-1.3 0-1.7-2.1-2.1-4.5C3.4 14 3 11.8 3 9.5 3 6.5 4.8 3 8 3c1.1 0 1.9.5 2.8.9.4.2.8.1 1.2-.1C13 3.4 13.8 3 14.9 3c3.3 0 5.1 3.5 5.1 6.5 0 2.3-.4 4.5-.9 7-.4 2.4-.8 4.5-2.1 4.5-1 0-1.3-2.2-1.8-3.8-.2-.7-.6-1.2-1.2-1.2s-1 .5-1.2 1.2C12.3 18.8 13 21 12 21Z" />
+    <rect x="4" y="6" width="16" height="14" rx="2" />
+    <line x1="12" y1="6" x2="12" y2="20" />
+    <line x1="4" y1="13" x2="20" y2="13" />
   </svg>
 );
 
@@ -205,12 +205,12 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <main className="mx-auto max-w-7xl px-8 pt-4 pb-8">
+    <div className="bg-white w-full p-4 pt-2 pb-6">
+      <main className="pt-4 pb-8">
         {/* Page heading + Save/Discard */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900">
+            <h2 className="text-3xl font-bold text-black">
               Clinic Settings
             </h2>
             <p className="mt-1 text-slate-500">
@@ -237,10 +237,8 @@ export default function Settings() {
         </div>
 
         {/* Tab */}
-        <div className="mb-8 flex items-center gap-2 border-b-2 border-teal-700 pb-3 text-lg font-semibold text-teal-700 w-fit">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-teal-700 text-white">
-            <IconTooth />
-          </span>
+        <div className="mb-4 flex items-center gap-2 text-lg font-semibold text-black w-fit">
+          <IconClinic className="w-6 h-6" />
           Clinic Profile
         </div>
 
