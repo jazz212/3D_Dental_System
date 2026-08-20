@@ -8,7 +8,6 @@ import {
   LogOut,
   Plus,
   Menu,
-  PanelRightOpen,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,7 +24,9 @@ export default function Sidebar() {
       >
         <Menu className="w-6 h-6 text-gray-500 hover:text-[#00685F]" />
       </button>
-      {isOpen && <img src="/Logo/ToothPeakLogo.jpg" className="rounded-lg" />}
+      <Link href="/dashboard">
+        {isOpen && <img src="/Logo/ToothPeakLogo.jpg" className="rounded-lg" />}
+      </Link>
 
       <div
         className={`rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 flex items-center justify-center ${
