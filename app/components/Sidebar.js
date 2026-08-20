@@ -8,6 +8,7 @@ import {
   LogOut,
   Plus,
   Menu,
+  PanelRightOpen,
 } from "lucide-react";
 import Link from "next/link";
 
