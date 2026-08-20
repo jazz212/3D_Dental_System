@@ -1,3 +1,4 @@
+"use client";
 export default function AddPatient() {
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
@@ -118,7 +119,9 @@ export default function AddPatient() {
                 <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
               </div>
               <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm font-medium">History of Present Illness</label>
+                <label className="text-sm font-medium">
+                  History of Present Illness
+                </label>
                 <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
               </div>
             </div>
@@ -175,7 +178,9 @@ export default function AddPatient() {
             </div>
             <div className="flex flex-col gap-3 mt-4">
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">1. Are you under any medication/s?</label>
+                <label className="text-sm font-medium">
+                  1. Are you under any medication/s?
+                </label>
                 <label className="flex items-center gap-1">
                   <input type="radio" name="medication" value="yes" /> Yes
                 </label>
@@ -185,7 +190,9 @@ export default function AddPatient() {
               </div>
 
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">2. Do your gums bleed easily when brushing?</label>
+                <label className="text-sm font-medium">
+                  2. Do your gums bleed easily when brushing?
+                </label>
                 <label className="flex items-center gap-1">
                   <input type="radio" name="gums" value="yes" /> Yes
                 </label>
@@ -210,7 +217,9 @@ export default function AddPatient() {
               </div>
 
               <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">4. Do you have any known ALLERGY/ies?</label>
+                <label className="text-sm font-medium">
+                  4. Do you have any known ALLERGY/ies?
+                </label>
                 <label className="flex items-center gap-1">
                   <input type="radio" name="allergy" value="yes" /> Yes
                 </label>
@@ -221,7 +230,9 @@ export default function AddPatient() {
             </div>
             <div className="flex gap-4 mt-2">
               <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm font-medium">Current Medications</label>
+                <label className="text-sm font-medium">
+                  Current Medications
+                </label>
                 <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
               </div>
               <div className="flex flex-col gap-1 flex-1">
@@ -235,7 +246,9 @@ export default function AddPatient() {
                 <hr className="border border-gray-200 w-full" />
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Previous Oral Prophylaxis</label>
+                    <label className="text-sm font-medium">
+                      Previous Oral Prophylaxis
+                    </label>
                     <label className="flex items-center gap-1">
                       <input type="radio" name="cleaning" value="yes" /> Yes
                     </label>
@@ -249,7 +262,9 @@ export default function AddPatient() {
                     className="border-b border-gray-300 outline-none w-58 min-w-0"
                   />
                   <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Previous Dental Extraction</label>
+                    <label className="text-sm font-medium">
+                      Previous Dental Extraction
+                    </label>
                     <label className="flex items-center gap-1">
                       <input type="radio" name="extraction" value="yes" /> Yes
                     </label>
@@ -278,13 +293,17 @@ export default function AddPatient() {
                 <hr className="border border-gray-200 w-full" />
                 <div className="flex gap-4">
                   <div className="flex flex-col flex-1">
-                    <label className="text-sm font-medium">Blood Pressure(mmHg)</label>
+                    <label className="text-sm font-medium">
+                      Blood Pressure(mmHg)
+                    </label>
                     <input
                       type="text"
                       placeholder="120/80"
                       className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                     />
-                    <label className="text-sm font-medium">Respiratory Rate (cpm)</label>
+                    <label className="text-sm font-medium">
+                      Respiratory Rate (cpm)
+                    </label>
                     <input
                       type="text"
                       placeholder="16"
@@ -293,13 +312,17 @@ export default function AddPatient() {
                   </div>
 
                   <div className="flex flex-col  flex-1">
-                    <label className="text-sm font-medium">Pulse Rate (bpm)</label>
+                    <label className="text-sm font-medium">
+                      Pulse Rate (bpm)
+                    </label>
                     <input
                       type="text"
                       placeholder="72"
                       className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                     />
-                    <label className="text-sm font-medium">Temperature (°C)</label>
+                    <label className="text-sm font-medium">
+                      Temperature (°C)
+                    </label>
                     <input
                       type="text"
                       placeholder="36.5"
@@ -315,7 +338,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormality, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormality, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -327,7 +352,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormality, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormality, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -339,7 +366,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormality, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormality, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -359,7 +388,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1 text-sm">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormal, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormal, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -373,7 +404,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1 text-sm">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormal, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormal, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -387,7 +420,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1 text-sm">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormal, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormal, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -403,7 +438,9 @@ export default function AddPatient() {
                     <label className="flex items-center gap-1 text-sm">
                       <input type="checkbox" /> Normal
                     </label>
-                    <label className="text-sm font-medium">Abnormal, specify</label>
+                    <label className="text-sm font-medium">
+                      Abnormal, specify
+                    </label>
                     <input
                       type="text"
                       className="border-b border-gray-300 outline-none flex-1 min-w-0"
@@ -548,6 +585,23 @@ export default function AddPatient() {
                 </div>
               </div>
             </div>
+          </div>
+          {/* Footer buttons */}
+          <div className="flex justify-end gap-3 p-4">
+            <button
+              type="button"
+              onClick={() => {}}
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 disabled:opacity-50"
+            >
+              Discard Changes
+            </button>
+            <button
+              type="button"
+              onClick={() => {}}
+              className="rounded-lg bg-[#00685F] px-4 py-2 text-sm font-medium text-white hover:bg-[#004c4a] disabled:opacity-50"
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>
