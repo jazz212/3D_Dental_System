@@ -1,12 +1,16 @@
-'use client';
-import { useRef, useEffect } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
+"use client";
+/*installed this in the terminal
+npm install @fullcalendar/react @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction
+then imported the component in the dashboard
+*/
+import { useRef, useEffect } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 export default function CalendarView() {
   const calendarRef = useRef(null); // ref to FullCalendar instance
-  const wrapperRef = useRef(null);   // ref to the outer wrapper we observe
+  const wrapperRef = useRef(null); // ref to the outer wrapper we observe
 
   // Re‑compute FullCalendar size whenever the wrapper (affected by sidebar) resizes
   useEffect(() => {
@@ -19,8 +23,8 @@ export default function CalendarView() {
   }, []);
 
   const appointments = [
-    { title: 'Juan Dela Cruz — Root Canal', date: '2026-06-21' },
-    { title: 'Pedro Penduko — Cleaning',     date: '2026-06-22' },
+    { title: "Juan Dela Cruz — Root Canal", date: "2026-06-21" },
+    { title: "Pedro Penduko — Cleaning", date: "2026-06-22" },
   ];
 
   return (
