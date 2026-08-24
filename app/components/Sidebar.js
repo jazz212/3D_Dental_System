@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import {
   CalendarDays,
@@ -13,7 +15,12 @@ import Link from "next/link";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
   return (
     <div
       className={`bg-white h-screen flex flex-col p-4 gap-2 text-black border-r border-gray-500 overflow-hidden transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
@@ -81,8 +88,8 @@ export default function Sidebar() {
           {isOpen && <span>Settings</span>}
         </div>
       </Link>
-      <Link
-        href="/login"
+      <button
+        onClick={handleLogout}
         className="mt-auto transition-all duration-100 active:scale-95 active:brightness-90"
       >
         <div
@@ -91,7 +98,7 @@ export default function Sidebar() {
           <LogOut className="w-5 h-5 shrink-0" />
           {isOpen && <span>Logout</span>}
         </div>
-      </Link>
+      </button>
     </div>
   );
 }
