@@ -191,6 +191,11 @@ export default function AddPatient() {
                 <label className="flex items-center gap-1">
                   <input type="radio" name="medication" value="no" /> No
                 </label>
+                <input
+                  type="text"
+                  placeholder="If yes, please specify"
+                  className="border-b border-gray-300 outline-none ml-2 flex-1 min-w-0"
+                />
               </div>
 
               <div className="flex items-center gap-2">
@@ -230,18 +235,11 @@ export default function AddPatient() {
                 <label className="flex items-center gap-1">
                   <input type="radio" name="allergy" value="no" /> No
                 </label>
-              </div>
-            </div>
-            <div className="flex gap-4 mt-2">
-              <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm font-medium">
-                  Current Medications
-                </label>
-                <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
-              </div>
-              <div className="flex flex-col gap-1 flex-1">
-                <label className="text-sm text-red-700">Known Allergies</label>
-                <textarea className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24" />
+                <input
+                  type="text"
+                  placeholder="If yes, please specify"
+                  className="border-b border-gray-300 outline-none ml-2 flex-1 min-w-0"
+                />
               </div>
             </div>
             <div className="flex gap-8 mt-2">

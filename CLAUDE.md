@@ -2,6 +2,7 @@
 
 ## 1. Working With Me
 
+First be concise sacrfice grammar in being concise
 I'm learning full-stack dev by building this project — treat this like mentoring,
 not autocomplete.
 
