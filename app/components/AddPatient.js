@@ -1,5 +1,7 @@
 "use client";
+import { useState } from "react";
 export default function AddPatient() {
+  const [step, setStep] = useState(1);
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
       <div className="flex flex-col justify-between">
@@ -21,6 +23,8 @@ export default function AddPatient() {
           </div>
 
           <div className="p-2 mx-2">
+            {step === 1 && (
+              <>
             <div className="font-bold mt-4">Basic Information</div>
             <hr className="border border-gray-200" />
             <div className="grid grid-cols-4 mt-2 gap-4">
@@ -288,6 +292,28 @@ export default function AddPatient() {
                   </select>
                 </div>
               </div>
+            </div>
+              </>
+            )}
+            {step === 2 && (
+              <div className="flex flex-col items-center justify-center py-24 gap-4">
+                <h2 className="text-2xl font-bold text-[#00685F]">
+                  Thank you for sharing your information
+                </h2>
+                <p className="text-gray-500">
+                  Please wait for the dentist to continue your examination.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setStep(3)}
+                  className="rounded-lg bg-[#00685F] px-6 py-3 text-sm font-medium text-white hover:bg-[#004c4a]"
+                >
+                  Begin Vital Signs &amp; Intraoral Examination
+                </button>
+              </div>
+            )}
+            {step === 3 && (
+              <>
               <div className="flex flex-col gap-1 flex-1">
                 <div className="font-bold mt-4">Clinical / Vital Signs</div>
                 <hr className="border border-gray-200 w-full" />
@@ -376,7 +402,6 @@ export default function AddPatient() {
                   </div>
                 </div>
               </div>
-            </div>
 
             <div className="font-bold mt-4">Intraoral Examination</div>
             <hr className="border border-gray-200 w-full" />
@@ -585,23 +610,38 @@ export default function AddPatient() {
                 </div>
               </div>
             </div>
+              </>
+            )}
           </div>
           {/* Footer buttons */}
           <div className="flex justify-end gap-3 p-4">
-            <button
-              type="button"
-              onClick={() => {}}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 disabled:opacity-50"
-            >
-              Discard Changes
-            </button>
-            <button
-              type="button"
-              onClick={() => {}}
-              className="rounded-lg bg-[#00685F] px-4 py-2 text-sm font-medium text-white hover:bg-[#004c4a] disabled:opacity-50"
-            >
-              Save
-            </button>
+            {step === 1 && (
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="rounded-lg bg-[#00685F] px-4 py-2 text-sm font-medium text-white hover:bg-[#004c4a]"
+              >
+                Submit
+              </button>
+            )}
+            {step === 3 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 disabled:opacity-50"
+                >
+                  Discard Changes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {}}
+                  className="rounded-lg bg-[#00685F] px-4 py-2 text-sm font-medium text-white hover:bg-[#004c4a] disabled:opacity-50"
+                >
+                  Save
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
