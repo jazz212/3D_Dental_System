@@ -23,7 +23,7 @@ export default function Sidebar() {
   };
   return (
     <div
-      className={`bg-white h-screen flex flex-col p-4 gap-2 text-black border-r border-gray-500 overflow-hidden transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
+      className={`bg-white h-[calc(100vh-2rem)] m-2 flex flex-col p-4 gap-2 text-black rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -36,7 +36,7 @@ export default function Sidebar() {
       </Link>
 
       <div
-        className={`rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 flex items-center justify-center ${
+        className={`rounded-2xl transition-all duration-100 active:scale-95 active:brightness-90 flex items-center justify-center ${
           isOpen ? "bg-[#00685F] text-white px-4 py-2 w-full" : "w-full py-2"
         }`}
       >
@@ -57,7 +57,7 @@ export default function Sidebar() {
 
       <Link
         href="/dashboard"
-        className={`px-3 py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard" ? "bg-[#00685F] text-white" : "text-black"}`}
+        className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
       >
         <div
           className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
@@ -68,7 +68,7 @@ export default function Sidebar() {
       </Link>
       <Link
         href="/dashboard/patientrecords"
-        className={`px-3 py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/patientrecords" ? "bg-[#00685F] text-white" : "text-black"}`}
+        className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/patientrecords" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
       >
         <div
           className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
@@ -79,7 +79,7 @@ export default function Sidebar() {
       </Link>
       <Link
         href="/dashboard/settingpage"
-        className={`px-3 py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settingpage" ? "bg-[#00685F] text-white" : "text-black"}`}
+        className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settingpage" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
       >
         <div
           className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
