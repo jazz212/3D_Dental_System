@@ -1,4 +1,29 @@
+// Helper function — converts "9:00 AM" style string to total minutes from midnight
+function toMinutes(time) {
+  const [hourMin, period] = time.split(" ");
+  let [hours, minutes] = hourMin.split(":").map(Number);
+  if (period === "PM" && hours !== 12) hours += 12;
+  if (period === "AM" && hours === 12) hours = 0;
+  return hours * 60 + minutes;
+}
+
+// Calculates the human-readable duration between two time strings
+function getDuration(start, end) {
+  const diff = toMinutes(end) - toMinutes(start);
+  const hrs = Math.floor(diff / 60);
+  const mins = diff % 60;
+
+  if (hrs === 0) return `${mins} min`;
+  if (mins === 0) return `${hrs} hr`;
+  return `${hrs} hr ${mins} min`;
+}
+
 export default function AppointmentDetails({ onClose }) {
+
+  // These would come from props or your data source in a real implementation
+  const startTime = "9:00 AM";
+  const endTime = "10:30 AM";
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 font-sans">
 
@@ -37,24 +62,40 @@ export default function AppointmentDetails({ onClose }) {
 
         </div>
 
-        {/* Section 3: Detail tiles — date, time, service, dentist, notes */}
+        {/* Section 3: Detail tiles */}
         <div className="grid grid-cols-2 gap-2.5 mb-2.5">
 
+          {/* Date */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
             <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Date</p>
             <p className="text-sm font-semibold text-gray-900">Jun 16, 2025</p>
           </div>
 
+          {/* Duration — auto-calculated from startTime and endTime above */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
-            <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Time</p>
-            <p className="text-sm font-semibold text-gray-900">9:00 AM</p>
+            <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Duration</p>
+            <p className="text-sm font-semibold text-gray-900">{getDuration(startTime, endTime)}</p>
           </div>
 
+          {/* Start time */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+            <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Start time</p>
+            <p className="text-sm font-semibold text-gray-900">{startTime}</p>
+          </div>
+
+          {/* End time */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+            <p className="text-[10px] font-bold tracking-widests text-gray-400 uppercase mb-1">End time</p>
+            <p className="text-sm font-semibold text-gray-900">{endTime}</p>
+          </div>
+
+          {/* Service */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
             <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Service</p>
             <p className="text-sm font-semibold text-gray-900">Dental cleaning</p>
           </div>
 
+          {/* Dentist */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
             <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Dentist</p>
             <p className="text-sm font-semibold text-gray-900">Dr. Reyes</p>

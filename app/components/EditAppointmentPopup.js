@@ -18,26 +18,37 @@ export default function EditAppointment({ onClose, onSave }) {
         {/* Section 2: Form fields */}
         <div className="px-7 py-6 flex flex-col gap-5">
 
-          {/* Date + Time side by side */}
+          {/* Date — full width */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Date</label>
+            <input
+              type="date"
+              defaultValue="2025-06-16"
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-300" />
+          </div>
+
+          {/* Start time + End time side by side */}
           <div className="grid grid-cols-2 gap-4">
 
-            {/* Date input */}
+            {/* Start time */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Date</label>
-              <input
-                type="date"
-                defaultValue="2025-06-16"
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-300" />
-            </div>
-
-            {/* Time dropdown */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Time</label>
+              <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Start time</label>
               <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-green-300">
-                <option>8:00 AM</option><option>8:30 AM</option><option>9:00 AM</option><option>9:30 AM</option>
+                <option>8:00 AM</option><option>8:30 AM</option><option selected>9:00 AM</option><option>9:30 AM</option>
                 <option>10:00 AM</option><option>10:30 AM</option><option>11:00 AM</option><option>1:00 PM</option>
                 <option>1:30 PM</option><option>2:00 PM</option><option>2:30 PM</option><option>3:00 PM</option>
                 <option>3:30 PM</option><option>4:00 PM</option>
+              </select>
+            </div>
+
+            {/* End time — editable so dentist can update when treatment ends earlier or later */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">End time</label>
+              <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 appearance-none focus:outline-none focus:ring-2 focus:ring-green-300">
+                <option>8:30 AM</option><option>9:00 AM</option><option>9:30 AM</option>
+                <option>10:00 AM</option><option selected>10:30 AM</option><option>11:00 AM</option><option>11:30 AM</option>
+                <option>12:00 PM</option><option>1:00 PM</option><option>1:30 PM</option><option>2:00 PM</option>
+                <option>2:30 PM</option><option>3:00 PM</option><option>3:30 PM</option><option>4:00 PM</option><option>4:30 PM</option><option>5:00 PM</option>
               </select>
             </div>
 
@@ -53,7 +64,7 @@ export default function EditAppointment({ onClose, onSave }) {
 
           {/* Notes textarea — full width */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">Notes</label>
+            <label className="text-[10px] font-bold tracking-widests text-gray-400 uppercase">Notes</label>
             <textarea
               rows={4}
               defaultValue="Routine visit"
