@@ -1,8 +1,8 @@
+"use client";
+
 export default function NewAppointment({ onClose, onSave }) {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 font-sans">
-
-      {/* CARD */}
+    
       <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden">
 
         {/* Section 1: Header — icon + title + close button */}
@@ -100,6 +100,6 @@ export default function NewAppointment({ onClose, onSave }) {
         </div>
 
       </div>
-    </div>
+    
   );
 }

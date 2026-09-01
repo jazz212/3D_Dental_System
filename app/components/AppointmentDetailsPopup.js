@@ -1,3 +1,5 @@
+"use client";
+
 // Helper function — converts "9:00 AM" style string to total minutes from midnight
 function toMinutes(time) {
   const [hourMin, period] = time.split(" ");
@@ -25,9 +27,7 @@ export default function AppointmentDetails({ onClose }) {
   const endTime = "10:30 AM";
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 font-sans">
 
-      {/* CARD */}
       <div className="bg-white rounded-2xl w-full max-w-md p-7 shadow-2xl relative">
 
         {/* Section 1: Header — title + close button */}
@@ -119,6 +119,5 @@ export default function AppointmentDetails({ onClose }) {
         </div>
 
       </div>
-    </div>
   );
 }

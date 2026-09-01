@@ -1,8 +1,8 @@
+"use client";
+
 export default function AddTreatment({ onClose, onSave }) {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6 font-sans">
-
-      {/* CARD */}
+ 
       <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
 
         {/* Section 1: Header — title + close button */}
@@ -65,6 +65,5 @@ export default function AddTreatment({ onClose, onSave }) {
         </div>
 
       </div>
-    </div>
   );
 }
