@@ -1,7 +1,44 @@
-import { Pencil, Eye, Trash2, Plus } from "lucide-react";
+"use client";
+
+import { Pencil, Eye, Trash2, Plus, Edit, View } from "lucide-react";
+import { useState } from "react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
+import AppointmentDetails from "./AppointmentDetailsPopup.js";
+import EditAppointment from "./EditAppointmentPopup";
+import DeleteAppointment from "./DeleteAppointmentPopup";
+
+
 export default function Dashboard() {
+
+ // ── Modal state ───────────────────────────────────────────────────
+  // activeModal tracks which modal is open: null | "view" | "edit" | "delete"
+  // selectedAppointment holds the row data passed into the modal
+  const [activeModal, setActiveModal] = useState(null);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+ 
+  // ── Handlers — called by the action icon buttons ──────────────────
+  const handleView = (appointment) => {
+    setSelectedAppointment(appointment);
+    setActiveModal("view");
+  };
+ 
+  const handleEdit = (appointment) => {
+    setSelectedAppointment(appointment);
+    setActiveModal("edit");
+  };
+ 
+  const handleDelete = (appointment) => {
+    setSelectedAppointment(appointment);
+    setActiveModal("delete");
+  };
+ 
+  // Closes whichever modal is open
+  const handleClose = () => {
+    setActiveModal(null);
+    setSelectedAppointment(null);
+  };
+ 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -126,9 +163,15 @@ export default function Dashboard() {
                 </span>
               </td>
               <td className="p-3 border-b border-gray-200 flex gap-2">
-                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
+                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
+                  onClick={() => handleEdit()}
+                />
+                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
+                  onClick={() => handleView()}
+                />
+                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500"
+                  onClick={() => handleDelete()}
+                />
               </td>
             </tr>
             <tr>
@@ -212,6 +255,23 @@ export default function Dashboard() {
           </tfoot>
         </table>
       </div>
+        {activeModal && <div className="fixed inset-0 bg-black/50 z-40" onClick={handleClose} />}
+
+  {activeModal === "view" && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <AppointmentDetails onClose={handleClose} />
+    </div>
+  )}
+  {activeModal === "edit" && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <EditAppointment onClose={handleClose} onSave={handleClose} />
+    </div>
+  )}
+  {activeModal === "delete" && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <DeleteAppointment onClose={handleClose} onDelete={handleClose} />
+    </div>
+  )}
     </div>
   );
 }
