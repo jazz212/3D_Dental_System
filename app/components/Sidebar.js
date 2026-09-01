@@ -1,19 +1,104 @@
+"use client";
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import {
+  CalendarDays,
+  UsersRound,
+  Settings,
+  LogOut,
+  Plus,
+  Menu,
+} from "lucide-react";
 import Link from "next/link";
+
 export default function Sidebar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(true);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
   return (
-    <div className="bg-white h-screen flex flex-col p-4 w-64 gap-2 text-black border-r border-gray-500 overflow-hidden">
-      <img src="/Logo/ToothPeakLogo.jpg" className="rounded-lg" />
-      <div className="bg-[#00685F] px-4 py-2 text-white rounded-lg">
-        <button type="button" className="w-full">
-          New Appointment
-        </button>
-      </div>
-      <Link href="/dashboard">Calendar</Link>
-      <Link href="/dashboard/patientrecords">Patient Records</Link>
-      <Link href="/settings">Setttings</Link>
-      <Link href="/login" className="mt-auto">
-        Logout
+    <div
+      className={`bg-white h-[calc(100vh-2rem)] m-2 flex flex-col p-4 gap-2 text-black rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 ${isOpen ? "w-64" : "w-16"}`}
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`mb-4 w-full flex ${isOpen ? "justify-start" : "justify-center"}`}
+      >
+        <Menu className="w-6 h-6 text-gray-500 hover:text-[#00685F]" />
+      </button>
+      <Link href="/dashboard">
+        {isOpen && <img src="/Logo/ToothPeakLogo.jpg" className="rounded-lg" />}
       </Link>
+
+      <div
+        className={`rounded-2xl transition-all duration-100 active:scale-95 active:brightness-90 flex items-center justify-center ${
+          isOpen ? "bg-[#00685F] text-white px-4 py-2 w-full" : "w-full py-2"
+        }`}
+      >
+        <Link
+          href="/dashboard/addpatient"
+          className="flex items-center justify-center w-full h-full"
+        >
+          <div
+            className={`flex items-center cursor-pointer ${isOpen ? "w-full gap-2" : "justify-center"}`}
+          >
+            <Plus
+              className={`w-5 h-5 shrink-0 ${isOpen ? "" : "text-[#00685F]"}`}
+            />
+            {isOpen && <span>Add New Patient</span>}
+          </div>
+        </Link>
+      </div>
+
+      <Link
+        href="/dashboard"
+        className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
+      >
+        <div
+          className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
+        >
+          <CalendarDays className="w-5 h-5 shrink-0" />
+          {isOpen && <span>Calendar</span>}
+        </div>
+      </Link>
+      <Link
+        href="/dashboard/patientrecords"
+        className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/patientrecords" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
+      >
+        <div
+          className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
+        >
+          <UsersRound className="w-5 h-5 shrink-0" />
+          {isOpen && <span>Patient Records</span>}
+        </div>
+      </Link>
+      <Link
+        href="/dashboard/settingpage"
+        className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settingpage" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
+      >
+        <div
+          className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
+        >
+          <Settings className="w-5 h-5 shrink-0" />
+          {isOpen && <span>Settings</span>}
+        </div>
+      </Link>
+      <button
+        onClick={handleLogout}
+        className="mt-auto transition-all duration-100 active:scale-95 active:brightness-90"
+      >
+        <div
+          className={`flex items-center gap-2 ${isOpen ? "" : "justify-center"}`}
+        >
+          <LogOut className="w-5 h-5 shrink-0" />
+          {isOpen && <span>Logout</span>}
+        </div>
+      </button>
     </div>
   );
 }
