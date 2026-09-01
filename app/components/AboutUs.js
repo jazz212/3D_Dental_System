@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BadgeCheck, MapPin, Phone, Clock, ArrowRight } from "lucide-react";
+import Footer from "./Footer";
 
 const specialists = [
   { name: "Dr. Maria Makiling", role: "Lead Prosthodontist" },
@@ -207,35 +208,7 @@ export default function AboutUs() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-[#EDEFEE] px-8 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-lg font-bold text-[#1F4A3D] transition-colors duration-200 hover:text-[#163a2f]"
-          >
-            
-            ToothPeak
-          </Link>
-
-          <nav className="flex flex-wrap items-center justify-center gap-6">
-            {["Privacy Policy", "Terms of Service", "Contact Support", "Location"].map(
-              (item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="text-sm text-[#1F2D28] underline decoration-transparent underline-offset-4 transition-all duration-200 hover:text-[#1F4A3D] hover:decoration-[#1F4A3D]"
-                >
-                  {item}
-                </a>
-              )
-            )}
-          </nav>
-
-          <span className="text-sm text-gray-500">
-            © 2026 ToothPeak Dental Clinic. Precision Care, Natural Smiles.
-          </span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

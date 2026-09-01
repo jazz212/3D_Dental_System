@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import Footer from "./Footer";
 
 const clinicalServices = [
   { title: "Oral Prophylaxis", sub: "(Cleaning)", desc: "Routine cleaning to remove plaque and tartar, essential for maintaining healthy gums and teeth." },
@@ -26,6 +28,11 @@ const additionalImaging = [
 ];
 
 export default function Services() {
+  const [openService, setOpenService] = useState(null);
+
+  const toggleService = (title) =>
+    setOpenService((current) => (current === title ? null : title));
+
   return (
     <div className="min-h-screen bg-[#F7F9F8] text-[#1F2D28]">
       <header className="border-b border-gray-200">
@@ -65,13 +72,30 @@ export default function Services() {
       <section className="mx-auto max-w-7xl px-8 pb-16">
         <h2 className="mb-8 text-2xl font-bold text-[#1F4A3D] md:text-3xl">Clinical Services</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {clinicalServices.map(({ title, sub, desc }) => (
-            <div key={title} className="rounded-xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-              <h3 className="text-lg font-bold text-[#1F4A3D]">{title}</h3>
-              {sub && <p className="mt-1 text-sm text-gray-500">{sub}</p>}
-              <p className="mt-3 text-sm text-gray-600">{desc}</p>
-            </div>
-          ))}
+          {clinicalServices.map(({ title, sub, desc }) => {
+            const open = openService === title;
+            return (
+              <div
+                key={title}
+                onClick={() => toggleService(title)}
+                className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md ${
+                  open ? "border-[#1F4A3D]" : ""
+                }`}
+              >
+                <h3 className="text-lg font-bold text-[#1F4A3D]">{title}</h3>
+                {sub && <p className="mt-1 text-sm text-gray-500">{sub}</p>}
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="min-h-0 overflow-hidden">
+                    <p className="pt-3 text-sm text-gray-600">{desc}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -117,21 +141,7 @@ export default function Services() {
         </div>
       </section>
 
-      <footer className="border-t border-gray-200 bg-[#EDEFEE] px-8 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
-          <Link href="/landing" className="text-lg font-bold text-[#1F4A3D] transition-colors duration-200 hover:text-[#163a2f]">
-            ToothPeak
-          </Link>
-          <nav className="flex flex-wrap items-center justify-center gap-6">
-            {["Privacy Policy", "Terms of Service", "Contact Support", "Location"].map((item) => (
-              <a key={item} href="#" className="text-sm text-[#1F2D28] underline decoration-transparent underline-offset-4 transition-all duration-200 hover:text-[#1F4A3D] hover:decoration-[#1F4A3D]">
-                {item}
-              </a>
-            ))}
-          </nav>
-          <span className="text-sm text-gray-500">© 2026 ToothPeak Dental Clinic. Precision Care, Natural Smiles.</span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
