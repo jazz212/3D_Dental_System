@@ -1,18 +1,13 @@
 import { Pencil, Eye, Trash2, Plus } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
+
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
-  const visits = [
-    { time: "2:30 PM", patient: "Juan Dela Cruz", Appointment: "Cleaning" },
-    { time: "3:30 PM", patient: "Juan Dela Cruz", Appointment: "Cleaning" },
-    { time: "4:30 PM", patient: "Juan Dela Cruz", Appointment: "Cleaning" },
-    { time: "5:30 PM", patient: "Juan Dela Cruz", Appointment: "Cleaning" },
-  ];
   const pages = [1, 2, 3];
 
   return (
@@ -63,23 +58,11 @@ export default function Dashboard() {
         <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch">
           <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
           <div className="flex flex-col gap-4">
-            {visits.map((visit) => (
-              <div key={visit.time} className="flex gap-2 items-stretch">
-                <div className="flex flex-col items-center">
-                  <p className="text-sm">{visit.time}</p>
-                  <div className="w-3 h-3 rounded-full bg-[#00685F] mt-1 shrink-0"></div>
-                  <div className="w-px bg-gray-300 grow"></div>
-                </div>
-
-                <div className="bg-gray-200 rounded-lg border border-gray-500 p-4 mb-4">
-                  <p>{visit.patient}</p>
-                  <p>{visit.Appointment}</p>
-                </div>
-              </div>
-            ))}
+            {/* Upcoming visits mapping goes here */}
           </div>
         </div>
       </div>
+
       <div className="flex justify-between items-center mt-6">
         <h2 className="font-bold text-lg">All Appointments</h2>
 
@@ -90,6 +73,7 @@ export default function Dashboard() {
           <option value="cancelled">Cancelled</option>
         </select>
       </div>
+
       <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
         <table className="w-full border-collapse rounded-lg">
           <thead>
@@ -116,63 +100,11 @@ export default function Dashboard() {
           </thead>
           <tbody>
             <tr>
-              <td className="p-3 border-b border-gray-200">Juan Dela Cruz</td>
-              <td className="p-3 border-b border-gray-200">Jan 1, 2026</td>
-              <td className="p-3 border-b border-gray-200">9:00 AM</td>
-              <td className="p-3 border-b border-gray-200">Dental Cleaning</td>
-              <td className="p-3 border-b border-gray-200">
-                <span className="bg-orange-700 text-white px-3 py-1 rounded-full text-sm">
-                  Pending
-                </span>
-              </td>
-              <td className="p-3 border-b border-gray-200 flex gap-2">
-                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
-              </td>
-            </tr>
-            <tr>
-              <td className="p-3 border-b border-gray-200">Maria Santos</td>
-              <td className="p-3 border-b border-gray-200">Jan 2, 2026</td>
-              <td className="p-3 border-b border-gray-200">10:00 AM</td>
-              <td className="p-3 border-b border-gray-200">Root Canal</td>
-              <td className="p-3 border-b border-gray-200">
-                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                  Cancelled
-                </span>
-              </td>
-              <td className="p-3 border-b border-gray-200 flex gap-2">
-                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
-              </td>
-            </tr>
-            <tr>
-              <td className="p-3 border-b border-gray-200">Pedro Reyes</td>
-              <td className="p-3 border-b border-gray-200">Jan 3, 2026</td>
-              <td className="p-3 border-b border-gray-200">11:00 AM</td>
-              <td className="p-3 border-b border-gray-200">Tooth Filling</td>
-              <td className="p-3 border-b border-gray-200">
-                <span className="bg-green-700 text-white px-3 py-1 rounded-full text-sm">
-                  Confirmed
-                </span>
-              </td>
-              <td className="p-3 border-b border-gray-200 flex gap-2">
-                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
-              </td>
-            </tr>
-            <tr>
-              <td className="p-3 border-b border-gray-200">Ana Garcia</td>
-              <td className="p-3 border-b border-gray-200">Jan 4, 2026</td>
-              <td className="p-3 border-b border-gray-200">1:00 PM</td>
-              <td className="p-3 border-b border-gray-200">Consultation</td>
-              <td className="p-3 border-b border-gray-200 ">
-                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                  Cancelled
-                </span>
-              </td>
+              <td className="p-3 border-b border-gray-200"></td>
+              <td className="p-3 border-b border-gray-200"></td>
+              <td className="p-3 border-b border-gray-200"></td>
+              <td className="p-3 border-b border-gray-200"></td>
+              <td className="p-3 border-b border-gray-200"></td>
               <td className="p-3 border-b border-gray-200 flex gap-2">
                 <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
                 <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
@@ -185,7 +117,7 @@ export default function Dashboard() {
               <td colSpan={6} className="p-4 border-t border-gray-200">
                 <div className="flex justify-between items-center">
                   <p className="text-sm text-gray-500">
-                    Showing 1-4 of 4 patients
+                    Showing 0 of 0 patients
                   </p>
 
                   <div className="flex gap-2 items-center">

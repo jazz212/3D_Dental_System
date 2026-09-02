@@ -1,26 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { UserPen } from "lucide-react";
-
-/* ---------- Inline SVG icons (no external library needed) ---------- */
-const IconInfo = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-  >
-    <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
-    <circle cx="8.5" cy="10.5" r="2" />
-    <path d="M5.5 16.2c0-1.8 1.4-3 3-3s3 1.2 3 3" />
-    <line x1="13.5" y1="9.2" x2="18.5" y2="9.2" />
-    <line x1="13.5" y1="12" x2="18.5" y2="12" />
-    <line x1="13.5" y1="14.8" x2="17" y2="14.8" />
-  </svg>
-);
+import { UserPen, Info } from "lucide-react";
 
 const IconPin = () => (
   <svg
@@ -233,7 +214,7 @@ export default function Settings() {
             {/* General Information */}
             <section className="rounded-xl border-l-4 border-l-teal-700 border-y border-r border-slate-200 bg-white p-6 shadow-sm">
               <div className="mb-1 flex items-center gap-2 text-teal-700">
-                <IconInfo />
+                <Info />
                 <h3 className="text-lg font-bold text-slate-900">
                   General Information
                 </h3>
