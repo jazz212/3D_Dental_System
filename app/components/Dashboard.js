@@ -1,6 +1,10 @@
+"use client";
 import { Pencil, Eye, Trash2, Plus } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import AddAppointmentPopup from "./AddAppointmentPopup";
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -9,6 +13,39 @@ export default function Dashboard() {
     day: "numeric",
   });
   const pages = [1, 2, 3];
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("appointment_details")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setAppointments(data);
+    } catch (err) {
+      console.error("Error fetching appointments:", err);
+      setError("Failed to load appointments.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch on mount
+    fetchAppointments();
+
+    // Set up automatic refresh every 30 seconds
+    const intervalId = setInterval(fetchAppointments, 30000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, []); // Empty deps means this runs once on mount
 
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
@@ -29,15 +66,15 @@ export default function Dashboard() {
             </div>
           </Link>
 
-          <Link
-            href=""
+          <button
+            onClick={() => setOpen(true)}
             className="bg-[#00685F] px-4 py-2 text-white rounded-lg"
           >
             <div className="flex items-center gap-2 w-full cursor-pointer">
               <Plus className="w-4 h-4" />
               Add Appointment
             </div>
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -99,18 +136,44 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="p-3 border-b border-gray-200"></td>
-              <td className="p-3 border-b border-gray-200"></td>
-              <td className="p-3 border-b border-gray-200"></td>
-              <td className="p-3 border-b border-gray-200"></td>
-              <td className="p-3 border-b border-gray-200"></td>
-              <td className="p-3 border-b border-gray-200 flex gap-2">
-                <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
-              </td>
-            </tr>
+            {loading ? (
+                <tr>
+                  <td colSpan={6} className="p-3 text-center text-gray-500">
+                    Loading appointments...
+                  </td>
+                </tr>
+              ) : appointments.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-3 text-center text-gray-500">
+                    No appointments yet.
+                  </td>
+                </tr>
+              ) : (
+                appointments.map((appt) => (
+                  <tr key={appt.id}>
+                    <td className="p-3 border-b border-gray-200">
+                      {appt.patient_name}
+                    </td>
+                    <td className="p-3 border-b border-gray-200">
+                      {appt.appointment_date}
+                    </td>
+                    <td className="p-3 border-b border-gray-200">
+                      {appt.start_time} - {appt.end_time}
+                    </td>
+                    <td className="p-3 border-b border-gray-200">
+                      {appt.service}
+                    </td>
+                    <td className="p-3 border-b border-gray-200">
+                      Requested
+                    </td>
+                    <td className="p-3 border-b border-gray-200 flex gap-2">
+                      <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                      <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                      <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
+                    </td>
+                  </tr>
+                ))
+              )}
           </tbody>
           <tfoot>
             <tr>
@@ -144,6 +207,13 @@ export default function Dashboard() {
           </tfoot>
         </table>
       </div>
+
+      {open && (
+        <AddAppointmentPopup
+          onClose={() => setOpen(false)}
+          onAppointmentAdded={fetchAppointments}
+        />
+      )}
     </div>
   );
 }
