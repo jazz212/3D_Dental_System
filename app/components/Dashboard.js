@@ -6,6 +6,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import AddAppointmentPopup from "./AddAppointmentPopup";
 import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
+import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
+  import EditAppointmentPopup from "./EditAppointmentPopup";
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -18,7 +20,11 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [appointmentToDelete, setAppointmentToDelete] = useState(null);
+  const [appointmentToView, setAppointmentToView] = useState(null);
+  const [appointmentToEdit, setAppointmentToEdit] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const appointmentsPerPage = 10;
@@ -49,6 +55,16 @@ export default function Dashboard() {
   const handleDeleteAppointment = (appointment) => {
     setAppointmentToDelete(appointment);
     setDeleteOpen(true);
+  };
+
+  const handleViewAppointment = (appointment) => {
+    setAppointmentToView(appointment);
+    setDetailsOpen(true);
+  };
+
+  const handleEditAppointment = (appointment) => {
+    setAppointmentToEdit(appointment);
+    setEditOpen(true);
   };
 
   const handleConfirmDelete = async () => {
@@ -82,12 +98,6 @@ export default function Dashboard() {
   useEffect(() => {
     // Fetch on mount or when currentPage changes
     fetchAppointments();
-
-    // Set up automatic refresh every 30 seconds
-    const intervalId = setInterval(fetchAppointments, 30000);
-
-    // Cleanup interval on unmount
-    return () => clearInterval(intervalId);
   }, [currentPage, fetchAppointments]); // Re-fetch when currentPage or fetchAppointments changes
 
   return (
@@ -208,8 +218,14 @@ export default function Dashboard() {
                   </td>
                   <td className="p-3 border-b border-gray-200">Requested</td>
                   <td className="p-3 border-b border-gray-200 flex gap-2">
-                    <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                    <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                    <Pencil
+                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
+                      onClick={() => handleEditAppointment(appt)}
+                    />
+                    <Eye
+                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
+                      onClick={() => handleViewAppointment(appt)}
+                    />
                     <Trash2
                       className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500"
                       onClick={() => handleDeleteAppointment(appt)}
@@ -316,6 +332,19 @@ export default function Dashboard() {
           onClose={handleCancelDelete}
           onDelete={handleConfirmDelete}
           appointment={appointmentToDelete}
+        />
+      )}
+      {detailsOpen && (
+        <AppointmentDetailsPopup
+          onClose={() => setDetailsOpen(false)}
+          appointment={appointmentToView}
+        />
+      )}
+      {editOpen && (
+        <EditAppointmentPopup
+          onClose={() => setEditOpen(false)}
+          onSave={fetchAppointments}
+          appointment={appointmentToEdit}
         />
       )}
     </div>
