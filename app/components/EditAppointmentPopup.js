@@ -27,6 +27,51 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
     service: appointment?.service || "",
     notes: appointment?.notes || "",
   });
+  const [bookedTimes, setBookedTimes] = useState({});
+
+  // Fetch booked times for the selected date (excluding current appointment when editing)
+  useEffect(() => {
+    if (!formData.date) {
+      setBookedTimes({});
+      return;
+    }
+
+    const fetchBookedTimes = async () => {
+      try {
+        let query = supabase
+          .from("appointment_details")
+          .select("start_time, end_time, id")
+          .eq("appointment_date", formData.date);
+
+        // Exclude current appointment when editing ONLY if it's on the same date
+        if (appointment?.id && appointment?.appointment_date === formData.date) {
+          query = query.neq("id", appointment.id);
+        }
+
+        const { data, error } = await query;
+
+        if (error) throw error;
+
+        // Convert to an object with booked times as keys for quick lookup
+        const timesMap = {};
+        data.forEach(appt => {
+          if (appt.start_time) timesMap[appt.start_time] = true;
+          if (appt.end_time) timesMap[appt.end_time] = true;
+        });
+        setBookedTimes(timesMap);
+      } catch (err) {
+        console.error("Error fetching booked times:", err);
+        setBookedTimes({});
+      }
+    };
+
+    fetchBookedTimes();
+  }, [formData.date, appointment?.id, appointment?.appointment_date]);
+
+  // Helper function to check if a time is booked for the selected date
+  const isTimeBooked = (time) => {
+    return bookedTimes[time] || false;
+  };
   const [fieldErrors, setFieldErrors] = useState({
     patientName: false,
     contactNumber: false,
@@ -83,12 +128,18 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
       setFieldErrors((prev) => ({ ...prev, startTime: true }));
       isValid = false;
     }
+    else if (isTimeBooked(formData.startTime) && appointment && !(formData.date === appointment.appointment_date && formData.startTime === appointment.start_time)) {
+      setFieldErrors((prev) => ({ ...prev, startTime: true }));
+      setError("This start time is already booked for the selected date");
+      isValid = false;
+    }
     if (!formData.endTime) {
       setFieldErrors((prev) => ({ ...prev, endTime: true }));
       isValid = false;
     }
-    if (!formData.service) {
-      setFieldErrors((prev) => ({ ...prev, service: true }));
+    else if (isTimeBooked(formData.endTime) && appointment && !(formData.date === appointment.appointment_date && formData.endTime === appointment.end_time)) {
+      setFieldErrors((prev) => ({ ...prev, endTime: true }));
+      setError("This end time is already booked for the selected date");
       isValid = false;
     }
 
@@ -240,25 +291,25 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
                 name="startTime"
                 value={formData.startTime}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.startTime ? "border-red-500" : ""}`}
+                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.startTime ? "border-red-500" : ""} ${isTimeBooked(formData.startTime) ? "text-gray-400 cursor-not-allowed" : ""}`}
               >
                 <option value="">Select start time</option>
-                <option value="8:00 AM">8:00 AM</option>
-                <option value="8:30 AM">8:30 AM</option>
-                <option value="9:00 AM">9:00 AM</option>
-                <option value="9:30 AM">9:30 AM</option>
-                <option value="10:00 AM">10:00 AM</option>
-                <option value="10:30 AM">10:30 AM</option>
-                <option value="11:00 AM">11:00 AM</option>
-                <option value="1:00 PM">1:00 PM</option>
-                <option value="1:30 PM">1:30 PM</option>
-                <option value="2:00 PM">2:00 PM</option>
-                <option value="2:30 PM">2:30 PM</option>
-                <option value="3:00 PM">3:00 PM</option>
-                <option value="3:30 PM">3:30 PM</option>
-                <option value="4:00 PM">4:00 PM</option>
-                <option value="4:30 PM">4:30 PM</option>
-                <option value="5:00 PM">5:00 PM</option>
+                <option value="8:00 AM" disabled={isTimeBooked("8:00 AM")}>8:00 AM</option>
+                <option value="8:30 AM" disabled={isTimeBooked("8:30 AM")}>8:30 AM</option>
+                <option value="9:00 AM" disabled={isTimeBooked("9:00 AM")}>9:00 AM</option>
+                <option value="9:30 AM" disabled={isTimeBooked("9:30 AM")}>9:30 AM</option>
+                <option value="10:00 AM" disabled={isTimeBooked("10:00 AM")}>10:00 AM</option>
+                <option value="10:30 AM" disabled={isTimeBooked("10:30 AM")}>10:30 AM</option>
+                <option value="11:00 AM" disabled={isTimeBooked("11:00 AM")}>11:00 AM</option>
+                <option value="1:00 PM" disabled={isTimeBooked("1:00 PM")}>1:00 PM</option>
+                <option value="1:30 PM" disabled={isTimeBooked("1:30 PM")}>1:30 PM</option>
+                <option value="2:00 PM" disabled={isTimeBooked("2:00 PM")}>2:00 PM</option>
+                <option value="2:30 PM" disabled={isTimeBooked("2:30 PM")}>2:30 PM</option>
+                <option value="3:00 PM" disabled={isTimeBooked("3:00 PM")}>3:00 PM</option>
+                <option value="3:30 PM" disabled={isTimeBooked("3:30 PM")}>3:30 PM</option>
+                <option value="4:00 PM" disabled={isTimeBooked("4:00 PM")}>4:00 PM</option>
+                <option value="4:30 PM" disabled={isTimeBooked("4:30 PM")}>4:30 PM</option>
+                <option value="5:00 PM" disabled={isTimeBooked("5:00 PM")}>5:00 PM</option>
               </select>
             </div>
 
@@ -270,7 +321,7 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
                 name="endTime"
                 value={formData.endTime}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.endTime ? "border-red-500" : ""}`}
+                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.endTime ? "border-red-500" : ""} ${isTimeBooked(formData.endTime) ? "text-gray-400 cursor-not-allowed" : ""}`}
               >
                 <option value="">Select end time</option>
                 <option value="8:30 AM">8:30 AM</option>
@@ -279,9 +330,9 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
                 <option value="10:00 AM">10:00 AM</option>
                 <option value="10:30 AM">10:30 AM</option>
                 <option value="11:00 AM">11:00 AM</option>
-                <option value="11:30 AM">11:30 AM</option>
-                <option value="12:00 PM">12:00 PM</option>
-                <option value="1:00 PM">1:00 PM</option>
+                <option value="11:30 AM" disabled={isTimeBooked("11:30 AM")}>11:30 AM</option>
+                <option value="12:00 PM" disabled={isTimeBooked("12:00 PM")}>12:00 PM</option>
+                <option value="1:00 PM" disabled={isTimeBooked("1:00 PM")}>1:00 PM</option>
                 <option value="1:30 PM">1:30 PM</option>
                 <option value="2:00 PM">2:00 PM</option>
                 <option value="2:30 PM">2:30 PM</option>
