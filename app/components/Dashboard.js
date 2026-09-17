@@ -2,9 +2,10 @@
 import { Pencil, Eye, Trash2, Plus } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import AddAppointmentPopup from "./AddAppointmentPopup";
+import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -12,32 +13,74 @@ export default function Dashboard() {
     month: "long",
     day: "numeric",
   });
-  const pages = [1, 2, 3];
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalAppointments, setTotalAppointments] = useState(0);
+  const appointmentsPerPage = 10;
 
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const from = (currentPage - 1) * appointmentsPerPage;
+      const to = from + appointmentsPerPage - 1;
+
+      const { data, error, count } = await supabase
         .from("appointment_details")
-        .select("*")
+        .select("*", { count: "exact" })
+        .range(from, to)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setAppointments(data);
+      setTotalAppointments(count || 0);
     } catch (err) {
       console.error("Error fetching appointments:", err);
       setError("Failed to load appointments.");
     } finally {
       setLoading(false);
     }
+  }, [currentPage, appointmentsPerPage]);
+
+  const handleDeleteAppointment = (appointment) => {
+    setAppointmentToDelete(appointment);
+    setDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!appointmentToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("appointment_details")
+        .delete()
+        .eq("id", appointmentToDelete.id);
+
+      if (error) throw error;
+
+      // Close popup and refresh data
+      setDeleteOpen(false);
+      setAppointmentToDelete(null);
+      await fetchAppointments();
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+      // Close popup on error too - keep simple behavior
+      setDeleteOpen(false);
+      setAppointmentToDelete(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteOpen(false);
+    setAppointmentToDelete(null);
   };
 
   useEffect(() => {
-    // Fetch on mount
+    // Fetch on mount or when currentPage changes
     fetchAppointments();
 
     // Set up automatic refresh every 30 seconds
@@ -45,7 +88,7 @@ export default function Dashboard() {
 
     // Cleanup interval on unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty deps means this runs once on mount
+  }, [currentPage, fetchAppointments]); // Re-fetch when currentPage or fetchAppointments changes
 
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
@@ -82,7 +125,7 @@ export default function Dashboard() {
         <div className="flex-1 flex flex-col gap-6">
           <div className="flex gap-8">
             <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
-              TODAY'S EXPECTED VISITS
+              TODAY&apos;S EXPECTED VISITS
             </div>
             <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
               PENDING APPOINTMENTS
@@ -137,67 +180,121 @@ export default function Dashboard() {
           </thead>
           <tbody>
             {loading ? (
-                <tr>
-                  <td colSpan={6} className="p-3 text-center text-gray-500">
-                    Loading appointments...
+              <tr>
+                <td colSpan={6} className="p-3 text-center text-gray-500">
+                  Loading appointments...
+                </td>
+              </tr>
+            ) : appointments.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="p-3 text-center text-gray-500">
+                  No appointments yet.
+                </td>
+              </tr>
+            ) : (
+              appointments.map((appt) => (
+                <tr key={appt.id}>
+                  <td className="p-3 border-b border-gray-200">
+                    {appt.patient_name}
+                  </td>
+                  <td className="p-3 border-b border-gray-200">
+                    {appt.appointment_date}
+                  </td>
+                  <td className="p-3 border-b border-gray-200">
+                    {appt.start_time} - {appt.end_time}
+                  </td>
+                  <td className="p-3 border-b border-gray-200">
+                    {appt.service}
+                  </td>
+                  <td className="p-3 border-b border-gray-200">Requested</td>
+                  <td className="p-3 border-b border-gray-200 flex gap-2">
+                    <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                    <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
+                    <Trash2
+                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500"
+                      onClick={() => handleDeleteAppointment(appt)}
+                    />
                   </td>
                 </tr>
-              ) : appointments.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="p-3 text-center text-gray-500">
-                    No appointments yet.
-                  </td>
-                </tr>
-              ) : (
-                appointments.map((appt) => (
-                  <tr key={appt.id}>
-                    <td className="p-3 border-b border-gray-200">
-                      {appt.patient_name}
-                    </td>
-                    <td className="p-3 border-b border-gray-200">
-                      {appt.appointment_date}
-                    </td>
-                    <td className="p-3 border-b border-gray-200">
-                      {appt.start_time} - {appt.end_time}
-                    </td>
-                    <td className="p-3 border-b border-gray-200">
-                      {appt.service}
-                    </td>
-                    <td className="p-3 border-b border-gray-200">
-                      Requested
-                    </td>
-                    <td className="p-3 border-b border-gray-200 flex gap-2">
-                      <Pencil className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                      <Eye className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]" />
-                      <Trash2 className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500" />
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))
+            )}
           </tbody>
           <tfoot>
             <tr>
               <td colSpan={6} className="p-4 border-t border-gray-200">
                 <div className="flex justify-between items-center">
                   <p className="text-sm text-gray-500">
-                    Showing 0 of 0 patients
+                    Showing{" "}
+                    {totalAppointments === 0
+                      ? 0
+                      : (currentPage - 1) * appointmentsPerPage + 1}{" "}
+                    -{" "}
+                    {Math.min(
+                      currentPage * appointmentsPerPage,
+                      totalAppointments,
+                    )}{" "}
+                    of {totalAppointments} patients
                   </p>
 
                   <div className="flex gap-2 items-center">
-                    <button className="px-3 py-1 border border-gray-300 rounded items-center">
+                    <button
+                      onClick={() =>
+                        setCurrentPage(Math.max(1, currentPage - 1))
+                      }
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 border border-gray-300 rounded items-center"
+                    >
                       {"<"}
                     </button>
 
-                    {pages.map((page) => (
-                      <button
-                        key={page}
-                        className="px-3 py-1 border border-gray-300 rounded items-center"
-                      >
-                        {page}
-                      </button>
-                    ))}
+                    {/* Calculate total pages */}
+                    {[
+                      ...Array(
+                        Math.max(
+                          1,
+                          Math.ceil(totalAppointments / appointmentsPerPage),
+                        ),
+                      ),
+                    ].map((_, index) => {
+                      const pageNumber = index + 1;
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() => setCurrentPage(pageNumber)}
+                          className={`px-3 py-1 border border-gray-300 rounded items-center ${
+                            currentPage === pageNumber
+                              ? "bg-[#00685F] text-white"
+                              : ""
+                          }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    })}
 
-                    <button className="px-3 py-1 border border-gray-300 rounded items-center">
+                    <button
+                      onClick={() =>
+                        setCurrentPage(
+                          Math.min(
+                            Math.max(
+                              1,
+                              Math.ceil(
+                                totalAppointments / appointmentsPerPage,
+                              ),
+                            ),
+                            currentPage + 1,
+                          ),
+                        )
+                      }
+                      disabled={
+                        currentPage >=
+                        Math.max(
+                          1,
+                          Math.ceil(totalAppointments / appointmentsPerPage),
+                        )
+                      }
+                      className="px-3 py-1 border border-gray-300 rounded items-center"
+                    >
                       {">"}
                     </button>
                   </div>
@@ -212,6 +309,13 @@ export default function Dashboard() {
         <AddAppointmentPopup
           onClose={() => setOpen(false)}
           onAppointmentAdded={fetchAppointments}
+        />
+      )}
+      {deleteOpen && (
+        <DeleteTreatmentPopup
+          onClose={handleCancelDelete}
+          onDelete={handleConfirmDelete}
+          appointment={appointmentToDelete}
         />
       )}
     </div>

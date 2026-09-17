@@ -22,10 +22,7 @@ export default function CalendarView() {
     return () => observer.disconnect();
   }, []);
 
-  const appointments = [
-    { title: "Juan Dela Cruz — Root Canal", date: "2026-06-21" },
-    { title: "Pedro Penduko — Cleaning", date: "2026-06-22" },
-  ];
+  const appointments = [];
 
   return (
     <div
