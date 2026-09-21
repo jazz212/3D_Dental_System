@@ -1,4 +1,4 @@
 import AddPatient from "@/app/components/AddPatient";
-export default function () {
+export default function AddPatientPage() {
   return <AddPatient />;
 }
