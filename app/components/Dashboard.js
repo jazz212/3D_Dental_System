@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Eye, Trash2, Plus } from "lucide-react";
+import { Pencil, Eye, Trash2, Plus, ChevronDown } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -256,17 +256,17 @@ export default function Dashboard() {
       {/* Calendar and Upcoming Visits sit side by side only on wide screens */}
       <div className="flex flex-col lg:flex-row gap-4 mt-4">
         <div className="flex-1 min-w-0 flex flex-col gap-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
-            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
-              <p>TODAY&apos;S EXPECTED VISITS</p>
-              <p className="mt-2 text-3xl font-bold text-[#00685F]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg px-5 py-4">
+              <p className="text-sm">TODAY&apos;S EXPECTED VISITS</p>
+              <p className="mt-1 text-3xl font-bold text-[#00685F]">
                 {upcomingLoading ? "–" : todaysExpectedVisits}
               </p>
             </div>
-            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
-              <p>PENDING APPOINTMENTS</p>
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg px-5 py-4">
+              <p className="text-sm">PENDING APPOINTMENTS</p>
               {/* "–" until loaded, so a slow fetch doesn't read as "0 pending" */}
-              <p className="mt-2 text-3xl font-bold text-[#00685F]">
+              <p className="mt-1 text-3xl font-bold text-[#00685F]">
                 {pendingLoading || pendingError ? "–" : pendingRequests.length}
               </p>
             </div>
@@ -295,19 +295,28 @@ export default function Dashboard() {
       <div className="flex flex-wrap gap-2 justify-between items-center mt-6">
         <h2 className="font-bold text-lg">All Appointments</h2>
 
-        <select
-          value={statusFilter}
-          onChange={handleStatusFilterChange}
-          aria-label="Filter appointments by status"
-          className="border border-gray-300 rounded-lg px-3 py-2 bg-[#00685F] text-white"
-        >
-          {/* No "requested": website requests live in Pending Requests until scheduled */}
-          <option value="all">All Statuses</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="no_show">No Show</option>
-        </select>
+        {/* Same look as the Patient Records tabs: gray track, white pill.
+            appearance-none hides the browser arrow; the chevron replaces it
+            and pointer-events-none lets clicks reach the select underneath. */}
+        <div className="relative bg-gray-100 rounded-full p-1">
+          <select
+            value={statusFilter}
+            onChange={handleStatusFilterChange}
+            aria-label="Filter appointments by status"
+            className="appearance-none bg-white shadow-sm rounded-full pl-4 pr-9 py-1.5 text-sm font-medium text-[#00685F] cursor-pointer outline-none transition-shadow duration-150 hover:shadow focus-visible:ring-2 focus-visible:ring-[#00685F]/30"
+          >
+            {/* No "requested": website requests live in Pending Requests until scheduled */}
+            <option value="all">All Statuses</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="no_show">No Show</option>
+          </select>
+          <ChevronDown
+            aria-hidden="true"
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#00685F]"
+          />
+        </div>
       </div>
 
       {error && (
