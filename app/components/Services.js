@@ -129,13 +129,30 @@ export default function Services() {
           <div className="mt-12">
             <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-[#1F4A3D]">Additional Imaging Services</h3>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {additionalImaging.map(({ title, sub, desc }) => (
-                <div key={title} className="rounded-lg border border-gray-200 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
-                  <p className="font-bold text-[#1F2D28]">{title}</p>
-                  {sub && <p className="text-sm text-gray-500">{sub}</p>}
-                  <p className="mt-2 text-sm text-gray-600">{desc}</p>
-                </div>
-              ))}
+              {additionalImaging.map(({ title, sub, desc }) => {
+                const open = openService === title;
+                return (
+                  <div
+                    key={title}
+                    onClick={() => toggleService(title)}
+                    className={`cursor-pointer rounded-lg border border-gray-200 p-5 transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md ${
+                      open ? "border-[#1F4A3D]" : ""
+                    }`}
+                  >
+                    <p className="font-bold text-[#1F2D28]">{title}</p>
+                    {sub && <p className="text-sm text-gray-500">{sub}</p>}
+                    <div
+                      className={`grid transition-all duration-300 ease-in-out ${
+                        open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="min-h-0 overflow-hidden">
+                        <p className="pt-2 text-sm text-gray-600">{desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

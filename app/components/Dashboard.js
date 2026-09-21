@@ -8,12 +8,24 @@ import {
   fetchUpcomingVisits,
   deleteAppointment,
 } from "@/lib/appointments";
+import { fetchPendingRequests } from "@/lib/appointmentRequests";
 import { formatTime, getLocalDateString } from "@/lib/appointmentTimes";
 import AddAppointmentPopup from "./AddAppointmentPopup";
+import PendingRequests from "./PendingRequests";
+import ScheduleRequestPopup from "./ScheduleRequestPopup";
 import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
 import EditAppointmentPopup from "./EditAppointmentPopup";
 import UpcomingVisits from "./UpcomingVisits";
+
+// appointment_details.status values -> what staff read in the table.
+const STATUS_LABELS = {
+  requested: "Requested",
+  confirmed: "Confirmed",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  no_show: "No Show",
+};
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -34,9 +46,15 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const appointmentsPerPage = 10;
+  // "all" or one of the STATUS_LABELS keys.
+  const [statusFilter, setStatusFilter] = useState("all");
   const [upcomingVisits, setUpcomingVisits] = useState([]);
   const [upcomingLoading, setUpcomingLoading] = useState(true);
   const upcomingVisitsLimit = 30;
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [pendingLoading, setPendingLoading] = useState(true);
+  const [pendingError, setPendingError] = useState(null);
+  const [requestToSchedule, setRequestToSchedule] = useState(null);
   // Bumping this number re-runs both fetch effects below.
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -48,6 +66,13 @@ export default function Dashboard() {
   const goToPage = (pageNumber) => {
     setLoading(true);
     setCurrentPage(pageNumber);
+  };
+
+  // A new filter can have fewer pages than the current one, so start at page 1.
+  const handleStatusFilterChange = (e) => {
+    setLoading(true);
+    setStatusFilter(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleDeleteAppointment = (appointment) => {
@@ -91,7 +116,11 @@ export default function Dashboard() {
 
     const loadAppointments = async () => {
       try {
-        const result = await fetchAppointmentsPage(currentPage, appointmentsPerPage);
+        const result = await fetchAppointmentsPage(
+          currentPage,
+          appointmentsPerPage,
+          statusFilter === "all" ? null : statusFilter,
+        );
         if (ignore) return;
         setAppointments(result.appointments);
         setTotalAppointments(result.total);
@@ -109,7 +138,7 @@ export default function Dashboard() {
     return () => {
       ignore = true;
     };
-  }, [currentPage, refreshKey]);
+  }, [currentPage, statusFilter, refreshKey]);
 
   useEffect(() => {
     let ignore = false;
@@ -127,6 +156,30 @@ export default function Dashboard() {
     };
 
     loadUpcomingVisits();
+    return () => {
+      ignore = true;
+    };
+  }, [refreshKey]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    const loadPendingRequests = async () => {
+      try {
+        const requests = await fetchPendingRequests();
+        if (ignore) return;
+        setPendingRequests(requests);
+        setPendingError(null);
+      } catch {
+        if (!ignore) {
+          setPendingError("Couldn't load pending requests. Refresh the page to try again.");
+        }
+      } finally {
+        if (!ignore) setPendingLoading(false);
+      }
+    };
+
+    loadPendingRequests();
     return () => {
       ignore = true;
     };
@@ -176,6 +229,13 @@ export default function Dashboard() {
           </div>
 
           <CalendarView />
+
+          <PendingRequests
+            requests={pendingRequests}
+            loading={pendingLoading}
+            error={pendingError}
+            onSchedule={setRequestToSchedule}
+          />
         </div>
 
         <UpcomingVisits
@@ -188,11 +248,18 @@ export default function Dashboard() {
       <div className="flex flex-wrap gap-2 justify-between items-center mt-6">
         <h2 className="font-bold text-lg">All Appointments</h2>
 
-        <select className="border border-gray-300 rounded-lg px-3 py-2 bg-[#00685F] text-white">
+        <select
+          value={statusFilter}
+          onChange={handleStatusFilterChange}
+          aria-label="Filter appointments by status"
+          className="border border-gray-300 rounded-lg px-3 py-2 bg-[#00685F] text-white"
+        >
+          {/* No "requested": website requests live in Pending Requests until scheduled */}
           <option value="all">All Statuses</option>
-          <option value="pending">Pending</option>
           <option value="confirmed">Confirmed</option>
+          <option value="completed">Completed</option>
           <option value="cancelled">Cancelled</option>
+          <option value="no_show">No Show</option>
         </select>
       </div>
 
@@ -237,7 +304,9 @@ export default function Dashboard() {
             ) : appointments.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-3 text-center text-gray-500">
-                  No appointments yet.
+                  {statusFilter === "all"
+                    ? "No appointments yet."
+                    : `No ${STATUS_LABELS[statusFilter].toLowerCase()} appointments.`}
                 </td>
               </tr>
             ) : (
@@ -255,7 +324,9 @@ export default function Dashboard() {
                   <td className="p-3 border-b border-gray-200">
                     {appt.service}
                   </td>
-                  <td className="p-3 border-b border-gray-200">Requested</td>
+                  <td className="p-3 border-b border-gray-200">
+                    {STATUS_LABELS[appt.status] || appt.status}
+                  </td>
                   <td className="p-3 border-b border-gray-200">
                     {/* Buttons (not bare icons) give a finger-sized tap area
                         and keyboard access */}
@@ -388,6 +459,13 @@ export default function Dashboard() {
         <AppointmentDetailsPopup
           onClose={() => setDetailsOpen(false)}
           appointment={appointmentToView}
+        />
+      )}
+      {requestToSchedule && (
+        <ScheduleRequestPopup
+          request={requestToSchedule}
+          onClose={() => setRequestToSchedule(null)}
+          onRequestHandled={refreshAppointments}
         />
       )}
       {editOpen && (

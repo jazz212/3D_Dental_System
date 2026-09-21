@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Calendar, ChevronDown, Clock, Stethoscope, ClipboardList } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { submitAppointmentRequest } from "@/lib/appointmentRequests";
 
 const TREATMENT_OPTIONS = [
   "General Checkup & Cleaning",
@@ -63,23 +63,12 @@ export default function AppointmentForm() {
     setStatus("submitting");
     setErrorMessage("");
     try {
-      const { error } = await supabase.rpc("submit_appointment_request", {
-        p_full_name: form.fullName,
-        p_email: form.email,
-        p_age: form.age ? Number(form.age) : null,
-        p_date_of_birth: form.dateOfBirth || null,
-        p_preferred_date: form.preferredDate,
-        p_preferred_time_window: form.preferredTime || null,
-        p_reason: form.reason,
-        p_notes: form.notes || null,
-      });
-
-      if (error) throw error;
+      await submitAppointmentRequest(form);
 
       setStatus("success");
       setForm(initialForm);
     } catch (err) {
-      console.error(err);
+      // Already logged in lib.
       setErrorMessage(err?.message || "");
       setStatus("error");
     }

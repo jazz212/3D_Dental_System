@@ -61,9 +61,16 @@ export default function Location() {
             </div>
           </div>
 
-          {/* Map placeholder */}
-          <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-gray-200 bg-gray-100">
-            <p className="text-sm text-gray-400">Map coming soon</p>
+          <div className="min-h-[320px] overflow-hidden rounded-2xl">
+            <iframe
+              title="ToothPeak Dental Clinic location"
+              src="https://maps.google.com/maps?q=ToothPeak%20Dental%20Clinic%2C%20FGC%20Building%2C%20Tagaytay-Nasugbu%20Road%2C%20Tagaytay%20City&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: "320px" }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>

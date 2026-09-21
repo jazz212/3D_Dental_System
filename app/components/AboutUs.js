@@ -6,10 +6,8 @@ import { BadgeCheck, MapPin, Phone, Clock, ArrowRight } from "lucide-react";
 import Footer from "./Footer";
 
 const specialists = [
-  { name: "Dr. Maria Makiling", role: "Lead Prosthodontist" },
-  { name: "Dr. Lebron James", role: "Oral Surgeon" },
-  { name: "Dr. Lesley Mabuhay", role: "Orthodontist" },
-  { name: "Lin Ling", role: "Lead Hygienist" },
+  { name: "Dr. Feliza Joy C. Taroy, DMD", role: "Doctor of Dental Medicine" },
+  { name: "Dr. Justin Louis F. Valerio, DMD", role: "Doctor of Dental Medicine" },
 ];
 
 export default function AboutUs() {
@@ -120,7 +118,7 @@ export default function AboutUs() {
             education and compassionate treatment.
           </p>
 
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto mt-10 grid max-w-3xl gap-6 sm:grid-cols-2">
             {specialists.map(({ name, role }) => (
               <div
                 key={name}
