@@ -7,7 +7,8 @@ import { supabase } from "@/lib/supabaseClient";
 import AddAppointmentPopup from "./AddAppointmentPopup";
 import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
-  import EditAppointmentPopup from "./EditAppointmentPopup";
+import EditAppointmentPopup from "./EditAppointmentPopup";
+import UpcomingVisits from "./UpcomingVisits";
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -145,12 +146,11 @@ export default function Dashboard() {
           <CalendarView />
         </div>
 
-        <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch">
-          <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
-          <div className="flex flex-col gap-4">
-            {/* Upcoming visits mapping goes here */}
-          </div>
-        </div>
+        <UpcomingVisits
+          appointments={appointments}
+          loading={loading}
+          onSelectVisit={handleViewAppointment}
+        />
       </div>
 
       <div className="flex justify-between items-center mt-6">
