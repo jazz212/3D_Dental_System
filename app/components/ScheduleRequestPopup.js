@@ -28,6 +28,9 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
   const bookedRanges = booked.date === slot.date ? booked.ranges : [];
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  // The booking is saved but the email failed: keep the popup open with a
+  // warning instead of closing, and stop it from being confirmed twice.
+  const [emailFailed, setEmailFailed] = useState(false);
 
   useEffect(() => {
     if (!slot.date) return;
@@ -75,9 +78,13 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
     setSubmitting(true);
     setError(null);
     try {
-      await confirmAppointmentRequest(request, slot);
+      const { emailSent } = await confirmAppointmentRequest(request, slot);
       onRequestHandled();
-      onClose();
+      if (emailSent) {
+        onClose();
+      } else {
+        setEmailFailed(true);
+      }
     } catch (err) {
       setError(translateRequestError(err));
       // Someone else confirmed it: refresh so it leaves the pending list.
@@ -186,22 +193,31 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
             <p className="text-sm text-red-600 bg-red-50 p-3 rounded">{error}</p>
           )}
 
+          {emailFailed && (
+            <p className="text-sm text-amber-800 bg-amber-50 p-3 rounded">
+              Confirmed, but the email couldn&apos;t be sent — contact the patient
+              directly at {patient.email}.
+            </p>
+          )}
+
           <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
-            <button
-              type="submit"
-              disabled={submitting}
-              className={`mt-4 px-6 py-3 bg-[#00685F] hover:bg-[#00524C] text-white text-sm font-semibold rounded-xl transition-colors ${
-                submitting ? "opacity-80" : ""
-              }`}
-            >
-              {submitting ? "Confirming..." : "Confirm appointment"}
-            </button>
+            {!emailFailed && (
+              <button
+                type="submit"
+                disabled={submitting}
+                className={`mt-4 px-6 py-3 bg-[#00685F] hover:bg-[#00524C] text-white text-sm font-semibold rounded-xl transition-colors ${
+                  submitting ? "opacity-80" : ""
+                }`}
+              >
+                {submitting ? "Confirming..." : "Confirm appointment"}
+              </button>
+            )}
             <button
               type="button"
               onClick={onClose}
               className="mt-4 px-6 py-3 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              {emailFailed ? "Close" : "Cancel"}
             </button>
           </div>
         </form>
