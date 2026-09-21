@@ -16,6 +16,7 @@ import Link from "next/link";
 
 // Desktop: sits beside the page and can collapse to icons (isOpen).
 // Phone: hidden off-screen, slides in as a drawer when mobileOpen is true.
+// Animation timing is the original: 300ms ease-in-out for everything.
 export default function Sidebar({ mobileOpen, onMobileClose }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -28,19 +29,20 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
   };
   return (
     <>
-      {/* Tapping the dimmed page closes the phone drawer */}
+      {/* Phone only: tapping the dimmed page closes the drawer */}
       <div
         onClick={onMobileClose}
         aria-hidden="true"
-        className={`fixed inset-0 z-30 bg-black/40 md:hidden transition-opacity duration-300 ease-smooth motion-reduce:transition-none ${
+        className={`fixed inset-0 z-30 bg-black/40 md:hidden transition-opacity duration-300 ease-in-out ${
           mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       />
       <div
-        className={`bg-white fixed inset-y-0 left-0 z-40 h-[calc(100dvh-1rem)] m-2 flex flex-col p-4 gap-2 text-black rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-[width,translate,visibility] duration-300 ease-smooth motion-reduce:transition-none w-64 md:static md:z-auto md:h-[calc(100dvh-2rem)] md:translate-x-0 md:visible ${
+        className={`bg-white fixed inset-y-0 left-0 z-40 h-[calc(100dvh-1rem)] m-2 flex flex-col p-4 gap-2 text-black rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-[width,translate,visibility] duration-300 ease-in-out w-64 md:static md:z-auto md:h-[calc(100vh-2rem)] md:translate-x-0 md:visible ${
           isOpen ? "md:w-64" : "md:w-16"
         } ${
-          // invisible = closed drawer's links can't be reached with Tab
+          // Phone only; md:translate-x-0 / md:visible cancel this on desktop.
+          // invisible = closed drawer's links can't be reached with Tab.
           mobileOpen ? "translate-x-0 visible" : "-translate-x-[110%] invisible"
         }`}
       >
