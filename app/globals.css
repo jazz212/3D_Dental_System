@@ -1,4 +1,10 @@
 @import "tailwindcss";
+
+/* Shared easing: starts fast, settles gently, so motion feels physical
+   instead of linear. Use as the `ease-smooth` class. */
+@theme {
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
 /*for the buttons in the calendar to be green cant change fullcalendar css using tailwind*/
 :root {
   --fc-button-bg-color: #00685F;

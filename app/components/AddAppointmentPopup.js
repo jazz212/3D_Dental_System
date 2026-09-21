@@ -1,14 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
 import { Check } from "lucide-react";
+import {
+  createAppointment,
+  fetchBookedRanges,
+  translateAppointmentError,
+} from "@/lib/appointments";
+import {
+  START_TIME_OPTIONS,
+  END_TIME_OPTIONS,
+  isStartSlotTaken,
+  isEndSlotTaken,
+} from "@/lib/appointmentTimes";
 
 export default function NewAppointment({ onClose, onAppointmentAdded }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const [formData, setFormData] = useState({
     patientName: "",
     contactNumber: "",
@@ -18,44 +23,26 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
     service: "",
     notes: "",
   });
-  const [bookedTimes, setBookedTimes] = useState({});
+  // Remember which date the ranges belong to, so ranges from a previously
+  // picked date are ignored instead of reset inside the effect.
+  const [booked, setBooked] = useState({ date: "", ranges: [] });
+  const bookedRanges = booked.date === formData.date ? booked.ranges : [];
 
-  // Fetch booked times for the selected date
   useEffect(() => {
-    if (!formData.date) {
-      setBookedTimes({});
-      return;
-    }
+    if (!formData.date) return;
 
-    const fetchBookedTimes = async () => {
+    const loadBookedRanges = async () => {
       try {
-        const { data, error } = await supabase
-          .from("appointment_details")
-          .select("start_time, end_time")
-          .eq("appointment_date", formData.date);
-
-        if (error) throw error;
-
-        // Convert to an object with booked times as keys for quick lookup
-        const timesMap = {};
-        data.forEach(appt => {
-          if (appt.start_time) timesMap[appt.start_time] = true;
-          if (appt.end_time) timesMap[appt.end_time] = true;
-        });
-        setBookedTimes(timesMap);
-      } catch (err) {
-        console.error("Error fetching booked times:", err);
-        setBookedTimes({});
+        const ranges = await fetchBookedRanges(formData.date, null);
+        setBooked({ date: formData.date, ranges });
+      } catch {
+        // Already logged in lib; the database constraint still blocks overlaps.
       }
     };
 
-    fetchBookedTimes();
+    loadBookedRanges();
   }, [formData.date]);
 
-  // Helper function to check if a time is booked for the selected date
-  const isTimeBooked = (time) => {
-    return bookedTimes[time] || false;
-  };
   const [fieldErrors, setFieldErrors] = useState({
     patientName: false,
     contactNumber: false,
@@ -68,12 +55,6 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
-  const modalStyle = {
-    opacity: mounted ? 1 : 0,
-    transform: mounted ? "scale(1)" : "scale(0.95)",
-    transition: "opacity 0.2s ease, transform 0.2s ease",
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,18 +93,18 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
       setFieldErrors((prev) => ({ ...prev, startTime: true }));
       isValid = false;
     }
-    else if (isTimeBooked(formData.startTime)) {
+    else if (isStartSlotTaken(formData.startTime, bookedRanges)) {
       setFieldErrors((prev) => ({ ...prev, startTime: true }));
-      setError("This start time is already booked for the selected date");
+      setError("This start time is inside another appointment.");
       isValid = false;
     }
     if (!formData.endTime) {
       setFieldErrors((prev) => ({ ...prev, endTime: true }));
       isValid = false;
     }
-    else if (isTimeBooked(formData.endTime)) {
+    else if (isEndSlotTaken(formData.endTime, formData.startTime, bookedRanges)) {
       setFieldErrors((prev) => ({ ...prev, endTime: true }));
-      setError("This end time is already booked for the selected date");
+      setError("End time must be after the start and can't run into another appointment.");
       isValid = false;
     }
     if (!formData.service) {
@@ -137,22 +118,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
     }
 
     try {
-      const { error: supabaseError } = await supabase
-        .from("appointment_details")
-        .insert([
-          {
-            patient_name: formData.patientName.trim(),
-            contact_number: formData.contactNumber.trim(),
-            appointment_date: formData.date,
-            start_time: formData.startTime,
-            end_time: formData.endTime,
-            service: formData.service,
-            notes: formData.notes.trim(),
-            created_at: new Date().toISOString(),
-          },
-        ]);
-
-      if (supabaseError) throw supabaseError;
+      await createAppointment(formData);
 
       setSuccess(true);
       // Notify parent that an appointment was added
@@ -184,8 +150,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
         onClose();
       }, 1500);
     } catch (err) {
-      console.error("Error inserting appointment:", err);
-      setError("Failed to save appointment. Please try again.");
+      setError(translateAppointmentError(err));
     } finally {
       setSubmitting(false);
     }
@@ -193,10 +158,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div
-        className="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden"
-        style={modalStyle}
-      >
+      <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
         {/* Section 1: Header — icon + title + close button */}
         <div className="flex items-center justify-between px-7 py-5 border-b border-gray-100">
           <div className="flex items-center gap-3">
@@ -278,25 +240,18 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
                 name="startTime"
                 value={formData.startTime}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.startTime ? "border-red-500" : ""} ${isTimeBooked(formData.startTime) ? "text-gray-400 cursor-not-allowed" : ""}`}
+                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.startTime ? "border-red-500" : ""}`}
               >
                 <option value="">Select start time</option>
-                <option value="8:00 AM" disabled={isTimeBooked("8:00 AM")}>8:00 AM</option>
-                <option value="8:30 AM" disabled={isTimeBooked("8:30 AM")}>8:30 AM</option>
-                <option value="9:00 AM" disabled={isTimeBooked("9:00 AM")}>9:00 AM</option>
-                <option value="9:30 AM" disabled={isTimeBooked("9:30 AM")}>9:30 AM</option>
-                <option value="10:00 AM" disabled={isTimeBooked("10:00 AM")}>10:00 AM</option>
-                <option value="10:30 AM" disabled={isTimeBooked("10:30 AM")}>10:30 AM</option>
-                <option value="11:00 AM" disabled={isTimeBooked("11:00 AM")}>11:00 AM</option>
-                <option value="1:00 PM" disabled={isTimeBooked("1:00 PM")}>1:00 PM</option>
-                <option value="1:30 PM" disabled={isTimeBooked("1:30 PM")}>1:30 PM</option>
-                <option value="2:00 PM" disabled={isTimeBooked("2:00 PM")}>2:00 PM</option>
-                <option value="2:30 PM" disabled={isTimeBooked("2:30 PM")}>2:30 PM</option>
-                <option value="3:00 PM" disabled={isTimeBooked("3:00 PM")}>3:00 PM</option>
-                <option value="3:30 PM" disabled={isTimeBooked("3:30 PM")}>3:30 PM</option>
-                <option value="4:00 PM" disabled={isTimeBooked("4:00 PM")}>4:00 PM</option>
-                <option value="4:30 PM" disabled={isTimeBooked("4:30 PM")}>4:30 PM</option>
-                <option value="5:00 PM" disabled={isTimeBooked("5:00 PM")}>5:00 PM</option>
+                {START_TIME_OPTIONS.map((slot) => (
+                  <option
+                    key={slot.value}
+                    value={slot.value}
+                    disabled={isStartSlotTaken(slot.value, bookedRanges)}
+                  >
+                    {slot.label}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -308,26 +263,18 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
                 name="endTime"
                 value={formData.endTime}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.endTime ? "border-red-500" : ""} ${isTimeBooked(formData.endTime) ? "text-gray-400 cursor-not-allowed" : ""}`}
+                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.endTime ? "border-red-500" : ""}`}
               >
                 <option value="">Select end time</option>
-                <option value="8:30 AM" disabled={isTimeBooked("8:30 AM")}>8:30 AM</option>
-                <option value="9:00 AM" disabled={isTimeBooked("9:00 AM")}>9:00 AM</option>
-                <option value="9:30 AM" disabled={isTimeBooked("9:30 AM")}>9:30 AM</option>
-                <option value="10:00 AM" disabled={isTimeBooked("10:00 AM")}>10:00 AM</option>
-                <option value="10:30 AM" disabled={isTimeBooked("10:30 AM")}>10:30 AM</option>
-                <option value="11:00 AM" disabled={isTimeBooked("11:00 AM")}>11:00 AM</option>
-                <option value="11:30 AM" disabled={isTimeBooked("11:30 AM")}>11:30 AM</option>
-                <option value="12:00 PM" disabled={isTimeBooked("12:00 PM")}>12:00 PM</option>
-                <option value="1:00 PM" disabled={isTimeBooked("1:00 PM")}>1:00 PM</option>
-                <option value="1:30 PM" disabled={isTimeBooked("1:30 PM")}>1:30 PM</option>
-                <option value="2:00 PM" disabled={isTimeBooked("2:00 PM")}>2:00 PM</option>
-                <option value="2:30 PM" disabled={isTimeBooked("2:30 PM")}>2:30 PM</option>
-                <option value="3:00 PM" disabled={isTimeBooked("3:00 PM")}>3:00 PM</option>
-                <option value="3:30 PM" disabled={isTimeBooked("3:30 PM")}>3:30 PM</option>
-                <option value="4:00 PM" disabled={isTimeBooked("4:00 PM")}>4:00 PM</option>
-                <option value="4:30 PM" disabled={isTimeBooked("4:30 PM")}>4:30 PM</option>
-                <option value="5:00 PM" disabled={isTimeBooked("5:00 PM")}>5:00 PM</option>
+                {END_TIME_OPTIONS.map((slot) => (
+                  <option
+                    key={slot.value}
+                    value={slot.value}
+                    disabled={isEndSlotTaken(slot.value, formData.startTime, bookedRanges)}
+                  >
+                    {slot.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

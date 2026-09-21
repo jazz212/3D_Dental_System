@@ -1,34 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
+import { formatTime } from "@/lib/appointmentTimes";
 
 export default function AppointmentDetailsPopup({ onClose, appointment }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const modalStyle = {
-    opacity: mounted ? 1 : 0,
-    transform: mounted ? "scale(1)" : "scale(0.95)",
-    transition: "opacity 0.2s ease, transform 0.2s ease",
-  };
-
   // Format date to a more readable format
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  // Format time string (assuming it's in "HH:MM AM/PM" format already)
-  const formatTime = (timeString) => {
-    if (!timeString) return "";
-    return timeString; // Assuming it's already formatted correctly from the form
+    // "T00:00" reads the date as local time; a bare date is parsed as UTC.
+    return new Date(`${dateString}T00:00`).toLocaleDateString(undefined, options);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden" style={modalStyle}>
+      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
         {/* Section 1: Header — close button top-right, title below */}
         <div className="relative px-7 pt-6 pb-4">
           <button

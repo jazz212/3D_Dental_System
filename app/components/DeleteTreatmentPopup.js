@@ -1,21 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
 
 export default function DeleteTreatment({ onClose, onDelete, appointment }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const modalStyle = {
-    opacity: mounted ? 1 : 0,
-    transform: mounted ? "scale(1)" : "scale(0.95)",
-    transition: "opacity 0.2s ease, transform 0.2s ease",
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden" style={modalStyle}>
+      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
         {/* Section 1: Header — close button top-right, title below */}
         <div className="relative px-7 pt-6 pb-4">
           <button
