@@ -1,4 +1,10 @@
 @import "tailwindcss";
+
+/* Shared easing: starts fast, settles gently, so motion feels physical
+   instead of linear. Use as the `ease-smooth` class. */
+@theme {
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
 /*for the buttons in the calendar to be green cant change fullcalendar css using tailwind*/
 :root {
   --fc-button-bg-color: #00685F;
@@ -6,4 +12,16 @@
   --fc-button-hover-bg-color: #004d45;
   --fc-button-hover-border-color: #004d45;
   --fc-button-active-bg-color: #004d45;
+}
+
+/* FullCalendar's toolbar (month title + today/prev/next) doesn't fit on a
+   phone in one line; let it wrap and shrink the title. */
+@media (max-width: 639px) {
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .fc .fc-toolbar-title {
+    font-size: 1.125rem;
+  }
 }

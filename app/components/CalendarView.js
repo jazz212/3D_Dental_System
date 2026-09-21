@@ -27,7 +27,7 @@ export default function CalendarView() {
   return (
     <div
       ref={wrapperRef}
-      className="bg-white rounded-lg p-4 border border-gray-200"
+      className="bg-white rounded-lg p-2 sm:p-4 border border-gray-200"
     >
       <FullCalendar
         ref={calendarRef}

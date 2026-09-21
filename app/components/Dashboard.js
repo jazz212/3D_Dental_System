@@ -2,12 +2,18 @@
 import { Pencil, Eye, Trash2, Plus } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState, useEffect } from "react";
+import {
+  fetchAppointmentsPage,
+  fetchUpcomingVisits,
+  deleteAppointment,
+} from "@/lib/appointments";
+import { formatTime, getLocalDateString } from "@/lib/appointmentTimes";
 import AddAppointmentPopup from "./AddAppointmentPopup";
 import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
-  import EditAppointmentPopup from "./EditAppointmentPopup";
+import EditAppointmentPopup from "./EditAppointmentPopup";
+import UpcomingVisits from "./UpcomingVisits";
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -28,29 +34,21 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const appointmentsPerPage = 10;
+  const [upcomingVisits, setUpcomingVisits] = useState([]);
+  const [upcomingLoading, setUpcomingLoading] = useState(true);
+  const upcomingVisitsLimit = 30;
+  // Bumping this number re-runs both fetch effects below.
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const fetchAppointments = useCallback(async () => {
-    try {
-      setLoading(true);
-      const from = (currentPage - 1) * appointmentsPerPage;
-      const to = from + appointmentsPerPage - 1;
+  // Adding, editing or deleting changes both lists.
+  const refreshAppointments = () => {
+    setRefreshKey((previous) => previous + 1);
+  };
 
-      const { data, error, count } = await supabase
-        .from("appointment_details")
-        .select("*", { count: "exact" })
-        .range(from, to)
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-      setAppointments(data);
-      setTotalAppointments(count || 0);
-    } catch (err) {
-      console.error("Error fetching appointments:", err);
-      setError("Failed to load appointments.");
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, appointmentsPerPage]);
+  const goToPage = (pageNumber) => {
+    setLoading(true);
+    setCurrentPage(pageNumber);
+  };
 
   const handleDeleteAppointment = (appointment) => {
     setAppointmentToDelete(appointment);
@@ -71,20 +69,11 @@ export default function Dashboard() {
     if (!appointmentToDelete) return;
 
     try {
-      const { error } = await supabase
-        .from("appointment_details")
-        .delete()
-        .eq("id", appointmentToDelete.id);
-
-      if (error) throw error;
-
-      // Close popup and refresh data
-      setDeleteOpen(false);
-      setAppointmentToDelete(null);
-      await fetchAppointments();
-    } catch (err) {
-      console.error("Error deleting appointment:", err);
-      // Close popup on error too - keep simple behavior
+      await deleteAppointment(appointmentToDelete.id);
+      refreshAppointments();
+    } catch {
+      setError("Appointment wasn't deleted. Check your connection and try again.");
+    } finally {
       setDeleteOpen(false);
       setAppointmentToDelete(null);
     }
@@ -95,20 +84,63 @@ export default function Dashboard() {
     setAppointmentToDelete(null);
   };
 
+  // `ignore` drops a response that arrives after the user already moved to
+  // another page, so a slow page 2 can't overwrite page 3.
   useEffect(() => {
-    // Fetch on mount or when currentPage changes
-    fetchAppointments();
-  }, [currentPage, fetchAppointments]); // Re-fetch when currentPage or fetchAppointments changes
+    let ignore = false;
+
+    const loadAppointments = async () => {
+      try {
+        const result = await fetchAppointmentsPage(currentPage, appointmentsPerPage);
+        if (ignore) return;
+        setAppointments(result.appointments);
+        setTotalAppointments(result.total);
+        setError(null);
+      } catch {
+        if (!ignore) {
+          setError("Couldn't load appointments. Refresh the page to try again.");
+        }
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    };
+
+    loadAppointments();
+    return () => {
+      ignore = true;
+    };
+  }, [currentPage, refreshKey]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    const loadUpcomingVisits = async () => {
+      try {
+        const todayString = getLocalDateString(new Date());
+        const visits = await fetchUpcomingVisits(todayString, upcomingVisitsLimit);
+        if (!ignore) setUpcomingVisits(visits);
+      } catch {
+        // Already logged in lib; the panel shows its empty state.
+      } finally {
+        if (!ignore) setUpcomingLoading(false);
+      }
+    };
+
+    loadUpcomingVisits();
+    return () => {
+      ignore = true;
+    };
+  }, [refreshKey]);
 
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
         <div>
-          <h1 className="text-4xl font-bold">Overview</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Overview</h1>
           <p className="text-gray-500">Today is {today}</p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <Link
             href="/dashboard/addpatient"
             className="bg-[#00685F] px-4 py-2 text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
@@ -131,13 +163,14 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex gap-4 mt-4">
-        <div className="flex-1 flex flex-col gap-6">
-          <div className="flex gap-8">
-            <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
+      {/* Calendar and Upcoming Visits sit side by side only on wide screens */}
+      <div className="flex flex-col lg:flex-row gap-4 mt-4">
+        <div className="flex-1 min-w-0 flex flex-col gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
               TODAY&apos;S EXPECTED VISITS
             </div>
-            <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
               PENDING APPOINTMENTS
             </div>
           </div>
@@ -145,15 +178,14 @@ export default function Dashboard() {
           <CalendarView />
         </div>
 
-        <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch">
-          <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
-          <div className="flex flex-col gap-4">
-            {/* Upcoming visits mapping goes here */}
-          </div>
-        </div>
+        <UpcomingVisits
+          visits={upcomingVisits}
+          loading={upcomingLoading}
+          onSelectVisit={handleViewAppointment}
+        />
       </div>
 
-      <div className="flex justify-between items-center mt-6">
+      <div className="flex flex-wrap gap-2 justify-between items-center mt-6">
         <h2 className="font-bold text-lg">All Appointments</h2>
 
         <select className="border border-gray-300 rounded-lg px-3 py-2 bg-[#00685F] text-white">
@@ -164,8 +196,15 @@ export default function Dashboard() {
         </select>
       </div>
 
-      <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
-        <table className="w-full border-collapse rounded-lg">
+      {error && (
+        <p className="mt-4 text-sm text-red-600 bg-red-50 p-3 rounded">
+          {error}
+        </p>
+      )}
+
+      {/* Too many columns for a phone: the table scrolls sideways in its box */}
+      <div className="rounded-lg border border-gray-200 overflow-x-auto mt-4">
+        <table className="w-full min-w-[720px] border-collapse rounded-lg">
           <thead>
             <tr>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
@@ -211,25 +250,38 @@ export default function Dashboard() {
                     {appt.appointment_date}
                   </td>
                   <td className="p-3 border-b border-gray-200">
-                    {appt.start_time} - {appt.end_time}
+                    {formatTime(appt.start_time)} - {formatTime(appt.end_time)}
                   </td>
                   <td className="p-3 border-b border-gray-200">
                     {appt.service}
                   </td>
                   <td className="p-3 border-b border-gray-200">Requested</td>
-                  <td className="p-3 border-b border-gray-200 flex gap-2">
-                    <Pencil
-                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
-                      onClick={() => handleEditAppointment(appt)}
-                    />
-                    <Eye
-                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
-                      onClick={() => handleViewAppointment(appt)}
-                    />
-                    <Trash2
-                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500"
-                      onClick={() => handleDeleteAppointment(appt)}
-                    />
+                  <td className="p-3 border-b border-gray-200">
+                    {/* Buttons (not bare icons) give a finger-sized tap area
+                        and keyboard access */}
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleEditAppointment(appt)}
+                        aria-label={`Edit ${appt.patient_name}'s appointment`}
+                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-[#00685F] hover:bg-[#F0FDFA]"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleViewAppointment(appt)}
+                        aria-label={`View ${appt.patient_name}'s appointment`}
+                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-[#00685F] hover:bg-[#F0FDFA]"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAppointment(appt)}
+                        aria-label={`Delete ${appt.patient_name}'s appointment`}
+                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-red-500 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -254,9 +306,7 @@ export default function Dashboard() {
 
                   <div className="flex gap-2 items-center">
                     <button
-                      onClick={() =>
-                        setCurrentPage(Math.max(1, currentPage - 1))
-                      }
+                      onClick={() => goToPage(Math.max(1, currentPage - 1))}
                       disabled={currentPage === 1}
                       className="px-3 py-1 border border-gray-300 rounded items-center"
                     >
@@ -276,7 +326,7 @@ export default function Dashboard() {
                       return (
                         <button
                           key={pageNumber}
-                          onClick={() => setCurrentPage(pageNumber)}
+                          onClick={() => goToPage(pageNumber)}
                           className={`px-3 py-1 border border-gray-300 rounded items-center ${
                             currentPage === pageNumber
                               ? "bg-[#00685F] text-white"
@@ -290,7 +340,7 @@ export default function Dashboard() {
 
                     <button
                       onClick={() =>
-                        setCurrentPage(
+                        goToPage(
                           Math.min(
                             Math.max(
                               1,
@@ -324,7 +374,7 @@ export default function Dashboard() {
       {open && (
         <AddAppointmentPopup
           onClose={() => setOpen(false)}
-          onAppointmentAdded={fetchAppointments}
+          onAppointmentAdded={refreshAppointments}
         />
       )}
       {deleteOpen && (
@@ -343,7 +393,7 @@ export default function Dashboard() {
       {editOpen && (
         <EditAppointmentPopup
           onClose={() => setEditOpen(false)}
-          onSave={fetchAppointments}
+          onSave={refreshAppointments}
           appointment={appointmentToEdit}
         />
       )}
