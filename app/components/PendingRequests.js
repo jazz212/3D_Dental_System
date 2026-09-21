@@ -1,14 +1,14 @@
 "use client";
-import { useState } from "react";
 
-// The list comes sorted most urgent first, so the first few are the ones to act on.
-const COLLAPSED_COUNT = 5;
-
-export default function PendingRequests({ requests, loading, error, onSchedule }) {
-  const [showAll, setShowAll] = useState(false);
-  const visibleRequests = showAll ? requests : requests.slice(0, COLLAPSED_COUNT);
-  const hasMore = requests.length > COLLAPSED_COUNT;
-
+export default function PendingRequests({
+  requests,
+  loading,
+  error,
+  actionError,
+  decliningId,
+  onSchedule,
+  onDecline,
+}) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
       <div className="flex items-center gap-2 mb-4">
@@ -20,6 +20,10 @@ export default function PendingRequests({ requests, loading, error, onSchedule }
         )}
       </div>
 
+      {actionError && (
+        <p className="mb-3 text-sm text-red-600 bg-red-50 p-3 rounded">{actionError}</p>
+      )}
+
       {error ? (
         <p className="text-sm text-red-600 bg-red-50 p-3 rounded">{error}</p>
       ) : loading ? (
@@ -29,46 +33,46 @@ export default function PendingRequests({ requests, loading, error, onSchedule }
           No pending requests. New bookings from the website show up here.
         </p>
       ) : (
-        <>
-          <ul className="max-h-80 overflow-y-auto divide-y divide-gray-100 pr-1">
-            {visibleRequests.map((request) => (
-              <li
-                key={request.id}
-                className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-800 truncate">
-                    {request.patients.full_name}
-                    {request.patients.age ? (
-                      <span className="font-normal text-gray-500"> · {request.patients.age} yrs</span>
-                    ) : null}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">{request.patients.email}</p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {request.reason} · prefers {request.preferred_date}
-                    {request.preferred_time_window ? `, ${request.preferred_time_window}` : ""}
-                  </p>
-                </div>
+        // Sorted most urgent first. max-h-96 (~5 rows) keeps the panel from
+        // growing; staff scroll inside it for the rest.
+        <ul className="max-h-96 overflow-y-auto divide-y divide-gray-100 pr-1">
+          {requests.map((request) => (
+            <li
+              key={request.id}
+              className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {request.patients.full_name}
+                  {request.patients.age ? (
+                    <span className="font-normal text-gray-500"> · {request.patients.age} yrs</span>
+                  ) : null}
+                </p>
+                <p className="text-xs text-gray-500 truncate">{request.patients.email}</p>
+                <p className="text-xs text-gray-500 truncate">
+                  {request.reason} · prefers {request.preferred_date}
+                  {request.preferred_time_window ? `, ${request.preferred_time_window}` : ""}
+                </p>
+              </div>
 
+              <div className="flex shrink-0 gap-2 self-start sm:self-center">
+                <button
+                  onClick={() => onDecline(request)}
+                  disabled={decliningId === request.id}
+                  className="border border-gray-300 px-3 py-1.5 text-sm text-gray-600 rounded-lg cursor-pointer transition-all duration-100 hover:border-red-300 hover:bg-red-50 hover:text-red-600 active:scale-95 disabled:cursor-default disabled:opacity-50"
+                >
+                  {decliningId === request.id ? "Declining..." : "Decline"}
+                </button>
                 <button
                   onClick={() => onSchedule(request)}
-                  className="shrink-0 self-start sm:self-center bg-[#00685F] px-3 py-1.5 text-sm text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
+                  className="bg-[#00685F] px-3 py-1.5 text-sm text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
                 >
                   Schedule
                 </button>
-              </li>
-            ))}
-          </ul>
-
-          {hasMore && (
-            <button
-              onClick={() => setShowAll((previous) => !previous)}
-              className="mt-3 text-sm font-semibold text-[#00685F] cursor-pointer hover:underline"
-            >
-              {showAll ? "Show less" : `View all (${requests.length})`}
-            </button>
-          )}
-        </>
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

@@ -8,7 +8,12 @@ import {
   fetchUpcomingVisits,
   deleteAppointment,
 } from "@/lib/appointments";
-import { fetchPendingRequests } from "@/lib/appointmentRequests";
+import {
+  ALREADY_HANDLED_CODE,
+  declineAppointmentRequest,
+  fetchPendingRequests,
+  translateRequestError,
+} from "@/lib/appointmentRequests";
 import { formatTime, getLocalDateString } from "@/lib/appointmentTimes";
 import AddAppointmentPopup from "./AddAppointmentPopup";
 import PendingRequests from "./PendingRequests";
@@ -55,6 +60,18 @@ export default function Dashboard() {
   const [pendingLoading, setPendingLoading] = useState(true);
   const [pendingError, setPendingError] = useState(null);
   const [requestToSchedule, setRequestToSchedule] = useState(null);
+  // Separate from pendingError: a failed decline shouldn't hide the list.
+  const [declineError, setDeclineError] = useState(null);
+  const [decliningId, setDecliningId] = useState(null);
+  // Cancelled and no-show bookings still show in upcomingVisits, but those
+  // patients aren't coming.
+  const todayString = getLocalDateString(new Date());
+  const todaysExpectedVisits = upcomingVisits.filter(
+    (visit) =>
+      visit.appointment_date === todayString &&
+      visit.status !== "cancelled" &&
+      visit.status !== "no_show",
+  ).length;
   // Bumping this number re-runs both fetch effects below.
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -101,6 +118,26 @@ export default function Dashboard() {
     } finally {
       setDeleteOpen(false);
       setAppointmentToDelete(null);
+    }
+  };
+
+  const handleDeclineRequest = async (request) => {
+    if (!confirm(`Decline this request from ${request.patients.full_name}?`)) return;
+
+    setDecliningId(request.id);
+    setDeclineError(null);
+    try {
+      await declineAppointmentRequest(request.id);
+      refreshAppointments();
+    } catch (err) {
+      if (err?.code === ALREADY_HANDLED_CODE) {
+        setDeclineError(translateRequestError(err));
+        refreshAppointments();
+      } else {
+        setDeclineError("Request wasn't declined. Check your connection and try again.");
+      }
+    } finally {
+      setDecliningId(null);
     }
   };
 
@@ -221,10 +258,17 @@ export default function Dashboard() {
         <div className="flex-1 min-w-0 flex flex-col gap-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
             <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
-              TODAY&apos;S EXPECTED VISITS
+              <p>TODAY&apos;S EXPECTED VISITS</p>
+              <p className="mt-2 text-3xl font-bold text-[#00685F]">
+                {upcomingLoading ? "–" : todaysExpectedVisits}
+              </p>
             </div>
             <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
-              PENDING APPOINTMENTS
+              <p>PENDING APPOINTMENTS</p>
+              {/* "–" until loaded, so a slow fetch doesn't read as "0 pending" */}
+              <p className="mt-2 text-3xl font-bold text-[#00685F]">
+                {pendingLoading || pendingError ? "–" : pendingRequests.length}
+              </p>
             </div>
           </div>
 
@@ -234,7 +278,10 @@ export default function Dashboard() {
             requests={pendingRequests}
             loading={pendingLoading}
             error={pendingError}
+            actionError={declineError}
+            decliningId={decliningId}
             onSchedule={setRequestToSchedule}
+            onDecline={handleDeclineRequest}
           />
         </div>
 
