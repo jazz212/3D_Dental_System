@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UserPen } from "lucide-react";
 
 /* ---------- Inline SVG icons (no external library needed) ---------- */
 const IconInfo = () => (
@@ -18,21 +19,6 @@ const IconInfo = () => (
     <line x1="13.5" y1="9.2" x2="18.5" y2="9.2" />
     <line x1="13.5" y1="12" x2="18.5" y2="12" />
     <line x1="13.5" y1="14.8" x2="17" y2="14.8" />
-  </svg>
-);
-
-const IconClinic = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <rect x="4" y="6" width="16" height="14" rx="2" />
-    <line x1="12" y1="6" x2="12" y2="20" />
-    <line x1="4" y1="13" x2="20" y2="13" />
   </svg>
 );
 
@@ -210,9 +196,7 @@ export default function Settings() {
         {/* Page heading + Save/Discard */}
         <div className="mb-6 flex items-start justify-between">
           <div>
-            <h2 className="text-3xl font-bold text-black">
-              Clinic Settings
-            </h2>
+            <h2 className="text-3xl font-bold text-black">Clinic Settings</h2>
             <p className="mt-1 text-slate-500">
               Manage your clinic profile, staff permissions, and system
               preferences.
@@ -238,7 +222,7 @@ export default function Settings() {
 
         {/* Tab */}
         <div className="mb-4 flex items-center gap-2 text-lg font-semibold text-black w-fit">
-          <IconClinic className="w-6 h-6" />
+          <UserPen className="w-6 h-6" />
           Clinic Profile
         </div>
 
