@@ -134,13 +134,13 @@ export default function Dashboard() {
 
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
         <div>
-          <h1 className="text-4xl font-bold">Overview</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Overview</h1>
           <p className="text-gray-500">Today is {today}</p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4">
           <Link
             href="/dashboard/addpatient"
             className="bg-[#00685F] px-4 py-2 text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
@@ -163,13 +163,14 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex gap-4 mt-4">
-        <div className="flex-1 flex flex-col gap-6">
-          <div className="flex gap-8">
-            <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
+      {/* Calendar and Upcoming Visits sit side by side only on wide screens */}
+      <div className="flex flex-col lg:flex-row gap-4 mt-4">
+        <div className="flex-1 min-w-0 flex flex-col gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
               TODAY&apos;S EXPECTED VISITS
             </div>
-            <div className="flex-1 bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-14">
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
               PENDING APPOINTMENTS
             </div>
           </div>
@@ -184,7 +185,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="flex justify-between items-center mt-6">
+      <div className="flex flex-wrap gap-2 justify-between items-center mt-6">
         <h2 className="font-bold text-lg">All Appointments</h2>
 
         <select className="border border-gray-300 rounded-lg px-3 py-2 bg-[#00685F] text-white">
@@ -201,8 +202,9 @@ export default function Dashboard() {
         </p>
       )}
 
-      <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
-        <table className="w-full border-collapse rounded-lg">
+      {/* Too many columns for a phone: the table scrolls sideways in its box */}
+      <div className="rounded-lg border border-gray-200 overflow-x-auto mt-4">
+        <table className="w-full min-w-[720px] border-collapse rounded-lg">
           <thead>
             <tr>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
@@ -254,19 +256,32 @@ export default function Dashboard() {
                     {appt.service}
                   </td>
                   <td className="p-3 border-b border-gray-200">Requested</td>
-                  <td className="p-3 border-b border-gray-200 flex gap-2">
-                    <Pencil
-                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
-                      onClick={() => handleEditAppointment(appt)}
-                    />
-                    <Eye
-                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-[#00685F]"
-                      onClick={() => handleViewAppointment(appt)}
-                    />
-                    <Trash2
-                      className="w-4 h-4 text-gray-500 cursor-pointer hover:text-red-500"
-                      onClick={() => handleDeleteAppointment(appt)}
-                    />
+                  <td className="p-3 border-b border-gray-200">
+                    {/* Buttons (not bare icons) give a finger-sized tap area
+                        and keyboard access */}
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleEditAppointment(appt)}
+                        aria-label={`Edit ${appt.patient_name}'s appointment`}
+                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-[#00685F] hover:bg-[#F0FDFA]"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleViewAppointment(appt)}
+                        aria-label={`View ${appt.patient_name}'s appointment`}
+                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-[#00685F] hover:bg-[#F0FDFA]"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAppointment(appt)}
+                        aria-label={`Delete ${appt.patient_name}'s appointment`}
+                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-red-500 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

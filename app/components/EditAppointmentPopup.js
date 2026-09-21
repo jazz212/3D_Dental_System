@@ -135,10 +135,10 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
         {/* Section 1: Header — icon + title + close button */}
-        <div className="flex items-center justify-between px-7 py-5 border-b border-gray-100">
+        <div className="flex items-center justify-between px-5 sm:px-7 py-5 border-b border-gray-100">
           <div className="flex items-center gap-3">
             <svg
               className="w-6 h-6 text-[#00685F]"
@@ -165,9 +165,9 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
         </div>
 
         {/* Section 2: Form fields */}
-        <form onSubmit={handleSubmit} className="px-7 py-6 flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="px-5 sm:px-7 py-6 flex flex-col gap-5">
           {/* Patient name + Contact number */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-gray-700">
                 Patient name
@@ -209,7 +209,7 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
           </div>
 
           {/* Start time + End time side by side */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-gray-700">
                 Start time
@@ -258,7 +258,7 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
           </div>
 
           {/* Service dropdown — half width */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-semibold text-gray-700">
                 Service
@@ -303,7 +303,7 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
           </div>
 
           {/* Section 3: Footer — Save appointment + Clear */}
-          <div className="flex items-center gap-3 px-7 py-5 border-t border-gray-100">
+          <div className="flex items-center gap-3 px-5 sm:px-7 py-5 border-t border-gray-100">
             <button
               type="submit"
               disabled={submitting}

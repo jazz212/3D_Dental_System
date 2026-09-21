@@ -11,10 +11,10 @@ export default function AppointmentDetailsPopup({ onClose, appointment }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
         {/* Section 1: Header — close button top-right, title below */}
-        <div className="relative px-7 pt-6 pb-4">
+        <div className="relative px-5 sm:px-7 pt-6 pb-4">
           <button
             onClick={onClose}
             className="absolute top-5 right-6 text-gray-400 hover:text-gray-600 text-2xl leading-none transition-colors"
@@ -27,7 +27,7 @@ export default function AppointmentDetailsPopup({ onClose, appointment }) {
         </div>
 
         {/* Section 2: Appointment details */}
-        <div className="px-7 py-4">
+        <div className="px-5 sm:px-7 py-4">
           <div className="space-y-4">
             {/* Patient Name */}
             <div className="flex flex-col gap-1">
@@ -80,7 +80,7 @@ export default function AppointmentDetailsPopup({ onClose, appointment }) {
         </div>
 
         {/* Section 3: Footer — Close button */}
-        <div className="flex items-center justify-end px-7 py-6">
+        <div className="flex items-center justify-end px-5 sm:px-7 py-6">
           <button
             onClick={onClose}
             className="px-6 py-3 text-gray-500 text-sm font-semibold hover:text-gray-800 transition-colors"

@@ -168,15 +168,15 @@ export default function AddPatient({ patientId }) {
     <div className="bg-white w-full p-4 pt-2 pb-6">
       <div className="flex flex-col justify-between">
         <div>
-          <h1 className="text-4xl font-bold">Add New Patient</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Add New Patient</h1>
           <p className="text-gray-500">
             Complete the patient profiling form below to register a new clinical
             record.
           </p>
         </div>
         <div className="border w-full border-gray-300 overflow-hidden mt-2 rounded-lg">
-          <div className="bg-blue-200 flex items-center justify-between border border-gray-300 p-2 rounded-t-lg">
-            <h1 className="text-[#00685F] text-2xl font-bold">
+          <div className="bg-blue-200 flex flex-wrap gap-2 items-center justify-between border border-gray-300 p-2 rounded-t-lg">
+            <h1 className="text-[#00685F] text-xl sm:text-2xl font-bold">
               Patient&apos;s Information Form
             </h1>
             <span className="bg-white border border-gray-300 rounded-lg px-2 py-1 text-sm text-gray-500">
@@ -189,7 +189,7 @@ export default function AddPatient({ patientId }) {
               <>
                 <div className="font-bold mt-4">Basic Information</div>
                 <hr className="border border-gray-200" />
-                <div className="grid grid-cols-4 mt-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-4">
                   <div className="flex flex-col gap-1">
                     <label className="text-sm font-medium">Full Name</label>
                     <input
@@ -239,8 +239,8 @@ export default function AddPatient({ patientId }) {
                   </div>
                 </div>
 
-                <div className="flex gap-4 mt-4">
-                  <div className="flex flex-col gap-1 w-72">
+                <div className="flex flex-col md:flex-row gap-4 mt-4">
+                  <div className="flex flex-col gap-1 w-full md:w-72">
                     <label className="text-sm font-medium">Tel/CP No.</label>
                     <input
                       type="text"
@@ -251,7 +251,7 @@ export default function AddPatient({ patientId }) {
                       className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                     />
                   </div>
-                  <div className="flex flex-col gap-1 w-72">
+                  <div className="flex flex-col gap-1 w-full md:w-72">
                     <label className="text-sm font-medium">
                       Email (optional)
                     </label>
@@ -276,7 +276,7 @@ export default function AddPatient({ patientId }) {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-4 mt-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-4">
                   <div className="flex flex-col gap-1">
                     <label className="text-sm font-medium">Occupation</label>
                     <input
@@ -326,7 +326,7 @@ export default function AddPatient({ patientId }) {
                 </div>
                 <div className="font-bold mt-4">Chief Complaint</div>
                 <hr className="border border-gray-200" />
-                <div className="flex gap-4 mt-2">
+                <div className="flex flex-col md:flex-row gap-4 mt-2">
                   <div className="flex flex-col gap-1 flex-1">
                     <label className="text-sm font-medium">
                       CHIEF COMPLAINT (Patient&apos;s own words)
@@ -356,9 +356,9 @@ export default function AddPatient({ patientId }) {
                   <label className="text-sm font-medium">
                     Check all conditions that apply to the patient:
                   </label>
-                  <div className="grid grid-cols-5 gap-4 mt-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mt-3">
                     {MEDICAL_CONDITIONS.map((condition) => (
-                      <label key={condition} className="flex items-center gap-2">
+                      <label key={condition} className="flex flex-wrap items-center gap-2">
                         <input
                           type="checkbox"
                           checked={history.conditions.includes(condition)}
@@ -370,7 +370,7 @@ export default function AddPatient({ patientId }) {
                   </div>
                 </div>
                 <div className="flex flex-col gap-3 mt-4">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <label className="text-sm font-medium">
                       1. Are you under any medication/s?
                     </label>
@@ -400,11 +400,11 @@ export default function AddPatient({ patientId }) {
                       value={history.medicationDetails}
                       onChange={handleHistoryChange}
                       placeholder="If yes, please specify"
-                      className="border-b border-gray-300 outline-none ml-2 flex-1 min-w-0"
+                      className="border-b border-gray-300 outline-none ml-2 flex-1 min-w-40"
                     />
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <label className="text-sm font-medium">
                       2. Do your gums bleed easily when brushing?
                     </label>
@@ -430,7 +430,7 @@ export default function AddPatient({ patientId }) {
                     </label>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <label className="text-sm font-medium">3. Do you smoke?</label>
                     <label className="flex items-center gap-1">
                       <input
@@ -459,11 +459,11 @@ export default function AddPatient({ patientId }) {
                       value={history.sticksPerDay}
                       onChange={handleHistoryChange}
                       placeholder="If yes, how many sticks per day?"
-                      className="border-b border-gray-300 outline-none ml-2 w-58 min-w-0"
+                      className="border-b border-gray-300 outline-none sm:ml-2 w-full sm:w-58"
                     />
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <label className="text-sm font-medium">
                       4. Do you have any known ALLERGY/ies?
                     </label>
@@ -493,7 +493,7 @@ export default function AddPatient({ patientId }) {
                       value={history.allergyDetails}
                       onChange={handleHistoryChange}
                       placeholder="If yes, please specify"
-                      className="border-b border-gray-300 outline-none ml-2 flex-1 min-w-0"
+                      className="border-b border-gray-300 outline-none ml-2 flex-1 min-w-40"
                     />
                   </div>
                 </div>
@@ -502,7 +502,7 @@ export default function AddPatient({ patientId }) {
                     <div className="font-bold mt-4">Dental History</div>
                     <hr className="border border-gray-200 w-full" />
                     <div className="flex flex-col gap-2">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="text-sm font-medium">
                           Previous Oral Prophylaxis
                         </label>
@@ -533,9 +533,9 @@ export default function AddPatient({ patientId }) {
                         value={history.prophylaxisWhen}
                         onChange={handleHistoryChange}
                         placeholder="If yes, when?"
-                        className="border-b border-gray-300 outline-none w-58 min-w-0"
+                        className="border-b border-gray-300 outline-none w-full sm:w-58"
                       />
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="text-sm font-medium">
                           Previous Dental Extraction
                         </label>
@@ -566,7 +566,7 @@ export default function AddPatient({ patientId }) {
                         value={history.extractionWhen}
                         onChange={handleHistoryChange}
                         placeholder="If yes, when?"
-                        className="border-b border-gray-300 outline-none w-58 min-w-0"
+                        className="border-b border-gray-300 outline-none w-full sm:w-58"
                       />
                       <label className="text-sm font-medium">
                         Denture Type (if applicable)
@@ -609,7 +609,7 @@ export default function AddPatient({ patientId }) {
                 <div className="flex flex-col gap-1 flex-1">
                   <div className="font-bold mt-4">Clinical / Vital Signs</div>
                   <hr className="border border-gray-200 w-full" />
-                  <div className="flex gap-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex flex-col flex-1">
                       <label className="text-sm font-medium">
                         Blood Pressure(mmHg)
@@ -666,7 +666,7 @@ export default function AddPatient({ patientId }) {
                   <div className="font-bold mt-4">Extraoral</div>
                   <hr className="border border-gray-200 w-full" />
                   <div className="flex flex-col gap-2 mt-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <label className="w-16">Head:</label>
                       <label className="flex items-center gap-1">
                         <input
@@ -685,11 +685,11 @@ export default function AddPatient({ patientId }) {
                         name="headNotes"
                         value={exam.headNotes}
                         onChange={handleExamChange}
-                        className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                        className="border-b border-gray-300 outline-none flex-1 min-w-40"
                       />
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <label className="w-16">Eyes:</label>
                       <label className="flex items-center gap-1">
                         <input
@@ -708,11 +708,11 @@ export default function AddPatient({ patientId }) {
                         name="eyesNotes"
                         value={exam.eyesNotes}
                         onChange={handleExamChange}
-                        className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                        className="border-b border-gray-300 outline-none flex-1 min-w-40"
                       />
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <label className="w-16">TMJ:</label>
                       <label className="flex items-center gap-1">
                         <input
@@ -731,7 +731,7 @@ export default function AddPatient({ patientId }) {
                         name="tmjNotes"
                         value={exam.tmjNotes}
                         onChange={handleExamChange}
-                        className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                        className="border-b border-gray-300 outline-none flex-1 min-w-40"
                       />
                     </div>
                   </div>
@@ -739,11 +739,11 @@ export default function AddPatient({ patientId }) {
 
                 <div className="font-bold mt-4">Intraoral Examination</div>
                 <hr className="border border-gray-200 w-full" />
-                <div className="grid grid-cols-2 gap-8 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mt-2">
                   <div className="flex flex-col gap-3 mt-4">
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Lips</label>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="checkbox"
@@ -761,14 +761,14 @@ export default function AddPatient({ patientId }) {
                           name="lipsNotes"
                           value={exam.lipsNotes}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Palate</label>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="checkbox"
@@ -786,14 +786,14 @@ export default function AddPatient({ patientId }) {
                           name="palateNotes"
                           value={exam.palateNotes}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Tongue</label>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="checkbox"
@@ -811,7 +811,7 @@ export default function AddPatient({ patientId }) {
                           name="tongueNotes"
                           value={exam.tongueNotes}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
                     </div>
@@ -820,7 +820,7 @@ export default function AddPatient({ patientId }) {
                       <label className="text-sm font-medium">
                         Floor of the mouth
                       </label>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="checkbox"
@@ -838,13 +838,13 @@ export default function AddPatient({ patientId }) {
                           name="mouthFloorNotes"
                           value={exam.mouthFloorNotes}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
                     </div>
                     <div className="flex flex-col gap-2 mt-4">
                       <div className="text-sm font-medium">Occlusion</div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="w-40 text-sm">
                           1st Molar Relationship
                         </label>
@@ -853,27 +853,27 @@ export default function AddPatient({ patientId }) {
                           name="molarRelationship"
                           value={exam.molarRelationship}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="w-40 text-sm">Canine Relationship</label>
                         <input
                           type="text"
                           name="canineRelationship"
                           value={exam.canineRelationship}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="w-40 text-sm">Classification</label>
                         <input
                           type="text"
                           name="occlusionClassification"
                           value={exam.occlusionClassification}
                           onChange={handleExamChange}
-                          className="border-b border-gray-300 outline-none flex-1 min-w-0"
+                          className="border-b border-gray-300 outline-none flex-1 min-w-40"
                         />
                       </div>
                     </div>
@@ -881,7 +881,7 @@ export default function AddPatient({ patientId }) {
                   <div className="flex flex-col gap-3 mt-4">
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Gingiva</label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="radio"
@@ -917,7 +917,7 @@ export default function AddPatient({ patientId }) {
 
                     <div className="flex flex-col gap-1">
                       <label className="text-sm text-gray-500">Color</label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="radio"
@@ -953,7 +953,7 @@ export default function AddPatient({ patientId }) {
 
                     <div className="flex flex-col gap-1">
                       <label className="text-sm text-gray-500">Consistency</label>
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <label className="flex items-center gap-1 text-sm">
                           <input
                             type="radio"
@@ -1075,7 +1075,7 @@ export default function AddPatient({ patientId }) {
                     </div>
                     <div className="flex flex-col gap-1 mt-2">
                       <label className="text-sm font-medium">Deposits</label>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="w-12 text-sm">Soft:</label>
                         <label className="flex items-center gap-1 text-sm">
                           <input
@@ -1118,7 +1118,7 @@ export default function AddPatient({ patientId }) {
                           Severe
                         </label>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <label className="w-12 text-sm">Hard:</label>
                         <label className="flex items-center gap-1 text-sm">
                           <input
@@ -1168,7 +1168,7 @@ export default function AddPatient({ patientId }) {
             )}
           </div>
           {/* Footer buttons */}
-          <div className="flex justify-end items-center gap-3 p-4">
+          <div className="flex flex-wrap justify-end items-center gap-3 p-4">
             {error && <p className="text-sm text-red-600 mr-auto">{error}</p>}
             {step === 1 && (
               <button

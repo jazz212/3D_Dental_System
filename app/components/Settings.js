@@ -175,7 +175,7 @@ export default function Settings() {
     <div className="bg-white w-full p-4 pt-2 pb-6">
       <main className="pt-4 pb-8">
         {/* Page heading + Save/Discard */}
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-3xl font-bold text-black">Clinic Settings</h2>
             <p className="mt-1 text-slate-500">
@@ -183,7 +183,7 @@ export default function Settings() {
               preferences.
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={handleDiscard}
               disabled={!isDirty}
@@ -380,8 +380,8 @@ export default function Settings() {
               </label>
 
               {logo && (
-                <div className="mt-4 flex items-center justify-between rounded-lg bg-slate-50 p-3">
-                  <div className="flex items-center gap-3">
+                <div className="mt-4 flex items-center justify-between gap-3 rounded-lg bg-slate-50 p-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     {logo.previewUrl ? (
                       <img
                         src={logo.previewUrl}
@@ -393,8 +393,8 @@ export default function Settings() {
                         🦷
                       </div>
                     )}
-                    <div>
-                      <p className="text-sm font-medium text-slate-800">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-slate-800 truncate">
                         {logo.fileName}
                       </p>
                       <p className="text-xs text-slate-500">

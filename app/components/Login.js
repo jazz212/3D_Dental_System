@@ -24,10 +24,16 @@ export default function Login() {
     router.push("/dashboard");
   };
   return (
-    <div className="bg-gray-100 flex flex-col h-screen w-full items-center justify-center">
-      <img src="/Logo/ToothPeakLogo.jpg" className="w-66 rounded-lg" />
+    // min-h-dvh + py: on short phone screens the card can scroll instead of
+    // being cut off; px-4 keeps it off the screen edges.
+    <div className="bg-gray-100 flex flex-col min-h-dvh w-full items-center justify-center px-4 py-8">
+      <img
+        src="/Logo/ToothPeakLogo.jpg"
+        alt="ToothPeak Dental Clinic"
+        className="w-66 max-w-full rounded-lg"
+      />
       <p className="text-gray-400 text-sm">Secure Clinic Portal access</p>
-      <div className="flex flex-col gap-2 bg-white border border-gray-300 border-t-4 border-t-[#00685F] rounded-lg p-8 w-96 mt-4">
+      <div className="flex flex-col gap-2 bg-white border border-gray-300 border-t-4 border-t-[#00685F] rounded-lg p-6 sm:p-8 w-full max-w-96 mt-4">
         <p className="text-sm text-gray-600 items-center">Email or Staff ID</p>
         <input
           type="email"

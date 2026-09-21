@@ -13,3 +13,15 @@
   --fc-button-hover-border-color: #004d45;
   --fc-button-active-bg-color: #004d45;
 }
+
+/* FullCalendar's toolbar (month title + today/prev/next) doesn't fit on a
+   phone in one line; let it wrap and shrink the title. */
+@media (max-width: 639px) {
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .fc .fc-toolbar-title {
+    font-size: 1.125rem;
+  }
+}

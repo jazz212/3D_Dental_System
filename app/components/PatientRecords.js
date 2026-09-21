@@ -141,9 +141,9 @@ export default function PatientRecords() {
 
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
         <div>
-          <h1 className="text-4xl font-bold">Patient Record</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Patient Record</h1>
           <p className="text-gray-500">
             Manage and review all registered clinic patients.
           </p>
@@ -162,8 +162,9 @@ export default function PatientRecords() {
       </div>
 
       <div className="bg-white border border-gray-200 mt-2 rounded-lg">
-        <div className="flex p-2 w-full justify-between items-center gap-4">
-          <div className="relative grid grid-cols-3 bg-gray-100 rounded-full p-1">
+        {/* Tabs and search share a row on wide screens, stack below lg */}
+        <div className="flex flex-col lg:flex-row p-2 w-full lg:justify-between lg:items-center gap-3 lg:gap-4">
+          <div className="relative grid grid-cols-3 bg-gray-100 rounded-full p-1 w-full lg:w-auto">
             {/* One white pill slides under the active tab instead of each
                 tab snapping its own background on and off. */}
             <span
@@ -175,7 +176,7 @@ export default function PatientRecords() {
                 key={tab.value}
                 onClick={() => updateFilter("status", tab.value)}
                 aria-pressed={filters.status === tab.value}
-                className={`relative px-4 py-2 rounded-full whitespace-nowrap cursor-pointer transition-all duration-150 ease-smooth active:scale-[0.97] ${
+                className={`relative px-2 sm:px-4 py-2 text-sm sm:text-base rounded-full whitespace-nowrap cursor-pointer transition-all duration-150 ease-smooth active:scale-[0.97] ${
                   filters.status === tab.value
                     ? "text-[#00685F] font-medium"
                     : "text-gray-500 hover:text-gray-800"
@@ -186,8 +187,8 @@ export default function PatientRecords() {
             ))}
           </div>
 
-          <div className="flex gap-4 items-center">
-            <div className="relative">
+          <div className="flex gap-2 sm:gap-4 items-center">
+            <div className="relative flex-1 min-w-0 lg:flex-none">
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="search"
@@ -195,7 +196,7 @@ export default function PatientRecords() {
                 onChange={handleSearchChange}
                 placeholder="Search by name"
                 aria-label="Search patients by name"
-                className="bg-[#F0FDFA] border border-gray-300 rounded-lg pl-9 pr-3 py-2 w-56 outline-none focus:border-[#00685F]"
+                className="bg-[#F0FDFA] border border-gray-300 rounded-lg pl-9 pr-3 py-2 w-full lg:w-56 outline-none focus:border-[#00685F]"
               />
             </div>
             <button
@@ -228,8 +229,8 @@ export default function PatientRecords() {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex items-end gap-4 border-t border-gray-200 p-3">
-              <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap items-end gap-4 border-t border-gray-200 p-3">
+              <div className="flex flex-col gap-1 flex-1 sm:flex-none">
                 <label htmlFor="filter-sex" className="text-sm font-medium">
                   Sex
                 </label>
@@ -237,14 +238,14 @@ export default function PatientRecords() {
                   id="filter-sex"
                   value={filters.sex}
                   onChange={(e) => updateFilter("sex", e.target.value)}
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-40 outline-none focus:border-[#00685F]"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-40 outline-none focus:border-[#00685F]"
                 >
                   <option value="">Any</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 flex-1 sm:flex-none">
                 <label htmlFor="filter-age" className="text-sm font-medium">
                   Age group
                 </label>
@@ -252,7 +253,7 @@ export default function PatientRecords() {
                   id="filter-age"
                   value={filters.ageGroup}
                   onChange={(e) => updateFilter("ageGroup", e.target.value)}
-                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-44 outline-none focus:border-[#00685F]"
+                  className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-44 outline-none focus:border-[#00685F]"
                 >
                   <option value="">Any</option>
                   {AGE_GROUPS.map((group) => (
@@ -281,8 +282,8 @@ export default function PatientRecords() {
         </p>
       )}
 
-      <div className="rounded-lg border border-gray-200 overflow-hidden mt-4">
-        <table className="w-full border-collapse rounded-lg">
+      <div className="rounded-lg border border-gray-200 overflow-x-auto mt-4">
+        <table className="w-full min-w-[720px] border-collapse rounded-lg">
           <thead>
             <tr>
               <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
@@ -381,7 +382,7 @@ export default function PatientRecords() {
           <tfoot>
             <tr>
               <td colSpan={6} className="p-4 border-t border-gray-200">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-wrap gap-2 justify-between items-center">
                   <p className="text-sm text-gray-500">
                     Showing{" "}
                     {totalPatients === 0

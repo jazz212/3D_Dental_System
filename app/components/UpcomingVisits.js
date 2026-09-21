@@ -37,12 +37,13 @@ export default function UpcomingVisits({ visits, loading, onSelectVisit }) {
   const days = groupVisitsByDay(visits);
 
   return (
-    <div className="w-64 bg-white rounded-lg border border-gray-200 p-4 self-stretch flex flex-col">
+    <div className="w-full lg:w-64 lg:shrink-0 bg-white rounded-lg border border-gray-200 p-4 self-stretch flex flex-col">
       <h2 className="font-bold text-lg mb-4">Upcoming Visits</h2>
 
-      {/* basis-0 keeps the list from adding its height to the row, so the
-          panel matches the calendar column and long lists scroll instead */}
-      <div className="grow basis-0 min-h-0 overflow-y-auto pr-1">
+      {/* Wide screens (beside the calendar): basis-0 keeps the list from
+          adding its height to the row, so the panel matches the calendar.
+          Smaller screens (stacked below it): cap the height and scroll. */}
+      <div className="max-h-80 lg:max-h-none lg:grow lg:basis-0 min-h-0 overflow-y-auto pr-1">
         {loading ? (
           <p className="text-sm text-gray-500">Loading visits...</p>
         ) : days.length === 0 ? (
