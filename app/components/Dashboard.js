@@ -3,7 +3,7 @@ import { Pencil, Eye, Trash2, Plus } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 import AddAppointmentPopup from "./AddAppointmentPopup";
 import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
