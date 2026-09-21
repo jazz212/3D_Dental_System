@@ -1,5 +1,28 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      setErrorMsg(error.message);
+
+      return;
+    }
+    setErrorMsg("");
+    router.push("/dashboard");
+  };
   return (
     <div className="bg-gray-100 flex flex-col h-screen w-full items-center justify-center">
       <img src="/Logo/ToothPeakLogo.jpg" className="w-66 rounded-lg" />
@@ -9,6 +32,9 @@ export default function Login() {
         <input
           type="email"
           placeholder="user@toothpeaked.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-[#00685F]"
         />
         <div className="flex justify-between mt-4">
@@ -17,6 +43,9 @@ export default function Login() {
         <input
           type="password"
           placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-[#00685F]"
         />
         <div className="flex items-center gap-2">
@@ -25,11 +54,17 @@ export default function Login() {
             Remember me on this device
           </label>
         </div>
-        <Link href="/dashboard">
-          <button className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 cursor-pointer">
-            Secure Login
-          </button>
-        </Link>
+        {errorMsg && (
+          <p className="text-sm text-red-600 text-center animate-pulse ">
+            {errorMsg}
+          </p>
+        )}
+        <button
+          onClick={handleLogin}
+          className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 cursor-pointer"
+        >
+          Secure Login
+        </button>
 
         <Link
           href="/forgotpass"
