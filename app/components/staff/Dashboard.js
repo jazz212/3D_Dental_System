@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Eye, Trash2, Plus } from "lucide-react";
+import { Pencil, Eye, Trash2, Plus, ChevronDown } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -8,12 +8,29 @@ import {
   fetchUpcomingVisits,
   deleteAppointment,
 } from "@/lib/appointments";
+import {
+  ALREADY_HANDLED_CODE,
+  declineAppointmentRequest,
+  fetchPendingRequests,
+  translateRequestError,
+} from "@/lib/appointmentRequests";
 import { formatTime, getLocalDateString } from "@/lib/appointmentTimes";
 import AddAppointmentPopup from "./AddAppointmentPopup";
+import PendingRequests from "./PendingRequests";
+import ScheduleRequestPopup from "./ScheduleRequestPopup";
 import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
 import EditAppointmentPopup from "./EditAppointmentPopup";
 import UpcomingVisits from "./UpcomingVisits";
+
+// appointment_details.status values -> what staff read in the table.
+const STATUS_LABELS = {
+  requested: "Requested",
+  confirmed: "Confirmed",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  no_show: "No Show",
+};
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -34,9 +51,27 @@ export default function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const appointmentsPerPage = 10;
+  // "all" or one of the STATUS_LABELS keys.
+  const [statusFilter, setStatusFilter] = useState("all");
   const [upcomingVisits, setUpcomingVisits] = useState([]);
   const [upcomingLoading, setUpcomingLoading] = useState(true);
   const upcomingVisitsLimit = 30;
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [pendingLoading, setPendingLoading] = useState(true);
+  const [pendingError, setPendingError] = useState(null);
+  const [requestToSchedule, setRequestToSchedule] = useState(null);
+  // Separate from pendingError: a failed decline shouldn't hide the list.
+  const [declineError, setDeclineError] = useState(null);
+  const [decliningId, setDecliningId] = useState(null);
+  // Cancelled and no-show bookings still show in upcomingVisits, but those
+  // patients aren't coming.
+  const todayString = getLocalDateString(new Date());
+  const todaysExpectedVisits = upcomingVisits.filter(
+    (visit) =>
+      visit.appointment_date === todayString &&
+      visit.status !== "cancelled" &&
+      visit.status !== "no_show",
+  ).length;
   // Bumping this number re-runs both fetch effects below.
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -48,6 +83,13 @@ export default function Dashboard() {
   const goToPage = (pageNumber) => {
     setLoading(true);
     setCurrentPage(pageNumber);
+  };
+
+  // A new filter can have fewer pages than the current one, so start at page 1.
+  const handleStatusFilterChange = (e) => {
+    setLoading(true);
+    setStatusFilter(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleDeleteAppointment = (appointment) => {
@@ -79,6 +121,26 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeclineRequest = async (request) => {
+    if (!confirm(`Decline this request from ${request.patients.full_name}?`)) return;
+
+    setDecliningId(request.id);
+    setDeclineError(null);
+    try {
+      await declineAppointmentRequest(request.id);
+      refreshAppointments();
+    } catch (err) {
+      if (err?.code === ALREADY_HANDLED_CODE) {
+        setDeclineError(translateRequestError(err));
+        refreshAppointments();
+      } else {
+        setDeclineError("Request wasn't declined. Check your connection and try again.");
+      }
+    } finally {
+      setDecliningId(null);
+    }
+  };
+
   const handleCancelDelete = () => {
     setDeleteOpen(false);
     setAppointmentToDelete(null);
@@ -91,7 +153,11 @@ export default function Dashboard() {
 
     const loadAppointments = async () => {
       try {
-        const result = await fetchAppointmentsPage(currentPage, appointmentsPerPage);
+        const result = await fetchAppointmentsPage(
+          currentPage,
+          appointmentsPerPage,
+          statusFilter === "all" ? null : statusFilter,
+        );
         if (ignore) return;
         setAppointments(result.appointments);
         setTotalAppointments(result.total);
@@ -109,7 +175,7 @@ export default function Dashboard() {
     return () => {
       ignore = true;
     };
-  }, [currentPage, refreshKey]);
+  }, [currentPage, statusFilter, refreshKey]);
 
   useEffect(() => {
     let ignore = false;
@@ -132,6 +198,30 @@ export default function Dashboard() {
     };
   }, [refreshKey]);
 
+  useEffect(() => {
+    let ignore = false;
+
+    const loadPendingRequests = async () => {
+      try {
+        const requests = await fetchPendingRequests();
+        if (ignore) return;
+        setPendingRequests(requests);
+        setPendingError(null);
+      } catch {
+        if (!ignore) {
+          setPendingError("Couldn't load pending requests. Refresh the page to try again.");
+        }
+      } finally {
+        if (!ignore) setPendingLoading(false);
+      }
+    };
+
+    loadPendingRequests();
+    return () => {
+      ignore = true;
+    };
+  }, [refreshKey]);
+
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
@@ -142,7 +232,7 @@ export default function Dashboard() {
 
         <div className="flex flex-wrap gap-2 sm:gap-4">
           <Link
-            href="/dashboard/addpatient"
+            href="/dashboard/add-patient"
             className="bg-[#00685F] px-4 py-2 text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
           >
             <div className="flex items-center gap-2 w-full cursor-pointer">
@@ -166,16 +256,33 @@ export default function Dashboard() {
       {/* Calendar and Upcoming Visits sit side by side only on wide screens */}
       <div className="flex flex-col lg:flex-row gap-4 mt-4">
         <div className="flex-1 min-w-0 flex flex-col gap-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
-            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
-              TODAY&apos;S EXPECTED VISITS
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg px-5 py-4">
+              <p className="text-sm">TODAY&apos;S EXPECTED VISITS</p>
+              <p className="mt-1 text-3xl font-bold text-[#00685F]">
+                {upcomingLoading ? "–" : todaysExpectedVisits}
+              </p>
             </div>
-            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg p-6 sm:p-14">
-              PENDING APPOINTMENTS
+            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg px-5 py-4">
+              <p className="text-sm">PENDING APPOINTMENTS</p>
+              {/* "–" until loaded, so a slow fetch doesn't read as "0 pending" */}
+              <p className="mt-1 text-3xl font-bold text-[#00685F]">
+                {pendingLoading || pendingError ? "–" : pendingRequests.length}
+              </p>
             </div>
           </div>
 
           <CalendarView />
+
+          <PendingRequests
+            requests={pendingRequests}
+            loading={pendingLoading}
+            error={pendingError}
+            actionError={declineError}
+            decliningId={decliningId}
+            onSchedule={setRequestToSchedule}
+            onDecline={handleDeclineRequest}
+          />
         </div>
 
         <UpcomingVisits
@@ -188,12 +295,28 @@ export default function Dashboard() {
       <div className="flex flex-wrap gap-2 justify-between items-center mt-6">
         <h2 className="font-bold text-lg">All Appointments</h2>
 
-        <select className="border border-gray-300 rounded-lg px-3 py-2 bg-[#00685F] text-white">
-          <option value="all">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+        {/* Same look as the Patient Records tabs: gray track, white pill.
+            appearance-none hides the browser arrow; the chevron replaces it
+            and pointer-events-none lets clicks reach the select underneath. */}
+        <div className="relative bg-gray-100 rounded-full p-1">
+          <select
+            value={statusFilter}
+            onChange={handleStatusFilterChange}
+            aria-label="Filter appointments by status"
+            className="appearance-none bg-white shadow-sm rounded-full pl-4 pr-9 py-1.5 text-sm font-medium text-[#00685F] cursor-pointer outline-none transition-shadow duration-150 hover:shadow focus-visible:ring-2 focus-visible:ring-[#00685F]/30"
+          >
+            {/* No "requested": website requests live in Pending Requests until scheduled */}
+            <option value="all">All Statuses</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="no_show">No Show</option>
+          </select>
+          <ChevronDown
+            aria-hidden="true"
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#00685F]"
+          />
+        </div>
       </div>
 
       {error && (
@@ -237,7 +360,9 @@ export default function Dashboard() {
             ) : appointments.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-3 text-center text-gray-500">
-                  No appointments yet.
+                  {statusFilter === "all"
+                    ? "No appointments yet."
+                    : `No ${STATUS_LABELS[statusFilter].toLowerCase()} appointments.`}
                 </td>
               </tr>
             ) : (
@@ -255,7 +380,9 @@ export default function Dashboard() {
                   <td className="p-3 border-b border-gray-200">
                     {appt.service}
                   </td>
-                  <td className="p-3 border-b border-gray-200">Requested</td>
+                  <td className="p-3 border-b border-gray-200">
+                    {STATUS_LABELS[appt.status] || appt.status}
+                  </td>
                   <td className="p-3 border-b border-gray-200">
                     {/* Buttons (not bare icons) give a finger-sized tap area
                         and keyboard access */}
@@ -388,6 +515,13 @@ export default function Dashboard() {
         <AppointmentDetailsPopup
           onClose={() => setDetailsOpen(false)}
           appointment={appointmentToView}
+        />
+      )}
+      {requestToSchedule && (
+        <ScheduleRequestPopup
+          request={requestToSchedule}
+          onClose={() => setRequestToSchedule(null)}
+          onRequestHandled={refreshAppointments}
         />
       )}
       {editOpen && (

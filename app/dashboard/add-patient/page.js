@@ -1,5 +1,5 @@
 import { connection } from "next/server";
-import AddPatient from "@/app/components/AddPatient";
+import AddPatient from "@/app/components/staff/AddPatient";
 
 export default async function AddPatientPage() {
   // Render on every visit; otherwise the page is built once and every

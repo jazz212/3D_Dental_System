@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import {
@@ -74,7 +74,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
           }`}
         >
           <Link
-            href="/dashboard/addpatient"
+            href="/dashboard/add-patient"
             onClick={onMobileClose}
             className="flex items-center justify-center w-full h-full"
           >
@@ -110,9 +110,9 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
           </div>
         </Link>
         <Link
-          href="/dashboard/patientrecords"
+          href="/dashboard/patient-records"
           onClick={onMobileClose}
-          className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/patientrecords" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
+          className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/patient-records" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
         >
           <div
             className={`flex items-center ${showLabels ? "gap-2" : "justify-center gap-0"}`}
@@ -126,9 +126,9 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
           </div>
         </Link>
         <Link
-          href="/dashboard/settingpage"
+          href="/dashboard/settings"
           onClick={onMobileClose}
-          className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settingpage" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
+          className={`px-3 py-2 rounded-xl transition-all duration-100 active:scale-95 active:brightness-90 ${pathname === "/dashboard/settings" ? "bg-[#F0FDFA] text-[#00685F]" : "text-black hover:bg-[#F0FDFA]"}`}
         >
           <div
             className={`flex items-center ${showLabels ? "gap-2" : "justify-center gap-0"}`}

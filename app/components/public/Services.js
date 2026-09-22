@@ -1,0 +1,140 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
+const clinicalServices = [
+  { title: "Oral Prophylaxis", sub: "(Cleaning)", desc: "Routine cleaning to remove plaque and tartar, essential for maintaining healthy gums and teeth." },
+  { title: "Tooth Restoration", sub: "(Pasta)", desc: "Repairing damaged or decayed teeth using high-quality filling materials to restore function and appearance." },
+  { title: "Tooth Extraction", sub: "(Bunot)", desc: "Safe and painless removal of severely damaged, decayed, or problematic teeth." },
+  { title: "Wisdom Tooth Surgery", sub: null, desc: "Surgical extraction of impacted or problematic wisdom teeth by experienced professionals." },
+  { title: "Veneers, Crowns and Bridges", sub: null, desc: "Cosmetic and restorative solutions to enhance your smile and replace missing teeth with durable prosthetics." },
+  { title: "Complete & Partial Dentures", sub: "(Pustiso)", desc: "Custom-fitted removable appliances to replace missing teeth and surrounding tissues." },
+  { title: "Braces", sub: "Metal, Ceramic and Clear", desc: "Orthodontic treatments to align and straighten teeth for improved function and aesthetics." },
+  { title: "Root Canal Treatment", sub: "(RCT)", desc: "Endodontic therapy to save severely infected or decayed teeth by removing the damaged nerve and pulp." },
+  { title: "Teeth Whitening", sub: null, desc: "Professional bleaching procedures to safely and effectively brighten your smile." },
+];
+
+const panoramicItems = ["Standard", "Child Projection", "Orthogonal Mention", "Lateral View of TMJ"];
+
+const cephalometricItems = ["Latero-Lateral (LL)", "Antero-Posterior (AP)", "Postero-Anterior (PA)", "Submento-Vertex (SV)", "Caldwell Luc", "Waters View"];
+
+const additionalImaging = [
+  { title: "Periapical / Bitewing", desc: "Detailed views of specific teeth and surrounding bone." },
+  { title: "Occlusal", sub: "(Upper / Lower)", desc: "Captures full arch views of the jaw." },
+  { title: "Transcranial X-Ray", desc: "Specialized imaging for the temporomandibular joint (TMJ)." },
+];
+
+export default function Services() {
+  const [openService, setOpenService] = useState(null);
+
+  const toggleService = (title) =>
+    setOpenService((current) => (current === title ? null : title));
+
+  return (
+    <div>
+
+      <section className="mx-auto max-w-4xl px-8 py-20 text-center">
+        <h1 className="text-5xl font-extrabold text-[#1F4A3D] md:text-6xl">Our Services</h1>
+        <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
+          Comprehensive dental care tailored to your needs. From routine cleanings to advanced diagnostic imaging, our team is dedicated to your oral health and comfort.
+        </p>
+        <Link href="/appointments" className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+          Book an Appointment
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-8 pb-16">
+        <h2 className="mb-8 text-2xl font-bold text-[#1F4A3D] md:text-3xl">Clinical Services</h2>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {clinicalServices.map(({ title, sub, desc }) => {
+            const open = openService === title;
+            return (
+              <div
+                key={title}
+                onClick={() => toggleService(title)}
+                className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md ${
+                  open ? "border-[#1F4A3D]" : ""
+                }`}
+              >
+                <h3 className="text-lg font-bold text-[#1F4A3D]">{title}</h3>
+                {sub && <p className="mt-1 text-sm text-gray-500">{sub}</p>}
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="min-h-0 overflow-hidden">
+                    <p className="pt-3 text-sm text-gray-600">{desc}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-8 pb-20">
+        <h2 className="mb-8 text-2xl font-bold text-[#1F4A3D] md:text-3xl">Diagnostic Imaging</h2>
+        <div className="rounded-2xl border border-gray-200 bg-white p-10">
+          <div className="grid gap-10 md:grid-cols-2">
+            <div>
+              <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-[#1F4A3D]">Digital Panoramic X-Ray</h3>
+              <ul className="mt-4 space-y-2">
+                {panoramicItems.map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-gray-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#1F4A3D]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-[#1F4A3D]">Digital Cephalometric X-Ray</h3>
+              <ul className="mt-4 space-y-2">
+                {cephalometricItems.map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-gray-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#1F4A3D]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="mt-12">
+            <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-[#1F4A3D]">Additional Imaging Services</h3>
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              {additionalImaging.map(({ title, sub, desc }) => {
+                const open = openService === title;
+                return (
+                  <div
+                    key={title}
+                    onClick={() => toggleService(title)}
+                    className={`cursor-pointer rounded-lg border border-gray-200 p-5 transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md ${
+                      open ? "border-[#1F4A3D]" : ""
+                    }`}
+                  >
+                    <p className="font-bold text-[#1F2D28]">{title}</p>
+                    {sub && <p className="text-sm text-gray-500">{sub}</p>}
+                    <div
+                      className={`grid transition-all duration-300 ease-in-out ${
+                        open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="min-h-0 overflow-hidden">
+                        <p className="pt-2 text-sm text-gray-600">{desc}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
+}

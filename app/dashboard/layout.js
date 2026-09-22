@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+import { supabase } from "@/lib/supabase";
+import Sidebar from "@/app/components/staff/Sidebar";
+import Navbar from "@/app/components/staff/Navbar";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
