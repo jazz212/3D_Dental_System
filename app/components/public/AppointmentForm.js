@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Calendar, ChevronDown, Clock, Stethoscope, ClipboardList } from "lucide-react";
-import { submitAppointmentRequest } from "@/lib/appointmentRequests";
+import { useState } from "react";
+import { Calendar, Clock, ClipboardList } from "lucide-react";
+import { ageFromDateOfBirth, submitAppointmentRequest } from "@/lib/appointmentRequests";
 
 const TREATMENT_OPTIONS = [
   "General Checkup & Cleaning",
@@ -21,16 +21,13 @@ const TIME_WINDOWS = [
   "Afternoon (2:00 PM - 5:00 PM)",
 ];
 
-const AGE_OPTIONS = Array.from({ length: 100 }, (_, i) => i + 1); // 1-100
-
 const initialForm = {
   fullName: "",
   email: "",
-  age: "",
   dateOfBirth: "",
   preferredDate: "",
   preferredTime: "",
-  reason: "",
+  reasons: [],
   notes: "",
 };
 
@@ -45,13 +42,30 @@ export default function AppointmentForm() {
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
   }
 
+  function toggleReason(treatment) {
+    update(
+      "reasons",
+      form.reasons.includes(treatment)
+        ? form.reasons.filter((r) => r !== treatment)
+        : [...form.reasons, treatment],
+    );
+  }
+
+  // Age is never typed in; it always comes from the date of birth, so the two can't disagree.
+  const age = ageFromDateOfBirth(form.dateOfBirth);
+
   function validate() {
     const next = {};
     if (!form.fullName.trim()) next.fullName = "Enter the patient's full name.";
     if (!form.email.trim()) next.email = "Enter an email address.";
     else if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = "Enter a valid email address.";
+    if (!form.dateOfBirth) next.dateOfBirth = "Enter the patient's date of birth.";
+    else if (age === null || age < 0) next.dateOfBirth = "Date of birth can't be in the future.";
+    // Same 1-120 range the database accepts.
+    else if (age < 1) next.dateOfBirth = "Patient must be at least 1 year old.";
+    else if (age > 120) next.dateOfBirth = "Check the date of birth.";
     if (!form.preferredDate) next.preferredDate = "Choose a preferred date.";
-    if (!form.reason) next.reason = "Select a reason for visit.";
+    if (form.reasons.length === 0) next.reasons = "Select at least one reason for visit.";
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -86,13 +100,6 @@ export default function AppointmentForm() {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-[#E4E6E0] bg-white p-8 shadow-sm"
     >
-      <style>{`
-        .age-scroll::-webkit-scrollbar { width: 6px; }
-        .age-scroll::-webkit-scrollbar-track { background: transparent; }
-        .age-scroll::-webkit-scrollbar-thumb { background-color: #8A8D82; border-radius: 9999px; }
-        .age-scroll { scrollbar-width: thin; scrollbar-color: #8A8D82 transparent; }
-      `}</style>
-
       <SectionHeading icon={<Calendar className="h-5 w-5" />} title="Patient Information" />
 
       <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -118,14 +125,22 @@ export default function AppointmentForm() {
 
       <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Field label="Age">
-          <AgePicker value={form.age} onChange={(v) => update("age", v)} />
+          <input
+            type="text"
+            readOnly
+            tabIndex={-1}
+            aria-readonly="true"
+            placeholder="Calculated from date of birth"
+            value={age !== null && age >= 0 ? age : ""}
+            className={inputClass(false) + " cursor-not-allowed bg-[#F2F3EF] text-[#8A8D82]"}
+          />
         </Field>
-        <Field label="Date of Birth">
+        <Field label="Date of Birth" required error={errors.dateOfBirth}>
           <input
             type="date"
             value={form.dateOfBirth}
             onChange={(e) => update("dateOfBirth", e.target.value)}
-            className={inputClass(false)}
+            className={inputClass(!!errors.dateOfBirth)}
           />
         </Field>
       </div>
@@ -166,21 +181,26 @@ export default function AppointmentForm() {
       </div>
 
       <div className="mb-6">
-        <Field label="Reason for Visit" required error={errors.reason}>
-          <div className="relative">
-            <Stethoscope className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A8D82]" />
-            <select
-              value={form.reason}
-              onChange={(e) => update("reason", e.target.value)}
-              className={inputClass(!!errors.reason) + " appearance-none pl-9"}
-            >
-              <option value="">Select a treatment or service</option>
-              {TREATMENT_OPTIONS.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+        <Field label="Reason for Visit (select all that apply)" required error={errors.reasons}>
+          <div
+            className={`grid grid-cols-1 gap-2 rounded-lg border p-3 sm:grid-cols-2 ${
+              errors.reasons ? "border-red-400" : "border-[#D8DAD2]"
+            }`}
+          >
+            {TREATMENT_OPTIONS.map((t) => (
+              <label
+                key={t}
+                className="flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-[#33362F] hover:bg-[#F2F3EF]"
+              >
+                <input
+                  type="checkbox"
+                  checked={form.reasons.includes(t)}
+                  onChange={() => toggleReason(t)}
+                  className="h-4 w-4 shrink-0 cursor-pointer accent-[#1F4B3F]"
+                />
+                {t}
+              </label>
+            ))}
           </div>
         </Field>
       </div>
@@ -233,95 +253,6 @@ export default function AppointmentForm() {
         </p>
       )}
     </form>
-  );
-}
-
-/**
- * Age field that works two ways at once:
- * - Type a number directly into the box, like a normal input.
- * - Or open the dropdown and scroll/click a value from the list.
- * Neither is required — whoever's filling the form picks whichever is easier.
- */
-function AgePicker({ value, onChange, placeholder = "Select your age" }) {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef(null);
-  const listRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    if (open && value && listRef.current) {
-      const el = listRef.current.querySelector(`[data-age="${value}"]`);
-      if (el) el.scrollIntoView({ block: "center" });
-    }
-  }, [open, value]);
-
-  function handleManualChange(e) {
-    const digitsOnly = e.target.value.replace(/[^0-9]/g, "").slice(0, 3);
-    onChange(digitsOnly);
-  }
-
-  function handleSelect(age) {
-    onChange(String(age));
-    setOpen(false);
-  }
-
-  return (
-    <div ref={containerRef} className="relative">
-      <div
-        className={inputClass(false) + " flex items-center justify-between gap-2"}
-        onClick={() => setOpen(true)}
-      >
-        <input
-          type="text"
-          inputMode="numeric"
-          placeholder={placeholder}
-          value={value}
-          onChange={handleManualChange}
-          onFocus={() => setOpen(true)}
-          className="w-full bg-transparent text-sm outline-none placeholder-[#A8AB9F]"
-        />
-        <ChevronDown
-          className={`h-4 w-4 shrink-0 cursor-pointer text-[#8A8D82] transition-transform ${
-            open ? "rotate-180" : ""
-          }`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpen((o) => !o);
-          }}
-        />
-      </div>
-
-      {open && (
-        <div
-          ref={listRef}
-          className="age-scroll absolute z-20 mt-2 max-h-56 w-full overflow-y-auto rounded-lg border border-[#D8DAD2] bg-white shadow-lg"
-        >
-          {AGE_OPTIONS.map((age) => (
-            <div
-              key={age}
-              data-age={age}
-              onClick={() => handleSelect(age)}
-              className={`cursor-pointer px-4 py-2.5 text-sm hover:bg-[#F2F3EF] ${
-                String(age) === value
-                  ? "bg-[#1F4B3F]/5 font-semibold text-[#1F4B3F]"
-                  : "text-[#33362F]"
-              }`}
-            >
-              {age}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }
 

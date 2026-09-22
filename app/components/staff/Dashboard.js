@@ -1,5 +1,5 @@
 "use client";
-import { Pencil, Eye, Trash2, Plus, ChevronDown } from "lucide-react";
+import { Pencil, Eye, Trash2, Plus, ChevronDown, UserX, CalendarX } from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -7,6 +7,9 @@ import {
   fetchAppointmentsPage,
   fetchUpcomingVisits,
   deleteAppointment,
+  changeAppointmentStatus,
+  STATUS_ACTION_FROM,
+  STATUS_ALREADY_CHANGED_CODE,
 } from "@/lib/appointments";
 import {
   ALREADY_HANDLED_CODE,
@@ -63,6 +66,10 @@ export default function Dashboard() {
   // Separate from pendingError: a failed decline shouldn't hide the list.
   const [declineError, setDeclineError] = useState(null);
   const [decliningId, setDecliningId] = useState(null);
+  // Separate from error: the table reload clears that one, which would hide
+  // an "already changed" message straight away.
+  const [statusActionError, setStatusActionError] = useState(null);
+  const [statusChangingId, setStatusChangingId] = useState(null);
   // Cancelled and no-show bookings still show in upcomingVisits, but those
   // patients aren't coming.
   const todayString = getLocalDateString(new Date());
@@ -122,7 +129,7 @@ export default function Dashboard() {
   };
 
   const handleDeclineRequest = async (request) => {
-    if (!confirm(`Decline this request from ${request.patients.full_name}?`)) return;
+    if (!confirm(`Decline this request from ${request.requester_full_name}?`)) return;
 
     setDecliningId(request.id);
     setDeclineError(null);
@@ -138,6 +145,33 @@ export default function Dashboard() {
       }
     } finally {
       setDecliningId(null);
+    }
+  };
+
+  const handleChangeStatus = async (appointment, newStatus) => {
+    if (
+      newStatus === "cancelled" &&
+      !confirm(`Cancel ${appointment.patient_name}'s appointment on ${appointment.appointment_date}?`)
+    ) {
+      return;
+    }
+
+    setStatusChangingId(appointment.id);
+    setStatusActionError(null);
+    try {
+      await changeAppointmentStatus(appointment.id, newStatus);
+      refreshAppointments();
+    } catch (err) {
+      if (err?.code === STATUS_ALREADY_CHANGED_CODE) {
+        setStatusActionError(
+          "Someone already changed this appointment's status. The list has been refreshed.",
+        );
+        refreshAppointments();
+      } else {
+        setStatusActionError("Status wasn't changed. Check your connection and try again.");
+      }
+    } finally {
+      setStatusChangingId(null);
     }
   };
 
@@ -324,6 +358,11 @@ export default function Dashboard() {
           {error}
         </p>
       )}
+      {statusActionError && (
+        <p className="mt-4 text-sm text-red-600 bg-red-50 p-3 rounded">
+          {statusActionError}
+        </p>
+      )}
 
       {/* Too many columns for a phone: the table scrolls sideways in its box */}
       <div className="rounded-lg border border-gray-200 overflow-x-auto mt-4">
@@ -408,6 +447,29 @@ export default function Dashboard() {
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
+                      {/* Only offered where the database allows the change */}
+                      {STATUS_ACTION_FROM.no_show.includes(appt.status) && (
+                        <button
+                          onClick={() => handleChangeStatus(appt, "no_show")}
+                          disabled={statusChangingId === appt.id}
+                          aria-label={`Mark ${appt.patient_name} as no show`}
+                          title="Mark No Show"
+                          className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-amber-600 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-wait"
+                        >
+                          <UserX className="w-4 h-4" />
+                        </button>
+                      )}
+                      {STATUS_ACTION_FROM.cancelled.includes(appt.status) && (
+                        <button
+                          onClick={() => handleChangeStatus(appt, "cancelled")}
+                          disabled={statusChangingId === appt.id}
+                          aria-label={`Cancel ${appt.patient_name}'s appointment`}
+                          title="Cancel appointment"
+                          className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-red-500 hover:bg-red-50 disabled:opacity-40 disabled:cursor-wait"
+                        >
+                          <CalendarX className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

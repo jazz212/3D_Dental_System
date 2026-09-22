@@ -12,7 +12,6 @@ import {
   fetchPatientsPage,
   setPatientArchived,
   AGE_GROUPS,
-  formatPatientId,
 } from "@/lib/patients";
 
 const STATUS_TABS = [
@@ -341,7 +340,7 @@ export default function PatientRecords() {
                     }`}
                   >
                     <td className="p-3 border-b border-gray-200 tabular-nums">
-                      {formatPatientId(patient.id)}
+                      {patient.patient_id}
                     </td>
                     <td className="p-3 border-b border-gray-200">
                       {patient.full_name}

@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
 
     const { data: request, error: requestError } = await supabase
       .from("appointments")
-      .select("status, patients(full_name, email)")
+      .select("status, requester_full_name, requester_email")
       .eq("id", requestId)
       .single();
     if (requestError) {
@@ -140,8 +140,8 @@ Deno.serve(async (req) => {
     if (request.status !== "confirmed") {
       return jsonResponse({ error: `Request is ${request.status}, not confirmed.` }, 409);
     }
-    if (!request.patients?.email) {
-      return jsonResponse({ error: "This patient has no email address." }, 422);
+    if (!request.requester_email) {
+      return jsonResponse({ error: "This request has no email address." }, 422);
     }
 
     const { data: booking, error: bookingError } = await supabase
@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Booking not found." }, 404);
     }
 
-    const { text, html } = buildEmail(request.patients.full_name, booking);
+    const { text, html } = buildEmail(request.requester_full_name, booking);
 
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -164,7 +164,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: FROM_ADDRESS,
-        to: [request.patients.email],
+        to: [request.requester_email],
         subject: "Your ToothPeak appointment is confirmed",
         text,
         html,
