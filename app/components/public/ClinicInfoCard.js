@@ -11,15 +11,13 @@ export default function ClinicInfoCard() {
       </SidebarItem>
 
       <SidebarItem icon={<Phone className="h-4 w-4" />} label="Phone">
-        (555) 123-4567
+        0966 990 8551
       </SidebarItem>
 
       <SidebarItem icon={<Clock className="h-4 w-4" />} label="Hours" last>
-        Mon - Fri: 8:00 AM - 6:00 PM
+        Tue - Sat: 9:00 AM - 5:00 PM
         <br />
-        Sat: 9:00 AM - 2:00 PM
-        <br />
-        Sun: Closed
+        Sun & Mon: Closed
       </SidebarItem>
     </div>
   );
