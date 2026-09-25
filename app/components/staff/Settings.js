@@ -25,7 +25,12 @@ export default function Settings() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3">
+      {/* Hours lead (left, and first on phones); details are reference only */}
+      <div className="grid grid-cols-1 items-start gap-4 mt-4 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <OperatingHoursEditor />
+        </div>
+
         <section className="bg-white border border-gray-200 rounded-lg p-5">
           <h2 className="font-bold text-lg">Clinic Details</h2>
           <dl className="mt-2 divide-y divide-gray-200">
@@ -43,10 +48,6 @@ export default function Settings() {
             ))}
           </dl>
         </section>
-
-        <div className="lg:col-span-2">
-          <OperatingHoursEditor />
-        </div>
       </div>
     </div>
   );

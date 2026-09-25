@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-25T00:00:00.000Z",
+  "title": "Design System: ToothPeak Dental System",
+  "extensions": {
+    "colorMeta": {
+      "forest-green": { "role": "primary", "displayName": "Forest Green (public)", "canonical": "#1F4A3D", "tonalRamp": ["#0C1F19", "#163A2F", "#1F4A3D", "#2F6655", "#4A8472", "#78A898", "#B0CDC3", "#E3EFEB"] },
+      "teal-green": { "role": "primary", "displayName": "Teal Green (staff)", "canonical": "#00685F", "tonalRamp": ["#00302B", "#004D45", "#00685F", "#1A8378", "#4AA095", "#86C2B9", "#C4E3DE", "#F0FDFA"] },
+      "forest-ink": { "role": "neutral", "displayName": "Forest Ink", "canonical": "#1F2D28", "tonalRamp": ["#111915", "#1F2D28", "#33362F", "#5B5F55", "#8A8D82", "#A8AB9F", "#D8DAD2", "#EDEFEE"] },
+      "mint-surface": { "role": "neutral", "displayName": "Mint Surface", "canonical": "#F0FDFA" },
+      "gray-line": { "role": "neutral", "displayName": "Gray Line", "canonical": "#E5E7EB", "tonalRamp": ["#111827", "#374151", "#6B7280", "#9CA3AF", "#D1D5DB", "#E5E7EB", "#F3F4F6", "#F9FAFB"] },
+      "alert-terracotta": { "role": "tertiary", "displayName": "Alert Terracotta (emergency only)", "canonical": "#B4432E", "tonalRamp": ["#4A1B12", "#7A4B41", "#B4432E", "#C9664F", "#DB8E7C", "#EBB9AC", "#F3D8D1", "#FCEEEA"] },
+      "error-red": { "role": "error", "displayName": "Error Red", "canonical": "#DC2626" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Public hero and page titles only; 3rem, rising to 3.75rem on desktop." },
+      "headline": { "displayName": "Headline", "purpose": "Staff page titles; 1.875rem, rising to 2.25rem from sm." },
+      "title": { "displayName": "Title", "purpose": "Section and panel headings." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs and table cells; public prose capped near 65-75ch." },
+      "label": { "displayName": "Label", "purpose": "Form labels, dense buttons, helper and status text." }
+    },
+    "shadows": [
+      { "name": "resting-card", "value": "0 1px 2px rgba(0,0,0,0.05)", "purpose": "Public form and info cards at rest." },
+      { "name": "hover-lift", "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", "purpose": "Public primary buttons and service cards on hover." },
+      { "name": "floating", "value": "0 25px 50px -12px rgba(0,0,0,0.25)", "purpose": "Staff pop-ups and hover cards." }
+    ],
+    "motion": [
+      { "name": "ease-smooth", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Shared easing (globals.css --ease-smooth) for 150-300 ms state transitions." },
+      { "name": "press", "value": "scale(0.97) over 150ms", "purpose": "Staff button press feedback." },
+      { "name": "dialog-enter", "value": "opacity 0 -> 1, scale 0.95 -> 1 over 200ms", "purpose": "Staff pop-ups appearing." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button (staff)",
+      "kind": "button",
+      "refersTo": "button-primary-staff",
+      "description": "The one main action on a dashboard screen.",
+      "html": "<button class=\"ds-btn-staff\">Save hours</button>",
+      "css": ".ds-btn-staff { background: #00685F; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; font: 400 1rem ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background 150ms cubic-bezier(0.22,1,0.36,1), transform 150ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-staff:hover { background: #004D45; } .ds-btn-staff:active { transform: scale(0.97); } .ds-btn-staff:focus-visible { outline: 2px solid #00685F; outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button (staff)",
+      "kind": "button",
+      "refersTo": "button-secondary-staff",
+      "description": "Every non-primary action, such as Discard changes or Filter.",
+      "html": "<button class=\"ds-btn-staff-secondary\">Discard changes</button>",
+      "css": ".ds-btn-staff-secondary { background: #fff; color: #1F2D28; padding: 8px 16px; border: 1px solid #D1D5DB; border-radius: 8px; font: 400 1rem ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background 150ms cubic-bezier(0.22,1,0.36,1); } .ds-btn-staff-secondary:hover { background: #F9FAFB; } .ds-btn-staff-secondary:focus-visible { outline: 2px solid #00685F; outline-offset: 2px; }"
+    },
+    {
+      "name": "Primary Button (public)",
+      "kind": "button",
+      "refersTo": "button-primary-public",
+      "description": "Book Appointment and other main public calls to action.",
+      "html": "<a class=\"ds-btn-public\" href=\"#\">Book Appointment</a>",
+      "css": ".ds-btn-public { display: inline-block; background: #1F4A3D; color: #fff; padding: 12px 24px; border-radius: 6px; font: 600 1rem ui-sans-serif, system-ui, sans-serif; text-decoration: none; transition: all 200ms ease; } .ds-btn-public:hover { background: #163A2F; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); } .ds-btn-public:active { transform: translateY(0); } .ds-btn-public:focus-visible { outline: 2px solid #1F4A3D; outline-offset: 2px; }"
+    },
+    {
+      "name": "Input (staff)",
+      "kind": "input",
+      "refersTo": "input-staff",
+      "description": "Mint-filled field used across Add Patient, Patient Records and Settings.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Full Name</span><input class=\"ds-input-staff\" value=\"Ana Cruz\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 4px; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-label { font-size: 0.875rem; font-weight: 500; color: #1F2D28; } .ds-input-staff { background: #F0FDFA; border: 1px solid #D1D5DB; border-radius: 8px; padding: 8px 12px; font-size: 1rem; color: #1F2D28; outline: none; } .ds-input-staff:focus { border-color: #00685F; }"
+    },
+    {
+      "name": "Input (public)",
+      "kind": "input",
+      "refersTo": "input-public",
+      "description": "White field in the public booking form.",
+      "html": "<input class=\"ds-input-public\" placeholder=\"Juan dela Cruz\" />",
+      "css": ".ds-input-public { background: #fff; border: 1px solid #D8DAD2; border-radius: 8px; padding: 10px 14px; font: 0.875rem ui-sans-serif, system-ui, sans-serif; color: #33362F; outline: none; } .ds-input-public::placeholder { color: #A8AB9F; } .ds-input-public:focus { border-color: #1F4B3F; box-shadow: 0 0 0 1px #1F4B3F; }"
+    },
+    {
+      "name": "Sidebar Item (staff)",
+      "kind": "nav",
+      "description": "Dashboard navigation item; the active item is teal on mint.",
+      "html": "<nav class=\"ds-sidebar\"><a class=\"ds-nav-item ds-active\" href=\"#\">Dashboard</a><a class=\"ds-nav-item\" href=\"#\">Patient Records</a><a class=\"ds-nav-item\" href=\"#\">Settings</a></nav>",
+      "css": ".ds-sidebar { display: flex; flex-direction: column; gap: 8px; width: 224px; padding: 16px; background: #fff; border: 1px solid #E5E7EB; border-radius: 16px; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-nav-item { padding: 8px 12px; border-radius: 12px; color: #000; text-decoration: none; transition: background 100ms; } .ds-nav-item:hover { background: #F0FDFA; } .ds-active { background: #F0FDFA; color: #00685F; }"
+    },
+    {
+      "name": "Panel (staff)",
+      "kind": "card",
+      "refersTo": "panel-staff",
+      "description": "Flat bordered section container used in Settings and the dashboard.",
+      "html": "<section class=\"ds-panel\"><h2 class=\"ds-panel-title\">Operating Hours</h2><p class=\"ds-panel-desc\">Choose which days the clinic is open.</p></section>",
+      "css": ".ds-panel { background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-panel-title { margin: 0; font-size: 1.125rem; font-weight: 700; } .ds-panel-desc { margin: 4px 0 0; font-size: 0.875rem; color: #6B7280; }"
+    },
+    {
+      "name": "Emergency Banner (public)",
+      "kind": "custom",
+      "description": "The only place terracotta is used.",
+      "html": "<div class=\"ds-emergency\"><strong>Dental Emergency?</strong><p>Call our emergency line.</p></div>",
+      "css": ".ds-emergency { background: #FCEEEA; border: 1px solid #F3D8D1; border-radius: 16px; padding: 24px; color: #7A4B41; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-emergency strong { color: #B4432E; } .ds-emergency p { margin: 8px 0 0; font-size: 0.875rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calm Clinic",
+    "overview": "ToothPeak should feel like walking into a quiet, well-kept clinic: clean white rooms, soft green accents, and nothing shouting for attention. Patients arriving on the public site are often anxious and many are older, so calm comes before everything else: generous white space, one green voice, plain steps. Staff in the dashboard get the same calm expressed as order: flat bordered panels, consistent light-green inputs, and a single accent reserved for the next action.\n\nThe system is restrained, not decorative. Colour does work (actions, current state, status), and the rest of the page is white and grey. Depth is mostly flat: thin borders separate things, and shadows appear only on public cards and on hover.\n\nToday the two halves use two related greens: a deep forest green on the public site and a brighter teal green in the staff dashboard. This is inherited, not a deliberate choice, and the plan is to unify them on one green in a later pass. Until then, stay inside the half you're working in and don't mix the two greens on one screen.",
+    "keyCharacteristics": [
+      "White surfaces, one green accent per half, grey for everything structural.",
+      "Flat by default: 1px borders, few shadows.",
+      "System sans-serif throughout; hierarchy comes from size and weight, not from typefaces.",
+      "Gently rounded corners: 8px on staff controls, softer 12–16px on public cards.",
+      "Calm motion: short 150–300 ms transitions on a shared \"smooth\" ease."
+    ],
+    "rules": [
+      { "name": "The One Green Rule", "body": "Each screen uses exactly one green: forest on public pages, teal in the dashboard. Never both on one screen until the planned unification.", "section": "colors" },
+      { "name": "The Green Means Go Rule", "body": "The green accent marks what you can act on or where you are (primary button, active nav, focus, key counts). Structure, dividers and secondary text stay grey.", "section": "colors" },
+      { "name": "The Emergency Is Rare Rule", "body": "Terracotta appears only for dental emergencies. It is never a decorative warm accent.", "section": "colors" },
+      { "name": "The Weight Not Font Rule", "body": "Hierarchy comes from size and weight steps. Never add a second typeface for emphasis.", "section": "typography" },
+      { "name": "The Readable Floor Rule", "body": "Body text never goes below 0.875rem (14px), because many patients are older. 0.75rem is only for tiny meta text like file sizes.", "section": "typography" },
+      { "name": "The Flat Staff Rule", "body": "Dashboard surfaces never use resting shadows. Borders do the separating.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use exactly one green per screen: Forest Green (#1F4A3D) on public pages, Teal Green (#00685F) in the dashboard.",
+      "Do give staff inputs the Mint Surface fill (#F0FDFA) with a 1px grey border that turns Teal Green on focus, matching Add Patient and Patient Records.",
+      "Do separate staff content with 1px grey borders and white panels (8px corners, 20px padding) instead of shadows.",
+      "Do keep a visible label above every field, and always show status as a word, never as colour alone.",
+      "Do use lucide-react icons at 16–20px, in grey or the section's green.",
+      "Do use the shared ease-smooth curve for 150–300 ms state transitions, and respect motion-reduce."
+    ],
+    "donts": [
+      "Don't mix Forest Green and Teal Green on one screen, and don't add a third green before the planned unification.",
+      "Don't add a thick coloured left border to cards or panels. Settings dropped it, and the Dashboard stat cards are the last place it remains.",
+      "Don't use emoji or hand-drawn one-off SVGs as icons.",
+      "Don't use Tailwind's slate/teal scales or off-palette tints (indigo, blue backgrounds) in the staff area. Use the gray scale and the exact greens above.",
+      "Don't use terracotta outside the emergency banner.",
+      "Don't set body text below 14px, or rely on colour alone to show state."
+    ]
+  }
+}
