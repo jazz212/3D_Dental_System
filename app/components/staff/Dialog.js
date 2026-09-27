@@ -28,9 +28,12 @@ export default function Dialog({ title, onClose, wide = false, children }) {
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className={`w-full ${wide ? "max-w-xl" : "max-w-lg"} max-h-[calc(100dvh-2rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-xl outline-none transition-opacity duration-150 ease-smooth starting:opacity-0 motion-reduce:transition-none`}
+        // The rounded box itself doesn't scroll: it clips to its corners and
+        // the area under the title scrolls instead. Otherwise the scrollbar
+        // runs up into the rounded corners and shows a square end there.
+        className={`flex w-full flex-col ${wide ? "max-w-xl" : "max-w-lg"} max-h-[calc(100dvh-2rem)] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl outline-none transition-opacity duration-150 ease-smooth starting:opacity-0 motion-reduce:transition-none`}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-gray-200 px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-gray-200 px-5 py-4">
           <h2 id={titleId} className="text-xl font-bold">
             {title}
           </h2>
@@ -43,7 +46,7 @@ export default function Dialog({ title, onClose, wide = false, children }) {
             <X className="w-5 h-5" />
           </button>
         </div>
-        {children}
+        <div className="min-h-0 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

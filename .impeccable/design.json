@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-26T00:00:00.000Z",
+  "generatedAt": "2026-09-27T00:00:00.000Z",
   "title": "Design System: ToothPeak Dental System",
   "extensions": {
     "colorMeta": {
@@ -144,6 +144,16 @@
         "name": "dialog-enter",
         "value": "opacity 0 -> 1 over 150ms, no scale",
         "purpose": "Staff pop-ups appearing."
+      },
+      {
+        "name": "reveal-in-place",
+        "value": "opacity 0 -> 1 over 200ms ease-smooth (@starting-style), none under reduced motion",
+        "purpose": "Content opened in place by a Disclosure, and the Operating Hours editor."
+      },
+      {
+        "name": "disclosure-chevron",
+        "value": "rotate(180deg) over 200ms ease-smooth",
+        "purpose": "Chevron on Show/Hide toggles."
       }
     ],
     "breakpoints": [
@@ -213,9 +223,24 @@
       "name": "Panel (staff)",
       "kind": "card",
       "refersTo": "panel-staff",
-      "description": "Flat bordered section container used in Settings and the dashboard.",
+      "description": "Flat bordered section container used across the dashboard, Settings and the patient record. The heading carries no icon.",
       "html": "<section class=\"ds-panel\"><h2 class=\"ds-panel-title\">Operating Hours</h2><p class=\"ds-panel-desc\">Choose which days the clinic is open.</p></section>",
       "css": ".ds-panel { background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-panel-title { margin: 0; font-size: 1.125rem; font-weight: 700; } .ds-panel-desc { margin: 4px 0 0; font-size: 0.875rem; color: #6B7280; }"
+    },
+    {
+      "name": "Status Pill (staff)",
+      "kind": "chip",
+      "refersTo": "status-pill-confirmed",
+      "description": "Worded appointment status, the same in tables and on the patient record; white fill when it sits on Mint Surface.",
+      "html": "<span class=\"ds-pill ds-pill-confirmed\">Confirmed</span> <span class=\"ds-pill ds-pill-requested\">Requested</span> <span class=\"ds-pill ds-pill-completed\">Completed</span> <span class=\"ds-pill ds-pill-cancelled\">Cancelled</span> <span class=\"ds-pill ds-pill-noshow\">No Show</span>",
+      "css": ".ds-pill { display: inline-block; white-space: nowrap; border-radius: 9999px; padding: 2px 10px; font: 500 0.875rem ui-sans-serif, system-ui, sans-serif; } .ds-pill-confirmed { background: #F0FDFA; color: #004D45; } .ds-pill-requested { background: #FFFBEB; color: #92400E; } .ds-pill-completed { background: #F3F4F6; color: #374151; } .ds-pill-cancelled { background: #FEF2F2; color: #B91C1C; } .ds-pill-noshow { background: #FFF7ED; color: #9A3412; }"
+    },
+    {
+      "name": "Visit Timeline (staff)",
+      "kind": "custom",
+      "description": "Patient record history by day: 1px grey spine, grey nodes, and a teal Show/Hide disclosure that opens a day's exam and images in place.",
+      "html": "<ol class=\"ds-tl\"><li class=\"ds-tl-day\"><span class=\"ds-tl-spine\"></span><span class=\"ds-tl-node\"></span><h3 class=\"ds-tl-date\">Sep 22, 2026</h3><p class=\"ds-tl-row\"><span class=\"ds-tl-time\">9:00 AM</span> Oral prophylaxis</p><button class=\"ds-disclosure\" aria-expanded=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg>Show exam and 2 images</button></li><li class=\"ds-tl-day\"><span class=\"ds-tl-node\"></span><h3 class=\"ds-tl-date\">Aug 3, 2026</h3><p class=\"ds-tl-row\"><span class=\"ds-tl-time\">2:30 PM</span> Consultation</p></li></ol>",
+      "css": ".ds-tl { list-style: none; margin: 0; padding: 0; font-family: ui-sans-serif, system-ui, sans-serif; } .ds-tl-day { position: relative; padding: 0 0 24px 32px; } .ds-tl-day:last-child { padding-bottom: 0; } .ds-tl-spine { position: absolute; top: 16px; bottom: 0; left: 7px; width: 1px; background: #E5E7EB; } .ds-tl-node { position: absolute; top: 6px; left: 0; width: 15px; height: 15px; box-sizing: border-box; border-radius: 9999px; border: 2px solid #fff; background: #D1D5DB; box-shadow: 0 0 0 1px #D1D5DB; } .ds-tl-date { margin: 0; font-size: 1rem; font-weight: 600; color: #111827; font-variant-numeric: tabular-nums; } .ds-tl-row { margin: 12px 0 0; color: #111827; font-weight: 500; } .ds-tl-time { display: inline-block; width: 80px; font-size: 0.875rem; font-weight: 400; color: #4B5563; } .ds-disclosure { margin-top: 8px; display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; padding: 0; border-radius: 4px; cursor: pointer; font: 500 0.875rem ui-sans-serif, system-ui, sans-serif; color: #00685F; } .ds-disclosure:hover { color: #004D45; } .ds-disclosure:focus-visible { outline: 2px solid #00685F; outline-offset: 2px; } .ds-disclosure svg { transition: transform 200ms cubic-bezier(0.22,1,0.36,1); } .ds-disclosure[aria-expanded=\"true\"] svg { transform: rotate(180deg); }"
     },
     {
       "name": "Emergency Banner (public)",
@@ -280,6 +305,7 @@
       "Don't add a thick coloured left border to cards or panels, or write labels in all capitals. Stat cards use a plain grey border and a sentence-case label.",
       "Don't blur the backdrop behind pop-ups, zoom them in, or give them coloured titles. Use the shared Dialog.",
       "Don't use emoji or hand-drawn one-off SVGs as icons.",
+      "Don't put an icon beside staff panel headings. The heading words are enough; an icon on every heading reads as decoration.",
       "Don't use Tailwind's slate/teal scales or off-palette tints (indigo, blue backgrounds) in the staff area. Use the gray scale and the exact greens above.",
       "Don't use terracotta outside the emergency banner.",
       "Don't set body text below 14px, or rely on colour alone to show state."

@@ -19,11 +19,15 @@ import {
   isStartSlotTaken,
   isEndSlotTaken,
 } from "@/lib/appointmentTimes";
+import PatientPicker from "./PatientPicker";
 
-export default function NewAppointment({ onClose, onAppointmentAdded }) {
+// initialPatient ({ id, full_name, contact_number }) comes from "Book
+// appointment" on a patient's page. Without it the form starts empty.
+export default function NewAppointment({ onClose, onAppointmentAdded, initialPatient }) {
   const [formData, setFormData] = useState({
-    patientName: "",
-    contactNumber: "",
+    patientId: initialPatient?.id || "",
+    patientName: initialPatient?.full_name || "",
+    contactNumber: initialPatient?.contact_number || "",
     date: "",
     startTime: "",
     endTime: "",
@@ -81,6 +85,28 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
     setFieldErrors((prev) => ({ ...prev, service: false }));
     setError(null);
     setSuccess(false);
+  };
+
+  // Typing a name (instead of choosing from the list) unlinks any patient
+  // chosen before, because the text may no longer be that person.
+  const handlePatientNameTyped = (text) => {
+    setFormData((prev) => ({ ...prev, patientName: text, patientId: "" }));
+    setFieldErrors((prev) => ({ ...prev, patientName: false }));
+    setError(null);
+    setSuccess(false);
+  };
+
+  // Choosing a registered patient puts their own contact number in, so a
+  // number left over from a previously chosen patient can't stay behind.
+  // The typed number is kept only when the patient has none on file.
+  const handlePatientSelected = (patient) => {
+    setFormData((prev) => ({
+      ...prev,
+      patientId: patient.id,
+      patientName: patient.full_name,
+      contactNumber: patient.contact_number || prev.contactNumber,
+    }));
+    setFieldErrors((prev) => ({ ...prev, patientName: false }));
   };
 
   const handleSubmit = async (e) => {
@@ -148,6 +174,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
       }
       // Optionally reset form
       setFormData({
+        patientId: "",
         patientName: "",
         contactNumber: "",
         date: "",
@@ -179,6 +206,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
 
   const clearForm = () => {
     setFormData({
+      patientId: "",
       patientName: "",
       contactNumber: "",
       date: "",
@@ -200,14 +228,13 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
               <label htmlFor="new-patient-name" className={labelClass}>
                 Patient name
               </label>
-              <input
+              <PatientPicker
                 id="new-patient-name"
-                name="patientName"
-                type="text"
-                placeholder="Full name"
-                value={formData.patientName}
-                onChange={handleChange}
-                className={fieldClass(fieldErrors.patientName)}
+                patientName={formData.patientName}
+                linkedPatientId={formData.patientId}
+                onTypeName={handlePatientNameTyped}
+                onSelectPatient={handlePatientSelected}
+                inputClassName={fieldClass(fieldErrors.patientName)}
               />
             </div>
             <div className="flex flex-col gap-1">

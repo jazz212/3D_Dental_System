@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import {
   Plus,
@@ -52,6 +53,7 @@ function formatRegisteredDate(timestamp) {
 }
 
 export default function PatientRecords({ initialSearch = "" }) {
+  const router = useRouter();
   const [patients, setPatients] = useState([]);
   const [totalPatients, setTotalPatients] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -332,9 +334,12 @@ export default function PatientRecords({ initialSearch = "" }) {
                   return (
                     // New rows fade in after a filter/page change; archiving
                     // fades the row's text to grey instead of snapping.
+                    // The whole row opens the patient for mouse users; the name
+                    // link below is the same action for keyboard and screen readers.
                     <tr
                       key={patient.id}
-                      className={`hover:bg-gray-50 transition duration-300 ease-smooth starting:opacity-0 motion-reduce:transition-none ${
+                      onClick={() => router.push(`/dashboard/patient-records/${patient.id}`)}
+                      className={`cursor-pointer hover:bg-gray-50 transition duration-300 ease-smooth starting:opacity-0 motion-reduce:transition-none ${
                         isArchived ? "text-gray-400" : ""
                       }`}
                     >
@@ -342,7 +347,14 @@ export default function PatientRecords({ initialSearch = "" }) {
                         {patient.patient_id}
                       </td>
                       <td className={`${tableCellClass} font-medium`}>
-                        {patient.full_name}
+                        <Link
+                          href={`/dashboard/patient-records/${patient.id}`}
+                          // The link already navigates; stop the row from doing it again.
+                          onClick={(event) => event.stopPropagation()}
+                          className="rounded hover:text-[#00685F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00685F]"
+                        >
+                          {patient.full_name}
+                        </Link>
                         {isArchived && (
                           <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
                             Archived
@@ -361,7 +373,11 @@ export default function PatientRecords({ initialSearch = "" }) {
                       <td className={tableCellClass}>
                         <button
                           type="button"
-                          onClick={() => handleArchiveToggle(patient)}
+                          onClick={(event) => {
+                            // Without this the click also reaches the row and opens the patient.
+                            event.stopPropagation();
+                            handleArchiveToggle(patient);
+                          }}
                           disabled={archivingId === patient.id}
                           className={`${rowActionButtonClass} flex items-center gap-1 text-sm`}
                         >

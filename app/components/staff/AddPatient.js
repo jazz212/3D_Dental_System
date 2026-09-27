@@ -333,22 +333,24 @@ export default function AddPatient({ patientId }) {
                     <label className="text-sm font-medium">
                       CHIEF COMPLAINT (Patient&apos;s own words)
                     </label>
-                    <textarea
+                    <input
+                      type="text"
                       name="chiefComplaint"
                       value={history.chiefComplaint}
                       onChange={handleHistoryChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24"
+                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                     />
                   </div>
                   <div className="flex flex-col gap-1 flex-1">
                     <label className="text-sm font-medium">
                       History of Present Illness
                     </label>
-                    <textarea
+                    <input
+                      type="text"
                       name="presentIllness"
                       value={history.presentIllness}
                       onChange={handleHistoryChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24"
+                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
                     />
                   </div>
                 </div>

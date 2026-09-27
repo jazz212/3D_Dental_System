@@ -95,6 +95,11 @@ components:
     textColor: "{colors.forest-ink}"
     rounded: "{rounded.lg}"
     padding: "10px 14px"
+  status-pill-confirmed:
+    backgroundColor: "{colors.mint-surface}"
+    textColor: "{colors.teal-green-deep}"
+    rounded: "{rounded.full}"
+    padding: "2px 10px"
   panel-staff:
     backgroundColor: "{colors.white}"
     rounded: "{rounded.lg}"
@@ -130,11 +135,11 @@ A restrained palette of white and grey with one green voice per half, plus a ter
 
 ### Primary
 - **Forest Green** (#1F4A3D): the public site's voice. Page titles, headings, the header wordmark, active nav underline, and primary "Book Appointment" buttons. Darkens to **Forest Green Deep** (#163A2F) on hover.
-- **Teal Green** (#00685F): the staff dashboard's voice. Primary buttons, section icons, links, focus borders, the "today" and count highlights, and the active sidebar item. Darkens to **Teal Green Deep** (#004D45) on hover.
+- **Teal Green** (#00685F): the staff dashboard's voice. Primary buttons, inline action icons, links and "Show … / Hide …" toggles, focus borders, the "today" and count highlights, and the active sidebar item. Darkens to **Teal Green Deep** (#004D45) on hover.
 
 ### Neutral
 - **White** (#FFFFFF): every page and panel background.
-- **Mint Surface** (#F0FDFA): the staff input fill, sidebar hover and active background, and soft highlight boxes.
+- **Mint Surface** (#F0FDFA): the staff input fill, sidebar hover and active background, soft highlight boxes, and the pinned Upcoming block on a patient record.
 - **Forest Ink** (#1F2D28): public body and nav text; near-black with a green cast.
 - **Sage Border / Sage Line / Sage Muted** (#D8DAD2 / #E4E6E0 / #8A8D82): public form borders, dividers, and quiet helper text and icons in the booking form.
 - **Stone Surface** (#EDEFEE): public footer background.
@@ -173,7 +178,8 @@ A restrained palette of white and grey with one green voice per half, plus a ter
 ## Layout
 
 - **Public site:** centered content in a `max-w-7xl` (1280px) container with 32px side padding. Heroes are centered, with prose capped near `max-w-2xl`. Card grids step from 1 column to 2 at `sm` to 3 at `lg`, with 24px gaps. Sections breathe with 64–80px vertical padding.
-- **Staff dashboard:** a floating white sidebar (rounded, 16px corners, 8px from the screen edge; collapsible on desktop and a slide-in drawer on phones) next to a full-width white content area with 16px padding. Each page opens with a title and subtitle on the left and primary actions on the right, stacking on phones. Content uses 16px gaps. Two-column layouts (for example 2/3 plus 1/3) only appear from `lg`.
+- **Staff dashboard:** a floating white sidebar (rounded, 16px corners, 8px from the screen edge; collapsible on desktop and a slide-in drawer on phones) next to a full-width white content area with 16px padding. Each page opens with a title and subtitle on the left and primary actions on the right, stacking on phones. Content uses 16px gaps. Two-column layouts (for example 2/3 plus 1/3) only appear from `lg`. A record page (such as a patient) opens with a mint initials circle, the name in Headline, and one facts line of short items joined by "·", where each item never wraps internally; its one primary action sits on the right from `lg` and stacks below on smaller screens.
+- **Rows inside panels:** a row that switches from stacked to side by side does so on the panel's own width (a container query), not the screen's. With the sidebar open, a tablet screen is wide but the panel is not.
 - **Breakpoints:** Tailwind defaults `sm` 640px, `md` 768px, `lg` 1024px. Tables scroll horizontally inside their bordered box on small screens instead of squeezing.
 - **Rhythm:** a 4px base. The common steps are 8, 16, 20 and 24px, with 32px for public cards.
 
@@ -212,17 +218,33 @@ Quiet and confident: solid green for the one main action, white with a grey bord
 - **Labels:** always visible above the field (0.875rem, 500). Never placeholder-only.
 
 ### Cards / Containers
-- **Staff panel:** white, 1px Gray Line border, 8px corners, 20px padding, no shadow. Section title in Title style, with an optional 20px Teal Green icon before it.
+- **Staff panel:** white, 1px Gray Line border, 8px corners, 20px padding, no shadow. Section title in Title style with no icon beside it, and an optional one-line grey subtitle (0.875rem) under it.
 - **Public card:** white, 1px border, 12–16px corners, 24–32px padding, with an optional resting shadow. Service cards gain a faint green border and a medium shadow on hover.
 
 ### Pill Toggles (staff)
 - **Style:** a light grey (gray-100) rounded track with 4px padding. The selected option is a white pill with a small shadow, in Teal Green medium text. The Dashboard uses this for the status filter; Patient Records uses it for its tabs, where the white pill slides between options over 300 ms.
-- **Status today:** appointment status shows as plain text in the tables, with no coloured badges yet. If badges are added, always show the status word, so colour is never the only cue.
+- **Not for status:** appointment status is not a toggle. It shows as the worded tinted pill described under Tables (staff).
 
 ### Pop-ups (staff)
 - Every pop-up uses the shared `Dialog` component (`app/components/staff/Dialog.js`): a plain 40% black backdrop with no blur, and a white box with a 1px grey border, 8px corners and a soft shadow.
 - The header has a dark title in Title/Headline weight (never green) and a lucide X close button with the label "Close". The footer is separated by a thin line and right-aligned, with Cancel or Close before the main action.
 - It fades in over 150 ms, with no zoom, and is capped to the screen height with internal scrolling.
+
+### Detail Lists (staff)
+- **Style:** label above value, never side by side. The label is 0.875rem grey (gray-600), the value body text in near-black, with 24px between columns and 16px between rows.
+- **Columns:** two even on phones (most answers are a word or two), three from `xl`, and one in a narrow side column.
+- **Empty values:** an em dash (—), so a blank answer is visibly blank rather than a missing line.
+
+### Disclosure (staff)
+- **Style:** a small Teal Green text button (0.875rem, 500) reading "Show …" or "Hide …", with a 16px chevron that turns over 200 ms. It darkens to Teal Green Deep on hover. Used to open optional detail in place instead of a pop-up.
+- **Opened content:** fades in over 200 ms on `ease-smooth`, instantly under reduced motion. It gets no border or box of its own; spacing groups it.
+
+### Visit Timeline (staff)
+The patient record's signature: one history of the patient, told by day.
+- **Spine:** a single 1px light grey (gray-200) line with small grey nodes (15px) at each day. Nodes stay grey; green is not used on the spine.
+- **Days:** newest first. Each day shows its date and its visits as rows (time, service, status pill, view and edit icon buttons). A day with an exam or images offers a Disclosure ("Show exam and 2 images") that opens them in place.
+- **Upcoming:** visits still ahead are pinned above the spine in a Mint Surface block with 8px corners.
+- **Length:** long histories show the latest days first, with a full-width secondary button for earlier days.
 
 ### Navigation
 - **Public header:** wordmark on the left in Forest Green bold, and centered links at 15px medium in Forest Ink. The active link has a 2px Forest Green underline. On hover a link turns green and its underline grows from the left over 300 ms.
@@ -232,7 +254,7 @@ Quiet and confident: solid green for the one main action, white with a grey bord
 - **One panel:** the heading and filters, the table and the paging row all sit in one bordered panel (8px corners). There's no separate box around the table.
 - **Header row:** a very light grey (gray-50) with medium grey text at 0.875rem, and a thin line below.
 - **Rows:** 12×16px cells, thin grey lines between rows, and a pale grey highlight on hover. The main name is medium weight. Dates read "Sep 22, 2026", and time ranges use an en dash. Numbers use tabular figures so the columns line up.
-- **Status:** a small tinted pill that always shows the word. Confirmed is mint with dark teal, Completed grey, Cancelled pale red, No Show pale orange, and Requested pale amber.
+- **Status:** a small tinted pill that always shows the word. Confirmed is mint with dark teal, Completed grey, Cancelled pale red, No Show pale orange, and Requested pale amber. The same pill is used wherever a visit appears. On a Mint Surface block the pill takes a white fill, so the mint Confirmed pill still reads as a pill.
 - **Row actions:** small grey icon buttons that turn Teal Green on Mint Surface when hovered. Delete turns red.
 - **Paging:** the shared `Pagination` component ("Showing 1–10 of 34 …", 32px page buttons with arrow icons, the current page in Teal Green).
 - **Shared styles:** cell and header styles come from `staffStyles.js`.
@@ -253,6 +275,7 @@ Quiet and confident: solid green for the one main action, white with a grey bord
 - **Don't** add a thick coloured left border to cards or panels, or write labels in all capitals. Stat cards use a plain grey border and a sentence-case label.
 - **Don't** blur the backdrop behind pop-ups, zoom them in, or give them coloured titles. Use the shared `Dialog`.
 - **Don't** use emoji or hand-drawn one-off SVGs as icons.
+- **Don't** put an icon beside staff panel headings. The heading words are enough; an icon on every heading reads as decoration.
 - **Don't** use Tailwind's `slate`/`teal` scales or off-palette tints (indigo, blue backgrounds) in the staff area. Use the `gray` scale and the exact greens above.
 - **Don't** use terracotta outside the emergency banner.
 - **Don't** set body text below 14px, or rely on colour alone to show state.
