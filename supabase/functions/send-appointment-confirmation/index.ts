@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
 
     const { data: request, error: requestError } = await supabase
       .from("appointments")
-      .select("status, requester_full_name, requester_email")
+      .select("status, requester_full_name, requester_email, confirmation_email_sent_at")
       .eq("id", requestId)
       .single();
     if (requestError) {
@@ -139,6 +139,9 @@ Deno.serve(async (req) => {
     // Only email about requests that really ended up confirmed.
     if (request.status !== "confirmed") {
       return jsonResponse({ error: `Request is ${request.status}, not confirmed.` }, 409);
+    }
+    if (request.confirmation_email_sent_at) {
+      return jsonResponse({ error: "The confirmation email was already sent." }, 409);
     }
     if (!request.requester_email) {
       return jsonResponse({ error: "This request has no email address." }, 422);
@@ -155,6 +158,22 @@ Deno.serve(async (req) => {
     }
 
     const { text, html } = buildEmail(request.requester_full_name, booking);
+
+    // Claim the email before sending. The "is null" filter makes this a
+    // one-winner update, so two calls at once can't both send.
+    const { data: claimed, error: claimError } = await supabase
+      .from("appointments")
+      .update({ confirmation_email_sent_at: new Date().toISOString() })
+      .eq("id", requestId)
+      .is("confirmation_email_sent_at", null)
+      .select("id");
+    if (claimError) {
+      console.error(`Could not mark the email for request ${requestId} as sent:`, claimError);
+      return jsonResponse({ error: "Unexpected error sending email." }, 500);
+    }
+    if (claimed.length === 0) {
+      return jsonResponse({ error: "The confirmation email was already sent." }, 409);
+    }
 
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -177,6 +196,11 @@ Deno.serve(async (req) => {
         `Resend rejected the email for request ${requestId}. With onboarding@resend.dev you can only send to your own Resend account email until a domain is verified:`,
         resendResult,
       );
+      // Nothing was sent, so release the claim and let staff try again.
+      await supabase
+        .from("appointments")
+        .update({ confirmation_email_sent_at: null })
+        .eq("id", requestId);
       return jsonResponse({ error: "Email provider rejected the message." }, 502);
     }
 

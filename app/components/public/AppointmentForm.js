@@ -107,6 +107,7 @@ export default function AppointmentForm() {
           <input
             type="text"
             placeholder="Jane Doe"
+            maxLength={100}
             value={form.fullName}
             onChange={(e) => update("fullName", e.target.value)}
             className={inputClass(!!errors.fullName)}
@@ -116,6 +117,7 @@ export default function AppointmentForm() {
           <input
             type="email"
             placeholder="jane@example.com"
+            maxLength={254}
             value={form.email}
             onChange={(e) => update("email", e.target.value)}
             className={inputClass(!!errors.email)}
@@ -210,6 +212,7 @@ export default function AppointmentForm() {
           <textarea
             rows={4}
             placeholder="Please describe any specific symptoms or concerns..."
+            maxLength={1000}
             value={form.notes}
             onChange={(e) => update("notes", e.target.value)}
             className={inputClass(false) + " resize-none"}

@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -8,16 +7,22 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
+  const [signingIn, setSigningIn] = useState(false);
 
-  const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setSigningIn(true);
+    const { error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
     });
 
     if (error) {
-      setErrorMsg(error.message);
-
+      // One message for every failure: Supabase's own text (e.g. "Email not
+      // confirmed") would tell a stranger which accounts exist.
+      console.error("Sign-in failed:", error.message);
+      setErrorMsg("Incorrect email or password.");
+      setSigningIn(false);
       return;
     }
     setErrorMsg("");
@@ -33,60 +38,51 @@ export default function Login() {
         className="w-66 max-w-full rounded-lg"
       />
       <p className="text-gray-400 text-sm">Secure Clinic Portal access</p>
-      <div className="flex flex-col gap-2 bg-white border border-gray-300 border-t-4 border-t-[#00685F] rounded-lg p-6 sm:p-8 w-full max-w-96 mt-4">
-        <p className="text-sm text-gray-600 items-center">Email or Staff ID</p>
+      {/* A real form: Enter submits once, and password managers recognise it */}
+      <form
+        onSubmit={handleLogin}
+        className="flex flex-col gap-2 bg-white border border-gray-300 border-t-4 border-t-[#00685F] rounded-lg p-6 sm:p-8 w-full max-w-96 mt-4"
+      >
+        <label htmlFor="login-email" className="text-sm text-gray-600 items-center">
+          Email or Staff ID
+        </label>
         <input
+          id="login-email"
           type="email"
+          autoComplete="username"
           placeholder="user@toothpeaked.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-[#00685F]"
         />
         <div className="flex justify-between mt-4">
-          <p className="text-sm text-gray-600 items-center">Password</p>
+          <label htmlFor="login-password" className="text-sm text-gray-600 items-center">
+            Password
+          </label>
         </div>
         <input
+          id="login-password"
           type="password"
+          autoComplete="current-password"
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleLogin()}
           className="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none focus:border-[#00685F]"
         />
-        <div className="flex items-center gap-2">
-          <input type="checkbox" id="remember" />
-          <label htmlFor="remember" className="text-sm text-gray-600">
-            Remember me on this device
-          </label>
-        </div>
         {errorMsg && (
-          <p className="text-sm text-red-600 text-center animate-pulse ">
+          <p role="alert" className="text-sm text-red-600 text-center animate-pulse ">
             {errorMsg}
           </p>
         )}
         <button
-          onClick={handleLogin}
-          className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 cursor-pointer"
+          type="submit"
+          disabled={signingIn}
+          className="w-full bg-[#00685F] text-white py-2 rounded-lg transition-all duration-100 active:scale-95 active:brightness-90 cursor-pointer disabled:opacity-70 disabled:cursor-wait"
         >
-          Secure Login
+          {signingIn ? "Signing in..." : "Secure Login"}
         </button>
 
-        <Link
-          href="/forgotpass"
-          className="flex text-sm text-gray-600 items-center justify-center"
-        >
-          Forgot-Password?
-        </Link>
-        <div className="border-t border-gray-200 pt-4 text-center">
-          <p className="text-sm text-gray-500">
-            Need system support? Contact{" "}
-            <Link href="/helpdesk">
-              <span className="text-[#00685F]">IT Helpdesk</span>
-            </Link>
-          </p>
-        </div>
-      </div>
+      </form>
     </div>
   );
 }

@@ -22,6 +22,15 @@ export default function DashboardLayout({ children }) {
       }
     };
     checkSession();
+
+    // Signing out in another tab, or the session expiring, would otherwise
+    // leave this page up with every load failing.
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        router.push("/login");
+      }
+    });
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
   if (checking) {
