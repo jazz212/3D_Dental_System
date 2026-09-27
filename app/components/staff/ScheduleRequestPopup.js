@@ -94,7 +94,6 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
     }
   };
 
-  const patient = request.patients;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -113,10 +112,10 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
         <form onSubmit={handleSubmit} className="px-5 sm:px-7 py-6 flex flex-col gap-5">
           {/* What the patient asked for, read-only */}
           <div className="rounded-xl bg-[#F0FDFA] p-4 text-sm text-gray-700 flex flex-col gap-1">
-            <p className="font-semibold text-gray-900">{patient.full_name}</p>
+            <p className="font-semibold text-gray-900">{request.requester_full_name}</p>
             <p>
-              {patient.email}
-              {patient.age ? ` · ${patient.age} yrs` : ""}
+              {request.requester_email}
+              {request.requester_age ? ` · ${request.requester_age} yrs` : ""}
             </p>
             <p>
               <span className="font-semibold">Reason:</span> {request.reason}
@@ -196,7 +195,7 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
           {emailFailed && (
             <p className="text-sm text-amber-800 bg-amber-50 p-3 rounded">
               Confirmed, but the email couldn&apos;t be sent — contact the patient
-              directly at {patient.email}.
+              directly at {request.requester_email}.
             </p>
           )}
 

@@ -13,6 +13,20 @@ import {
   isEndSlotTaken,
 } from "@/lib/appointmentTimes";
 
+const SERVICE_OPTIONS = [
+  "Dental cleaning",
+  "X-ray / Radiograph",
+  "Tooth filling",
+  "Tooth extraction",
+  "Root canal treatment",
+  "Crown placement",
+  "Orthodontic adjustment",
+  "Teeth whitening",
+  "Consultation",
+  "Fluoride treatment",
+  "Dental implant",
+];
+
 export default function NewAppointment({ onClose, onAppointmentAdded }) {
   const [formData, setFormData] = useState({
     patientName: "",
@@ -20,7 +34,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
     date: "",
     startTime: "",
     endTime: "",
-    service: "",
+    services: [],
     notes: "",
   });
   // Remember which date the ranges belong to, so ranges from a previously
@@ -60,6 +74,18 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFieldErrors((prev) => ({ ...prev, [name]: false }));
+    setError(null);
+    setSuccess(false);
+  };
+
+  const toggleService = (service) => {
+    setFormData((prev) => ({
+      ...prev,
+      services: prev.services.includes(service)
+        ? prev.services.filter((s) => s !== service)
+        : [...prev.services, service],
+    }));
+    setFieldErrors((prev) => ({ ...prev, service: false }));
     setError(null);
     setSuccess(false);
   };
@@ -107,7 +133,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
       setError("End time must be after the start and can't run into another appointment.");
       isValid = false;
     }
-    if (!formData.service) {
+    if (formData.services.length === 0) {
       setFieldErrors((prev) => ({ ...prev, service: true }));
       isValid = false;
     }
@@ -118,7 +144,9 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
     }
 
     try {
-      await createAppointment(formData);
+      // Several services are saved as one comma-separated value, the same
+      // way online requests store them.
+      await createAppointment({ ...formData, service: formData.services.join(", ") });
 
       setSuccess(true);
       // Notify parent that an appointment was added
@@ -132,7 +160,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
         date: "",
         startTime: "",
         endTime: "",
-        service: "",
+        services: [],
         notes: "",
       });
       // Clear field errors after successful submit
@@ -279,35 +307,28 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
             </div>
           </div>
 
-          {/* Service dropdown — half width */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">
-                Service
-              </label>
-              <select
-                name="service"
-                value={formData.service}
-                onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.service ? "border-red-500" : ""}`}
-              >
-                <option value="">Select service</option>
-                <option value="Dental cleaning">Dental cleaning</option>
-                <option value="X-ray / Radiograph">X-ray / Radiograph</option>
-                <option value="Tooth filling">Tooth filling</option>
-                <option value="Tooth extraction">Tooth extraction</option>
-                <option value="Root canal treatment">
-                  Root canal treatment
-                </option>
-                <option value="Crown placement">Crown placement</option>
-                <option value="Orthodontic adjustment">
-                  Orthodontic adjustment
-                </option>
-                <option value="Teeth whitening">Teeth whitening</option>
-                <option value="Consultation">Consultation</option>
-                <option value="Fluoride treatment">Fluoride treatment</option>
-                <option value="Dental implant">Dental implant</option>
-              </select>
+          {/* Services — tick all that apply */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-semibold text-gray-700">
+              Services (select all that apply)
+            </label>
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 gap-1 bg-[#F0FDFA] border rounded-xl p-3 ${fieldErrors.service ? "border-red-500" : "border-gray-300"}`}
+            >
+              {SERVICE_OPTIONS.map((service) => (
+                <label
+                  key={service}
+                  className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-900 cursor-pointer hover:bg-white"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.services.includes(service)}
+                    onChange={() => toggleService(service)}
+                    className="w-4 h-4 shrink-0 cursor-pointer accent-[#00685F]"
+                  />
+                  {service}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -347,7 +368,7 @@ export default function NewAppointment({ onClose, onAppointmentAdded }) {
                   date: "",
                   startTime: "",
                   endTime: "",
-                  service: "",
+                  services: [],
                   notes: "",
                 });
                 setError(null);
