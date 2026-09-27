@@ -11,6 +11,7 @@ import {
   createAppointment,
   fetchBookedRanges,
   translateAppointmentError,
+  SERVICE_OPTIONS,
 } from "@/lib/appointments";
 import {
   START_TIME_OPTIONS,
@@ -18,20 +19,6 @@ import {
   isStartSlotTaken,
   isEndSlotTaken,
 } from "@/lib/appointmentTimes";
-
-const SERVICE_OPTIONS = [
-  "Dental cleaning",
-  "X-ray / Radiograph",
-  "Tooth filling",
-  "Tooth extraction",
-  "Root canal treatment",
-  "Crown placement",
-  "Orthodontic adjustment",
-  "Teeth whitening",
-  "Consultation",
-  "Fluoride treatment",
-  "Dental implant",
-];
 
 export default function NewAppointment({ onClose, onAppointmentAdded }) {
   const [formData, setFormData] = useState({

@@ -11,6 +11,7 @@ import {
   updateAppointment,
   fetchBookedRanges,
   translateAppointmentError,
+  SERVICE_OPTIONS,
 } from "@/lib/appointments";
 import {
   START_TIME_OPTIONS,
@@ -27,8 +28,16 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
     date: appointment?.appointment_date || "",
     startTime: toSlotValue(appointment?.start_time),
     endTime: toSlotValue(appointment?.end_time),
-    service: appointment?.service || "",
+    // Saved as one comma-separated value; split it so each box can be ticked.
+    services: appointment?.service ? appointment.service.split(", ") : [],
     notes: appointment?.notes || "",
+  });
+  // Online requests use the public form's service names, which aren't in
+  // SERVICE_OPTIONS. Show them as extra boxes so saving doesn't drop them.
+  const [serviceChoices] = useState(() => {
+    const savedServices = appointment?.service ? appointment.service.split(", ") : [];
+    const extraServices = savedServices.filter((service) => !SERVICE_OPTIONS.includes(service));
+    return [...SERVICE_OPTIONS, ...extraServices];
   });
   // Remember which date the ranges belong to, so ranges from a previously
   // picked date are ignored instead of reset inside the effect.
@@ -68,6 +77,18 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setFieldErrors((prev) => ({ ...prev, [name]: false }));
+    setError(null);
+    setSuccess(false);
+  };
+
+  const toggleService = (service) => {
+    setFormData((prev) => ({
+      ...prev,
+      services: prev.services.includes(service)
+        ? prev.services.filter((s) => s !== service)
+        : [...prev.services, service],
+    }));
+    setFieldErrors((prev) => ({ ...prev, service: false }));
     setError(null);
     setSuccess(false);
   };
@@ -115,6 +136,10 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
       setError("End time must be after the start and can't run into another appointment.");
       isValid = false;
     }
+    if (formData.services.length === 0) {
+      setFieldErrors((prev) => ({ ...prev, service: true }));
+      isValid = false;
+    }
 
     if (!isValid) {
       setSubmitting(false);
@@ -122,7 +147,9 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
     }
 
     try {
-      await updateAppointment(appointment.id, formData);
+      // Several services are saved as one comma-separated value, the same
+      // way online requests store them.
+      await updateAppointment(appointment.id, { ...formData, service: formData.services.join(", ") });
 
       setSuccess(true);
       // Notify parent that an appointment was updated
@@ -238,31 +265,28 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="edit-service" className={labelClass}>
-                Service
-              </label>
-              <select
-                id="edit-service"
-                name="service"
-                value={formData.service}
-                onChange={handleChange}
-                className={fieldClass(fieldErrors.service)}
-              >
-                <option value="">Select service</option>
-                <option value="Dental cleaning">Dental cleaning</option>
-                <option value="X-ray / Radiograph">X-ray / Radiograph</option>
-                <option value="Tooth filling">Tooth filling</option>
-                <option value="Tooth extraction">Tooth extraction</option>
-                <option value="Root canal treatment">Root canal treatment</option>
-                <option value="Crown placement">Crown placement</option>
-                <option value="Orthodontic adjustment">Orthodontic adjustment</option>
-                <option value="Teeth whitening">Teeth whitening</option>
-                <option value="Consultation">Consultation</option>
-                <option value="Fluoride treatment">Fluoride treatment</option>
-                <option value="Dental implant">Dental implant</option>
-              </select>
+          {/* Services — tick all that apply */}
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>
+              Services (select all that apply)
+            </label>
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 gap-1 bg-[#F0FDFA] border rounded-xl p-3 ${fieldErrors.service ? "border-red-500" : "border-gray-300"}`}
+            >
+              {serviceChoices.map((service) => (
+                <label
+                  key={service}
+                  className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-900 cursor-pointer hover:bg-white"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.services.includes(service)}
+                    onChange={() => toggleService(service)}
+                    className="w-4 h-4 shrink-0 cursor-pointer accent-[#00685F]"
+                  />
+                  {service}
+                </label>
+              ))}
             </div>
           </div>
 
