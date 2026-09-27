@@ -1,4 +1,5 @@
 import { MapPin, Phone, Clock } from "lucide-react";
+import { CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
 
 export default function ClinicInfoCard() {
   return (
@@ -11,7 +12,9 @@ export default function ClinicInfoCard() {
       </SidebarItem>
 
       <SidebarItem icon={<Phone className="h-4 w-4" />} label="Phone">
-        0966 990 8551
+        <a href={CLINIC_PHONE_LINK} className="inline-flex min-h-11 items-center font-medium text-[#1F4A3D] underline underline-offset-4">
+          {CLINIC_PHONE}
+        </a>
       </SidebarItem>
 
       <SidebarItem icon={<Clock className="h-4 w-4" />} label="Hours" last>

@@ -8,9 +8,9 @@ export default function Landing() {
   return (
     <div>
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-8 py-20 md:grid-cols-2 md:items-center">
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 sm:py-20 md:grid-cols-2 md:items-center">
         <div>
-          <h1 className="text-5xl font-extrabold leading-tight text-[#1F4A3D] md:text-6xl">
+          <h1 className="text-4xl font-extrabold sm:text-5xl leading-tight text-[#1F4A3D] md:text-6xl">
             Precision Care,
             <br />
             Natural Smiles.
@@ -18,17 +18,17 @@ export default function Landing() {
           <p className="mt-6 max-w-lg text-lg text-gray-600">
             Experience dental care reimagined. ToothPeak bridges the gap between advanced clinical precision and calming organic warmth, providing a stress-free environment where your oral health is restored to its natural peak.
           </p>
-          <div className="mt-8 flex gap-4">
-            <Link href="/appointments" className="rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <Link href="/appointments" className="rounded-md bg-[#1F4A3D] px-6 py-3 text-center font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
               Book Appointment
             </Link>
-            <Link href="/services" className="rounded-md border border-[#1F4A3D] px-6 py-3 font-semibold text-[#1F4A3D] transition-all duration-200 hover:bg-[#1F4A3D] hover:text-white active:translate-y-0">
+            <Link href="/services" className="rounded-md border border-[#1F4A3D] px-6 py-3 text-center font-semibold text-[#1F4A3D] transition-all duration-200 hover:bg-[#1F4A3D] hover:text-white active:translate-y-0">
               Explore Treatments
             </Link>
           </div>
         </div>
 
-        <div className="flex items-center justify-center rounded-2xl bg-gray-100 p-16">
+        <div className="flex items-center justify-center rounded-2xl bg-gray-100 p-8 sm:p-16">
           <Image
             src="/Logo/ToothPeakLogo.jpg"
             alt="ToothPeak Dental Clinic logo"
@@ -40,7 +40,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="border-t border-gray-200 bg-[#F0F3F1] px-8 py-20">
+      <section className="border-t border-gray-200 bg-[#F0F3F1] px-5 sm:px-8 py-20">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-3xl font-bold text-[#1F4A3D] md:text-4xl">
             Comprehensive Clinical Services
@@ -68,8 +68,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="px-8 py-16">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 rounded-2xl bg-[#A9D5C0] p-10 md:flex-row md:items-center">
+      <section className="px-5 sm:px-8 py-16">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 rounded-2xl bg-[#A9D5C0] p-6 sm:p-10 md:flex-row md:items-center">
           <div>
             <h2 className="text-2xl font-bold text-[#1F4A3D] md:text-3xl">
               Ready to Elevate Your Dental Health?
@@ -78,7 +78,7 @@ export default function Landing() {
               Schedule your comprehensive consultation today. Our team is ready to design a personalized care plan tailored to your clinical needs.
             </p>
           </div>
-          <Link href="/appointments" className="whitespace-nowrap rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+          <Link href="/appointments" className="w-full rounded-md bg-[#1F4A3D] px-6 py-3 text-center font-semibold md:w-auto md:whitespace-nowrap text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
             Book Your Appointment
           </Link>
         </div>

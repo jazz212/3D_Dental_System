@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 const clinicalServices = [
   { title: "Oral Prophylaxis", sub: "(Cleaning)", desc: "Routine cleaning to remove plaque and tartar, essential for maintaining healthy gums and teeth." },
@@ -35,50 +35,36 @@ export default function Services() {
   return (
     <div>
 
-      <section className="mx-auto max-w-4xl px-8 py-20 text-center">
-        <h1 className="text-5xl font-extrabold text-[#1F4A3D] md:text-6xl">Our Services</h1>
+      <section className="mx-auto max-w-4xl px-5 py-14 text-center sm:px-8 sm:py-20">
+        <h1 className="text-4xl font-extrabold text-[#1F4A3D] sm:text-5xl md:text-6xl">Our Services</h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
           Comprehensive dental care tailored to your needs. From routine cleanings to advanced diagnostic imaging, our team is dedicated to your oral health and comfort.
         </p>
-        <Link href="/appointments" className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+        <Link href="/appointments" className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
           Book an Appointment
           <ArrowRight className="h-4 w-4" />
         </Link>
       </section>
 
-      <section className="mx-auto max-w-7xl px-8 pb-16">
+      <section className="mx-auto max-w-7xl px-5 pb-16 sm:px-8">
         <h2 className="mb-8 text-2xl font-bold text-[#1F4A3D] md:text-3xl">Clinical Services</h2>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {clinicalServices.map(({ title, sub, desc }) => {
-            const open = openService === title;
-            return (
-              <div
-                key={title}
-                onClick={() => toggleService(title)}
-                className={`cursor-pointer rounded-xl border border-gray-200 bg-white p-6 transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md ${
-                  open ? "border-[#1F4A3D]" : ""
-                }`}
-              >
-                <h3 className="text-lg font-bold text-[#1F4A3D]">{title}</h3>
-                {sub && <p className="mt-1 text-sm text-gray-500">{sub}</p>}
-                <div
-                  className={`grid transition-all duration-300 ease-in-out ${
-                    open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="min-h-0 overflow-hidden">
-                    <p className="pt-3 text-sm text-gray-600">{desc}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {clinicalServices.map(({ title, sub, desc }) => (
+            <ServiceCard
+              key={title}
+              title={title}
+              sub={sub}
+              desc={desc}
+              isOpen={openService === title}
+              onToggle={() => toggleService(title)}
+            />
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-8 pb-20">
+      <section className="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
         <h2 className="mb-8 text-2xl font-bold text-[#1F4A3D] md:text-3xl">Diagnostic Imaging</h2>
-        <div className="rounded-2xl border border-gray-200 bg-white p-10">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-10">
           <div className="grid gap-10 md:grid-cols-2">
             <div>
               <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-[#1F4A3D]">Digital Panoramic X-Ray</h3>
@@ -106,35 +92,59 @@ export default function Services() {
           <div className="mt-12">
             <h3 className="border-b border-gray-200 pb-3 text-lg font-bold text-[#1F4A3D]">Additional Imaging Services</h3>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {additionalImaging.map(({ title, sub, desc }) => {
-                const open = openService === title;
-                return (
-                  <div
-                    key={title}
-                    onClick={() => toggleService(title)}
-                    className={`cursor-pointer rounded-lg border border-gray-200 p-5 transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md ${
-                      open ? "border-[#1F4A3D]" : ""
-                    }`}
-                  >
-                    <p className="font-bold text-[#1F2D28]">{title}</p>
-                    {sub && <p className="text-sm text-gray-500">{sub}</p>}
-                    <div
-                      className={`grid transition-all duration-300 ease-in-out ${
-                        open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                      }`}
-                    >
-                      <div className="min-h-0 overflow-hidden">
-                        <p className="pt-2 text-sm text-gray-600">{desc}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {additionalImaging.map(({ title, sub, desc }) => (
+                <ServiceCard
+                  key={title}
+                  title={title}
+                  sub={sub}
+                  desc={desc}
+                  isOpen={openService === title}
+                  onToggle={() => toggleService(title)}
+                />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
     </div>
+  );
+}
+
+// A service that opens to show its description. It is a real button so it
+// can be reached with the keyboard and screen readers hear "collapsed" or
+// "expanded"; the arrow shows on touch screens (no hover there) that it opens.
+function ServiceCard({ title, sub, desc, isOpen, onToggle }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={isOpen}
+      className={`w-full rounded-xl border bg-white p-5 text-left transition-all duration-200 hover:border-[#1F4A3D]/40 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F4A3D] sm:p-6 ${
+        isOpen ? "border-[#1F4A3D]" : "border-gray-200"
+      }`}
+    >
+      <span className="flex items-start justify-between gap-3">
+        <span>
+          <span className="block text-lg font-bold text-[#1F4A3D]">{title}</span>
+          {sub && <span className="mt-1 block text-sm text-gray-600">{sub}</span>}
+        </span>
+        <ChevronDown
+          aria-hidden="true"
+          className={`mt-1 h-5 w-5 shrink-0 text-[#1F4A3D] transition-transform duration-300 motion-reduce:transition-none ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </span>
+      <span
+        className={`grid transition-all duration-300 ease-in-out motion-reduce:transition-none ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <span className="block min-h-0 overflow-hidden">
+          <span className="block pt-3 text-base text-gray-700">{desc}</span>
+        </span>
+      </span>
+    </button>
   );
 }

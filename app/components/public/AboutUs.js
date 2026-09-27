@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { BadgeCheck, MapPin, Phone, Clock, ArrowRight } from "lucide-react";
+import { CLINIC_DIRECTIONS_URL, CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
 
 const specialists = [
   { name: "Dr. Feliza Joy C. Taroy, DMD", role: "Doctor of Dental Medicine" },
@@ -14,8 +15,8 @@ export default function AboutUs() {
       {/* Header */}
 
       {/* Hero */}
-      <section className="relative overflow-hidden px-8 py-24 text-center">
-        <h1 className="text-5xl font-extrabold text-[#1F4A3D] md:text-6xl">
+      <section className="relative overflow-hidden px-5 py-16 text-center sm:px-8 sm:py-24">
+        <h1 className="text-4xl font-extrabold sm:text-5xl text-[#1F4A3D] md:text-6xl">
           Elevating Dental Care.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
@@ -27,7 +28,7 @@ export default function AboutUs() {
       </section>
 
       {/* Facility + Mission */}
-      <section className="mx-auto max-w-7xl px-8 pb-20">
+      <section className="mx-auto max-w-7xl px-5 sm:px-8 pb-20">
         <div className="grid gap-6 md:grid-cols-3">
           <div className="relative overflow-hidden rounded-2xl md:col-span-2">
             <div className="flex h-72 items-end bg-gradient-to-t from-black/70 via-black/10 to-transparent bg-[#4A7C6F] p-8 md:h-full">
@@ -66,7 +67,7 @@ export default function AboutUs() {
       </section>
 
       {/* Specialists */}
-      <section className="border-t border-gray-200 bg-[#F0F3F1] px-8 py-20">
+      <section className="border-t border-gray-200 bg-[#F0F3F1] px-5 sm:px-8 py-20">
         <div className="mx-auto max-w-7xl text-center">
           <h2 className="text-3xl font-bold text-[#1F4A3D] md:text-4xl">
             Meet Our Specialists
@@ -96,7 +97,7 @@ export default function AboutUs() {
       </section>
 
       {/* Visit Us */}
-      <section className="mx-auto max-w-7xl px-8 py-20">
+      <section className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <div>
             <h2 className="text-3xl font-bold text-[#1F4A3D]">Visit Our Clinic</h2>
@@ -120,7 +121,11 @@ export default function AboutUs() {
                 <Phone className="mt-1 h-5 w-5 flex-shrink-0 text-[#1F4A3D]" />
                 <div>
                   <p className="font-semibold">Phone</p>
-                  <p className="text-sm text-gray-600">0966 990 8551</p>
+                  <p className="text-sm text-gray-600">
+                    <a href={CLINIC_PHONE_LINK} className="inline-flex min-h-11 items-center font-medium text-[#1F4A3D] underline underline-offset-4">
+                      {CLINIC_PHONE}
+                    </a>
+                  </p>
                 </div>
               </div>
               <div className="flex gap-3">
@@ -128,7 +133,7 @@ export default function AboutUs() {
                 <div>
                   <p className="font-semibold">Hours</p>
                   <p className="text-sm text-gray-600">
-                    Sun & Mon: CLosed
+                    Sun & Mon: Closed
                     <br />
                     Tue - Sat: 9AM-5PM
                     <br />
@@ -139,7 +144,7 @@ export default function AboutUs() {
             </div>
 
             <a
-              href="https://www.google.com/maps/dir/?api=1&destination=ToothPeak%20Dental%20Clinic%2C%20FGC%20Building%2C%20Tagaytay-Nasugbu%20Road%2C%20Tagaytay%20City"
+              href={CLINIC_DIRECTIONS_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"

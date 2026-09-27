@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { CLINIC_PHONE_LINK } from "@/lib/clinicContact";
 
 export default function EmergencyBanner() {
   return (
@@ -12,8 +13,8 @@ export default function EmergencyBanner() {
         not use this form.
       </p>
       <a
-        href="tel:+639669908551"
-        className="block rounded-lg border border-[#F3D8D1] bg-white py-2.5 text-center text-sm font-medium text-[#B4432E] hover:bg-[#FCEEEA]"
+        href={CLINIC_PHONE_LINK}
+        className="flex min-h-11 items-center justify-center rounded-lg border border-[#F3D8D1] bg-white py-2.5 text-center text-sm font-medium text-[#B4432E] hover:bg-[#FCEEEA]"
       >
         Call Emergency Line
       </a>
