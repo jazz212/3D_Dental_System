@@ -43,12 +43,12 @@ export default function PendingRequests({
             >
               <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-800 truncate">
-                  {request.patients.full_name}
-                  {request.patients.age ? (
-                    <span className="font-normal text-gray-500"> · {request.patients.age} yrs</span>
+                  {request.requester_full_name}
+                  {request.requester_age ? (
+                    <span className="font-normal text-gray-500"> · {request.requester_age} yrs</span>
                   ) : null}
                 </p>
-                <p className="text-xs text-gray-500 truncate">{request.patients.email}</p>
+                <p className="text-xs text-gray-500 truncate">{request.requester_email}</p>
                 <p className="text-xs text-gray-500 truncate">
                   {request.reason} · prefers {request.preferred_date}
                   {request.preferred_time_window ? `, ${request.preferred_time_window}` : ""}

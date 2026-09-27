@@ -12,7 +12,7 @@ export default function EmergencyBanner() {
         not use this form.
       </p>
       <a
-        href="tel:+15551234567"
+        href="tel:+639669908551"
         className="block rounded-lg border border-[#F3D8D1] bg-white py-2.5 text-center text-sm font-medium text-[#B4432E] hover:bg-[#FCEEEA]"
       >
         Call Emergency Line

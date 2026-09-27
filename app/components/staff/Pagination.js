@@ -34,8 +34,14 @@ export default function Pagination({
           <ChevronLeft className="w-4 h-4" />
         </button>
 
-        {[...Array(totalPages)].map((_, index) => {
-          const pageNumber = index + 1;
+        {getPageWindow(currentPage, totalPages).map((pageNumber, index) => {
+          if (pageNumber === "gap") {
+            return (
+              <span key={`gap-${index}`} className="px-1 text-gray-400">
+                …
+              </span>
+            );
+          }
           const isCurrent = pageNumber === currentPage;
           return (
             <button
@@ -64,4 +70,28 @@ export default function Pagination({
       </div>
     </div>
   );
+}
+
+// Page buttons to show: always the first and last page plus the current
+// page and its neighbours, with "gap" where pages are skipped.
+// e.g. page 6 of 20 -> 1 … 5 6 7 … 20
+function getPageWindow(currentPage, totalPages) {
+  const pages = [];
+  for (let page = 1; page <= totalPages; page++) {
+    if (page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1) {
+      pages.push(page);
+    }
+  }
+  const items = [];
+  pages.forEach((page, index) => {
+    const previous = pages[index - 1];
+    if (previous && page - previous === 2) {
+      // A gap of one page: show that page instead of "…".
+      items.push(previous + 1);
+    } else if (previous && page - previous > 2) {
+      items.push("gap");
+    }
+    items.push(page);
+  });
+  return items;
 }

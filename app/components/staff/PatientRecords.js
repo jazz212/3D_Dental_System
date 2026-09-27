@@ -12,7 +12,6 @@ import {
   fetchPatientsPage,
   setPatientArchived,
   AGE_GROUPS,
-  formatPatientId,
 } from "@/lib/patients";
 import Pagination from "./Pagination";
 import {
@@ -52,15 +51,15 @@ function formatRegisteredDate(timestamp) {
   });
 }
 
-export default function PatientRecords() {
+export default function PatientRecords({ initialSearch = "" }) {
   const [patients, setPatients] = useState([]);
   const [totalPatients, setTotalPatients] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [filters, setFilters] = useState({ ...EMPTY_FILTERS, nameSearch: initialSearch });
   // What's in the search box right now; filters.nameSearch updates after a pause.
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState(initialSearch);
   const searchTimerRef = useRef(null);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   // Bumping this number re-runs the fetch effect (after archive/restore).
@@ -340,7 +339,7 @@ export default function PatientRecords() {
                       }`}
                     >
                       <td className={`${tableCellClass} tabular-nums text-gray-500`}>
-                        {formatPatientId(patient.id)}
+                        {patient.patient_id}
                       </td>
                       <td className={`${tableCellClass} font-medium`}>
                         {patient.full_name}
