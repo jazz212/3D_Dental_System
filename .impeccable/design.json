@@ -1,38 +1,164 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-25T00:00:00.000Z",
+  "generatedAt": "2026-09-26T00:00:00.000Z",
   "title": "Design System: ToothPeak Dental System",
   "extensions": {
     "colorMeta": {
-      "forest-green": { "role": "primary", "displayName": "Forest Green (public)", "canonical": "#1F4A3D", "tonalRamp": ["#0C1F19", "#163A2F", "#1F4A3D", "#2F6655", "#4A8472", "#78A898", "#B0CDC3", "#E3EFEB"] },
-      "teal-green": { "role": "primary", "displayName": "Teal Green (staff)", "canonical": "#00685F", "tonalRamp": ["#00302B", "#004D45", "#00685F", "#1A8378", "#4AA095", "#86C2B9", "#C4E3DE", "#F0FDFA"] },
-      "forest-ink": { "role": "neutral", "displayName": "Forest Ink", "canonical": "#1F2D28", "tonalRamp": ["#111915", "#1F2D28", "#33362F", "#5B5F55", "#8A8D82", "#A8AB9F", "#D8DAD2", "#EDEFEE"] },
-      "mint-surface": { "role": "neutral", "displayName": "Mint Surface", "canonical": "#F0FDFA" },
-      "gray-line": { "role": "neutral", "displayName": "Gray Line", "canonical": "#E5E7EB", "tonalRamp": ["#111827", "#374151", "#6B7280", "#9CA3AF", "#D1D5DB", "#E5E7EB", "#F3F4F6", "#F9FAFB"] },
-      "alert-terracotta": { "role": "tertiary", "displayName": "Alert Terracotta (emergency only)", "canonical": "#B4432E", "tonalRamp": ["#4A1B12", "#7A4B41", "#B4432E", "#C9664F", "#DB8E7C", "#EBB9AC", "#F3D8D1", "#FCEEEA"] },
-      "error-red": { "role": "error", "displayName": "Error Red", "canonical": "#DC2626" }
+      "forest-green": {
+        "role": "primary",
+        "displayName": "Forest Green (public)",
+        "canonical": "#1F4A3D",
+        "tonalRamp": [
+          "#0C1F19",
+          "#163A2F",
+          "#1F4A3D",
+          "#2F6655",
+          "#4A8472",
+          "#78A898",
+          "#B0CDC3",
+          "#E3EFEB"
+        ]
+      },
+      "teal-green": {
+        "role": "primary",
+        "displayName": "Teal Green (staff)",
+        "canonical": "#00685F",
+        "tonalRamp": [
+          "#00302B",
+          "#004D45",
+          "#00685F",
+          "#1A8378",
+          "#4AA095",
+          "#86C2B9",
+          "#C4E3DE",
+          "#F0FDFA"
+        ]
+      },
+      "forest-ink": {
+        "role": "neutral",
+        "displayName": "Forest Ink",
+        "canonical": "#1F2D28",
+        "tonalRamp": [
+          "#111915",
+          "#1F2D28",
+          "#33362F",
+          "#5B5F55",
+          "#8A8D82",
+          "#A8AB9F",
+          "#D8DAD2",
+          "#EDEFEE"
+        ]
+      },
+      "mint-surface": {
+        "role": "neutral",
+        "displayName": "Mint Surface",
+        "canonical": "#F0FDFA"
+      },
+      "gray-line": {
+        "role": "neutral",
+        "displayName": "Gray Line",
+        "canonical": "#E5E7EB",
+        "tonalRamp": [
+          "#111827",
+          "#374151",
+          "#6B7280",
+          "#9CA3AF",
+          "#D1D5DB",
+          "#E5E7EB",
+          "#F3F4F6",
+          "#F9FAFB"
+        ]
+      },
+      "alert-terracotta": {
+        "role": "tertiary",
+        "displayName": "Alert Terracotta (emergency only)",
+        "canonical": "#B4432E",
+        "tonalRamp": [
+          "#4A1B12",
+          "#7A4B41",
+          "#B4432E",
+          "#C9664F",
+          "#DB8E7C",
+          "#EBB9AC",
+          "#F3D8D1",
+          "#FCEEEA"
+        ]
+      },
+      "error-red": {
+        "role": "error",
+        "displayName": "Error Red",
+        "canonical": "#DC2626"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Public hero and page titles only; 3rem, rising to 3.75rem on desktop." },
-      "headline": { "displayName": "Headline", "purpose": "Staff page titles; 1.875rem, rising to 2.25rem from sm." },
-      "title": { "displayName": "Title", "purpose": "Section and panel headings." },
-      "body": { "displayName": "Body", "purpose": "Paragraphs and table cells; public prose capped near 65-75ch." },
-      "label": { "displayName": "Label", "purpose": "Form labels, dense buttons, helper and status text." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Public hero and page titles only; 3rem, rising to 3.75rem on desktop."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Staff page titles; 1.875rem, rising to 2.25rem from sm."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section and panel headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Paragraphs and table cells; public prose capped near 65-75ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, dense buttons, helper and status text."
+      }
     },
     "shadows": [
-      { "name": "resting-card", "value": "0 1px 2px rgba(0,0,0,0.05)", "purpose": "Public form and info cards at rest." },
-      { "name": "hover-lift", "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", "purpose": "Public primary buttons and service cards on hover." },
-      { "name": "floating", "value": "0 25px 50px -12px rgba(0,0,0,0.25)", "purpose": "Staff pop-ups and hover cards." }
+      {
+        "name": "resting-card",
+        "value": "0 1px 2px rgba(0,0,0,0.05)",
+        "purpose": "Public form and info cards at rest."
+      },
+      {
+        "name": "hover-lift",
+        "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
+        "purpose": "Public primary buttons and service cards on hover."
+      },
+      {
+        "name": "floating",
+        "value": "0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)",
+        "purpose": "Pop-ups (shared Dialog) and hover cards."
+      }
     ],
     "motion": [
-      { "name": "ease-smooth", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Shared easing (globals.css --ease-smooth) for 150-300 ms state transitions." },
-      { "name": "press", "value": "scale(0.97) over 150ms", "purpose": "Staff button press feedback." },
-      { "name": "dialog-enter", "value": "opacity 0 -> 1, scale 0.95 -> 1 over 200ms", "purpose": "Staff pop-ups appearing." }
+      {
+        "name": "ease-smooth",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Shared easing (globals.css --ease-smooth) for 150-300 ms state transitions."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.97) over 150ms",
+        "purpose": "Staff button press feedback."
+      },
+      {
+        "name": "dialog-enter",
+        "value": "opacity 0 -> 1 over 150ms, no scale",
+        "purpose": "Staff pop-ups appearing."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
     ]
   },
   "components": [
@@ -110,12 +236,36 @@
       "Calm motion: short 150–300 ms transitions on a shared \"smooth\" ease."
     ],
     "rules": [
-      { "name": "The One Green Rule", "body": "Each screen uses exactly one green: forest on public pages, teal in the dashboard. Never both on one screen until the planned unification.", "section": "colors" },
-      { "name": "The Green Means Go Rule", "body": "The green accent marks what you can act on or where you are (primary button, active nav, focus, key counts). Structure, dividers and secondary text stay grey.", "section": "colors" },
-      { "name": "The Emergency Is Rare Rule", "body": "Terracotta appears only for dental emergencies. It is never a decorative warm accent.", "section": "colors" },
-      { "name": "The Weight Not Font Rule", "body": "Hierarchy comes from size and weight steps. Never add a second typeface for emphasis.", "section": "typography" },
-      { "name": "The Readable Floor Rule", "body": "Body text never goes below 0.875rem (14px), because many patients are older. 0.75rem is only for tiny meta text like file sizes.", "section": "typography" },
-      { "name": "The Flat Staff Rule", "body": "Dashboard surfaces never use resting shadows. Borders do the separating.", "section": "elevation" }
+      {
+        "name": "The One Green Rule",
+        "body": "Each screen uses exactly one green: forest on public pages, teal in the dashboard. Never both on one screen until the planned unification.",
+        "section": "colors"
+      },
+      {
+        "name": "The Green Means Go Rule",
+        "body": "The green accent marks what you can act on or where you are (primary button, active nav, focus, key counts). Structure, dividers and secondary text stay grey.",
+        "section": "colors"
+      },
+      {
+        "name": "The Emergency Is Rare Rule",
+        "body": "Terracotta appears only for dental emergencies. It is never a decorative warm accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight Not Font Rule",
+        "body": "Hierarchy comes from size and weight steps. Never add a second typeface for emphasis.",
+        "section": "typography"
+      },
+      {
+        "name": "The Readable Floor Rule",
+        "body": "Body text never goes below 0.875rem (14px), because many patients are older. 0.75rem is only for tiny meta text like file sizes.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Staff Rule",
+        "body": "Dashboard surfaces never use resting shadows. Borders do the separating.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do use exactly one green per screen: Forest Green (#1F4A3D) on public pages, Teal Green (#00685F) in the dashboard.",
@@ -127,7 +277,8 @@
     ],
     "donts": [
       "Don't mix Forest Green and Teal Green on one screen, and don't add a third green before the planned unification.",
-      "Don't add a thick coloured left border to cards or panels. Settings dropped it, and the Dashboard stat cards are the last place it remains.",
+      "Don't add a thick coloured left border to cards or panels, or write labels in all capitals. Stat cards use a plain grey border and a sentence-case label.",
+      "Don't blur the backdrop behind pop-ups, zoom them in, or give them coloured titles. Use the shared Dialog.",
       "Don't use emoji or hand-drawn one-off SVGs as icons.",
       "Don't use Tailwind's slate/teal scales or off-palette tints (indigo, blue backgrounds) in the staff area. Use the gray scale and the exact greens above.",
       "Don't use terracotta outside the emergency banner.",

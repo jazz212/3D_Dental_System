@@ -95,11 +95,6 @@ components:
     textColor: "{colors.forest-ink}"
     rounded: "{rounded.lg}"
     padding: "10px 14px"
-  button-primary-dialog:
-    backgroundColor: "{colors.teal-green}"
-    textColor: "{colors.white}"
-    rounded: "{rounded.xl}"
-    padding: "12px 24px"
   panel-staff:
     backgroundColor: "{colors.white}"
     rounded: "{rounded.lg}"
@@ -189,7 +184,7 @@ Mostly flat. Staff panels, tables and inputs sit on white with a 1px grey border
 ### Shadow Vocabulary
 - **Resting card** (`box-shadow: 0 1px 2px rgba(0,0,0,0.05)`): public form and info cards.
 - **Hover lift** (`box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)`): public primary buttons and service cards on hover.
-- **Floating** (`box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25)`): modal pop-ups and hover cards.
+- **Floating** (`box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)`): pop-ups and hover cards.
 
 ### Named Rules
 **The Flat Staff Rule.** Dashboard surfaces never use resting shadows. Borders do the separating.
@@ -205,7 +200,8 @@ Quiet and confident: solid green for the one main action, white with a grey bord
 - **Shape:** 8px corners on staff, 6px on public.
 - **Primary (staff):** Teal Green fill with white text, 8×16px padding. On hover it darkens to Teal Green Deep; when pressed it shrinks to 97% scale over 150 ms.
 - **Primary (public):** Forest Green fill with white semibold text, 12×24px padding. On hover it darkens to Forest Green Deep and lifts 2px with the hover shadow.
-- **Primary (staff pop-ups):** inside pop-ups the main action is larger: Teal Green, 12×24px padding, 0.875rem semibold, 12px corners. It currently darkens to #00524C on hover, not Teal Green Deep. That small inconsistency should be settled during the green unification.
+- **Danger:** red-600 fill with white text, the same size as the primary button. Used only to confirm a delete.
+- **Shared styles:** staff buttons and fields come from `app/components/staff/staffStyles.js`, so pages and pop-ups use one definition.
 - **Secondary:** a white fill with a 1px grey border. Staff secondary buttons turn pale grey on hover. The public outline variant uses a Forest Green border and text, and fills green on hover.
 - **Focus:** a 2px Teal Green outline, offset 2px.
 - **Disabled:** 50% opacity and a not-allowed cursor. Never hidden.
@@ -224,14 +220,23 @@ Quiet and confident: solid green for the one main action, white with a grey bord
 - **Status today:** appointment status shows as plain text in the tables, with no coloured badges yet. If badges are added, always show the status word, so colour is never the only cue.
 
 ### Pop-ups (staff)
-- White, 16px corners, the Floating shadow, and a dimmed backdrop. They scale in from 95% over 200 ms, and are capped to the screen height with internal scrolling.
+- Every pop-up uses the shared `Dialog` component (`app/components/staff/Dialog.js`): a plain 40% black backdrop with no blur, and a white box with a 1px grey border, 8px corners and a soft shadow.
+- The header has a dark title in Title/Headline weight (never green) and a lucide X close button with the label "Close". The footer is separated by a thin line and right-aligned, with Cancel or Close before the main action.
+- It fades in over 150 ms, with no zoom, and is capped to the screen height with internal scrolling.
 
 ### Navigation
 - **Public header:** wordmark on the left in Forest Green bold, and centered links at 15px medium in Forest Ink. The active link has a 2px Forest Green underline. On hover a link turns green and its underline grows from the left over 300 ms.
-- **Staff sidebar:** a floating white rounded panel. Items have 12px corners. Hovering an item gives it a Mint Surface background, and the active item is Teal Green text on Mint Surface. It collapses to icons on desktop and becomes a slide-in drawer with a dimmed backdrop on phones.
+- **Staff sidebar:** a floating white rounded panel (16px corners) listing Overview, Patient Records, Add Patient and Settings, with Logout pinned to the bottom. All items share one component with 8px corners. They're grey text by default and get a pale grey background on hover. The active page is medium-weight Teal Green on Mint Surface, marked with `aria-current`. There's no solid call-to-action button in the sidebar; the main actions live in each page's header. It collapses to icons on desktop (each icon has a tooltip) and becomes a slide-in drawer with a dimmed backdrop on phones.
 
 ### Tables (staff)
-- A bordered, rounded box. The header row is light grey (gray-100) with bold left-aligned text. Rows have 12px cells and a grey bottom border. Row actions are small grey icon buttons that turn Teal Green on Mint Surface when hovered. On narrow screens the table scrolls horizontally, with a minimum width of 720px.
+- **One panel:** the heading and filters, the table and the paging row all sit in one bordered panel (8px corners). There's no separate box around the table.
+- **Header row:** a very light grey (gray-50) with medium grey text at 0.875rem, and a thin line below.
+- **Rows:** 12×16px cells, thin grey lines between rows, and a pale grey highlight on hover. The main name is medium weight. Dates read "Sep 22, 2026", and time ranges use an en dash. Numbers use tabular figures so the columns line up.
+- **Status:** a small tinted pill that always shows the word. Confirmed is mint with dark teal, Completed grey, Cancelled pale red, No Show pale orange, and Requested pale amber.
+- **Row actions:** small grey icon buttons that turn Teal Green on Mint Surface when hovered. Delete turns red.
+- **Paging:** the shared `Pagination` component ("Showing 1–10 of 34 …", 32px page buttons with arrow icons, the current page in Teal Green).
+- **Shared styles:** cell and header styles come from `staffStyles.js`.
+- **Narrow screens:** the table scrolls sideways inside the panel, with a minimum width of 720px.
 
 ## Do's and Don'ts
 
@@ -245,7 +250,8 @@ Quiet and confident: solid green for the one main action, white with a grey bord
 
 ### Don't:
 - **Don't** mix Forest Green and Teal Green on one screen, and don't add a third green before the planned unification.
-- **Don't** add a thick coloured left border to cards or panels. Settings dropped it, and the Dashboard stat cards are the last place it remains.
+- **Don't** add a thick coloured left border to cards or panels, or write labels in all capitals. Stat cards use a plain grey border and a sentence-case label.
+- **Don't** blur the backdrop behind pop-ups, zoom them in, or give them coloured titles. Use the shared `Dialog`.
 - **Don't** use emoji or hand-drawn one-off SVGs as icons.
 - **Don't** use Tailwind's `slate`/`teal` scales or off-palette tints (indigo, blue backgrounds) in the staff area. Use the `gray` scale and the exact greens above.
 - **Don't** use terracotta outside the emergency banner.

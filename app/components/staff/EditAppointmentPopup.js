@@ -1,6 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Check } from "lucide-react";
+import Dialog, { dialogBodyClass, dialogFooterClass } from "./Dialog";
+import {
+  fieldClass,
+  labelClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+} from "./staffStyles";
 import {
   updateAppointment,
   fetchBookedRanges,
@@ -135,90 +141,65 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
-        {/* Section 1: Header — icon + title + close button */}
-        <div className="flex items-center justify-between px-5 sm:px-7 py-5 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <svg
-              className="w-6 h-6 text-[#00685F]"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-            <h2 className="text-2xl font-bold text-[#00685F]">
-              Edit appointment
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none transition-colors"
-          >
-            &#x2715;
-          </button>
-        </div>
-
-        {/* Section 2: Form fields */}
-        <form onSubmit={handleSubmit} className="px-5 sm:px-7 py-6 flex flex-col gap-5">
-          {/* Patient name + Contact number */}
+    <Dialog title="Edit appointment" onClose={onClose} wide>
+      <form onSubmit={handleSubmit}>
+        <div className={dialogBodyClass}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="edit-patient-name" className={labelClass}>
                 Patient name
               </label>
               <input
+                id="edit-patient-name"
                 name="patientName"
                 type="text"
                 placeholder="Full name"
                 value={formData.patientName}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.patientName ? "border-red-500" : ""}`}
+                className={fieldClass(fieldErrors.patientName)}
               />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="edit-contact-number" className={labelClass}>
                 Contact number
               </label>
               <input
+                id="edit-contact-number"
                 name="contactNumber"
                 type="text"
                 placeholder="+63 9XX XXX XXXX"
                 value={formData.contactNumber}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.contactNumber ? "border-red-500" : ""}`}
+                className={fieldClass(fieldErrors.contactNumber)}
               />
             </div>
           </div>
 
-          {/* Date — full width */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">Date</label>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="edit-date" className={labelClass}>
+              Date
+            </label>
             <input
+              id="edit-date"
               name="date"
               type="date"
               value={formData.date}
               onChange={handleChange}
-              className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.date ? "border-red-500" : ""}`}
+              className={fieldClass(fieldErrors.date)}
             />
           </div>
 
-          {/* Start time + End time side by side */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="edit-start-time" className={labelClass}>
                 Start time
               </label>
               <select
+                id="edit-start-time"
                 name="startTime"
                 value={formData.startTime}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.startTime ? "border-red-500" : ""}`}
+                className={fieldClass(fieldErrors.startTime)}
               >
                 <option value="">Select start time</option>
                 {START_TIME_OPTIONS.map((slot) => (
@@ -232,16 +213,16 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
                 ))}
               </select>
             </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="edit-end-time" className={labelClass}>
                 End time
               </label>
               <select
+                id="edit-end-time"
                 name="endTime"
                 value={formData.endTime}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.endTime ? "border-red-500" : ""}`}
+                className={fieldClass(fieldErrors.endTime)}
               >
                 <option value="">Select end time</option>
                 {END_TIME_OPTIONS.map((slot) => (
@@ -257,30 +238,26 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
             </div>
           </div>
 
-          {/* Service dropdown — half width */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="edit-service" className={labelClass}>
                 Service
               </label>
               <select
+                id="edit-service"
                 name="service"
                 value={formData.service}
                 onChange={handleChange}
-                className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.service ? "border-red-500" : ""}`}
+                className={fieldClass(fieldErrors.service)}
               >
                 <option value="">Select service</option>
                 <option value="Dental cleaning">Dental cleaning</option>
                 <option value="X-ray / Radiograph">X-ray / Radiograph</option>
                 <option value="Tooth filling">Tooth filling</option>
                 <option value="Tooth extraction">Tooth extraction</option>
-                <option value="Root canal treatment">
-                  Root canal treatment
-                </option>
+                <option value="Root canal treatment">Root canal treatment</option>
                 <option value="Crown placement">Crown placement</option>
-                <option value="Orthodontic adjustment">
-                  Orthodontic adjustment
-                </option>
+                <option value="Orthodontic adjustment">Orthodontic adjustment</option>
                 <option value="Teeth whitening">Teeth whitening</option>
                 <option value="Consultation">Consultation</option>
                 <option value="Fluoride treatment">Fluoride treatment</option>
@@ -289,50 +266,37 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
             </div>
           </div>
 
-          {/* Notes textarea — full width */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">Notes</label>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="edit-notes" className={labelClass}>
+              Notes
+            </label>
             <textarea
+              id="edit-notes"
               name="notes"
               rows={4}
               placeholder="Optional notes or special instructions..."
               value={formData.notes}
               onChange={handleChange}
-              className={`w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-[#00685F]/10 focus:border-[#00685F] ${fieldErrors.notes ? "border-red-500" : ""}`}
+              className={`${fieldClass(fieldErrors.notes)} resize-none`}
             />
           </div>
 
-          {/* Section 3: Footer — Save appointment + Clear */}
-          <div className="flex items-center gap-3 px-5 sm:px-7 py-5 border-t border-gray-100">
-            <button
-              type="submit"
-              disabled={submitting}
-              className={`flex items-center gap-2 px-6 py-3 bg-[#00685F] hover:bg-[#00524C] text-white text-sm font-semibold rounded-xl transition-colors ${
-                submitting ? "opacity-80" : ""
-              }`}
-            >
-              {submitting ? "Saving..." : "Save changes"}
-              {success && !submitting && (
-                <Check className="ml-2 w-4 h-4 text-green-500" />
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-3 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-
-          {/* Status messages */}
           {error && (
-            <p className=" mt-4 text-sm text-red-600 bg-red-50 p-3 rounded">
+            <p role="alert" className="text-sm text-red-600 bg-red-50 p-3 rounded">
               {error}
             </p>
           )}
-        </form>
-      </div>
-    </div>
+        </div>
+
+        <div className={dialogFooterClass}>
+          <button type="button" onClick={onClose} className={secondaryButtonClass}>
+            Cancel
+          </button>
+          <button type="submit" disabled={submitting} className={primaryButtonClass}>
+            {submitting ? "Saving..." : success ? "Saved" : "Save changes"}
+          </button>
+        </div>
+      </form>
+    </Dialog>
   );
 }

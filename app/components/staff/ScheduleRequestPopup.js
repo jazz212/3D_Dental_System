@@ -1,6 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { fetchBookedRanges } from "@/lib/appointments";
+import Dialog, { dialogBodyClass, dialogFooterClass } from "./Dialog";
+import {
+  fieldClass,
+  labelClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+} from "./staffStyles";
 import {
   ALREADY_HANDLED_CODE,
   confirmAppointmentRequest,
@@ -97,61 +104,56 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
   const patient = request.patients;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto transition duration-200 starting:opacity-0 starting:scale-95 motion-reduce:transition-none">
-        <div className="flex items-center justify-between px-5 sm:px-7 py-5 border-b border-gray-100">
-          <h2 className="text-2xl font-bold text-[#00685F]">Schedule request</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none transition-colors"
-          >
-            &#x2715;
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="px-5 sm:px-7 py-6 flex flex-col gap-5">
+    <Dialog title="Schedule request" onClose={onClose} wide>
+      <form onSubmit={handleSubmit}>
+        <div className={dialogBodyClass}>
           {/* What the patient asked for, read-only */}
-          <div className="rounded-xl bg-[#F0FDFA] p-4 text-sm text-gray-700 flex flex-col gap-1">
+          <div className="rounded-lg border border-gray-200 bg-[#F0FDFA] p-4 text-sm text-gray-700 flex flex-col gap-1">
             <p className="font-semibold text-gray-900">{patient.full_name}</p>
             <p>
               {patient.email}
               {patient.age ? ` · ${patient.age} yrs` : ""}
             </p>
             <p>
-              <span className="font-semibold">Reason:</span> {request.reason}
+              <span className="font-medium text-gray-900">Reason:</span> {request.reason}
             </p>
             <p>
-              <span className="font-semibold">Preferred:</span> {request.preferred_date}
+              <span className="font-medium text-gray-900">Preferred:</span> {request.preferred_date}
               {request.preferred_time_window ? `, ${request.preferred_time_window}` : ""}
             </p>
             {request.notes && (
               <p>
-                <span className="font-semibold">Notes:</span> {request.notes}
+                <span className="font-medium text-gray-900">Notes:</span> {request.notes}
               </p>
             )}
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">Date</label>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="schedule-date" className={labelClass}>
+              Date
+            </label>
             <input
+              id="schedule-date"
               type="date"
               min={todayString}
               value={slot.date}
               onChange={handleDateChange}
-              className="w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:border-[#00685F]"
+              className={fieldClass()}
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">Start time</label>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="schedule-start-time" className={labelClass}>
+                Start time
+              </label>
               <select
+                id="schedule-start-time"
                 name="startTime"
                 value={slot.startTime}
                 onChange={handleTimeChange}
                 disabled={!slot.date}
-                className="w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:border-[#00685F] disabled:opacity-50"
+                className={fieldClass()}
               >
                 <option value="">Select start time</option>
                 {START_TIME_OPTIONS.map((option) => (
@@ -166,14 +168,17 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
               </select>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-semibold text-gray-700">End time</label>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="schedule-end-time" className={labelClass}>
+                End time
+              </label>
               <select
+                id="schedule-end-time"
                 name="endTime"
                 value={slot.endTime}
                 onChange={handleTimeChange}
                 disabled={!slot.date}
-                className="w-full bg-[#F0FDFA] border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 appearance-none focus:outline-none focus:border-[#00685F] disabled:opacity-50"
+                className={fieldClass()}
               >
                 <option value="">Select end time</option>
                 {END_TIME_OPTIONS.map((option) => (
@@ -190,38 +195,30 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 p-3 rounded">{error}</p>
+            <p role="alert" className="text-sm text-red-600 bg-red-50 p-3 rounded">
+              {error}
+            </p>
           )}
 
           {emailFailed && (
-            <p className="text-sm text-amber-800 bg-amber-50 p-3 rounded">
+            <p role="alert" className="text-sm text-amber-800 bg-amber-50 p-3 rounded">
               Confirmed, but the email couldn&apos;t be sent — contact the patient
               directly at {patient.email}.
             </p>
           )}
+        </div>
 
-          <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
-            {!emailFailed && (
-              <button
-                type="submit"
-                disabled={submitting}
-                className={`mt-4 px-6 py-3 bg-[#00685F] hover:bg-[#00524C] text-white text-sm font-semibold rounded-xl transition-colors ${
-                  submitting ? "opacity-80" : ""
-                }`}
-              >
-                {submitting ? "Confirming..." : "Confirm appointment"}
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={onClose}
-              className="mt-4 px-6 py-3 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-50 transition-colors"
-            >
-              {emailFailed ? "Close" : "Cancel"}
+        <div className={dialogFooterClass}>
+          <button type="button" onClick={onClose} className={secondaryButtonClass}>
+            {emailFailed ? "Close" : "Cancel"}
+          </button>
+          {!emailFailed && (
+            <button type="submit" disabled={submitting} className={primaryButtonClass}>
+              {submitting ? "Confirming..." : "Confirm appointment"}
             </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          )}
+        </div>
+      </form>
+    </Dialog>
   );
 }

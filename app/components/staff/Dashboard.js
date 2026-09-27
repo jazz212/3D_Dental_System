@@ -1,5 +1,11 @@
 "use client";
-import { Pencil, Eye, Trash2, Plus, ChevronDown } from "lucide-react";
+import {
+  Pencil,
+  Eye,
+  Trash2,
+  Plus,
+  ChevronDown,
+} from "lucide-react";
 import CalendarView from "./CalendarView";
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -22,6 +28,15 @@ import DeleteTreatmentPopup from "./DeleteTreatmentPopup";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
 import EditAppointmentPopup from "./EditAppointmentPopup";
 import UpcomingVisits from "./UpcomingVisits";
+import Pagination from "./Pagination";
+import {
+  panelClass,
+  primaryButtonClass,
+  rowActionButtonClass,
+  secondaryButtonClass,
+  tableCellClass,
+  tableHeaderCellClass,
+} from "./staffStyles";
 
 // appointment_details.status values -> what staff read in the table.
 const STATUS_LABELS = {
@@ -31,6 +46,28 @@ const STATUS_LABELS = {
   cancelled: "Cancelled",
   no_show: "No Show",
 };
+
+// Tinted pill per status. The word is always shown, so colour is never
+// the only cue.
+const STATUS_PILL_STYLES = {
+  requested: "bg-amber-50 text-amber-800",
+  confirmed: "bg-[#F0FDFA] text-[#004D45]",
+  completed: "bg-gray-100 text-gray-700",
+  cancelled: "bg-red-50 text-red-700",
+  no_show: "bg-orange-50 text-orange-800",
+};
+
+const APPOINTMENT_COLUMNS = ["Patient Name", "Date", "Time", "Service", "Status", "Actions"];
+
+// "2026-09-22" -> "Sep 22, 2026". "T00:00" reads it as local time; a bare
+// date string is parsed as UTC and can show the day before.
+function formatAppointmentDate(dateString) {
+  return new Date(`${dateString}T00:00`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -231,24 +268,22 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-wrap gap-2 sm:gap-4">
+          {/* Booking is the daily task, so it is the one primary button */}
           <Link
             href="/dashboard/add-patient"
-            className="bg-[#00685F] px-4 py-2 text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
+            className={`${secondaryButtonClass} flex items-center gap-2`}
           >
-            <div className="flex items-center gap-2 w-full cursor-pointer">
-              <Plus className="w-4 h-4" />
-              Add New Patient
-            </div>
+            <Plus aria-hidden="true" className="w-4 h-4 text-[#00685F]" />
+            Add New Patient
           </Link>
 
           <button
+            type="button"
             onClick={() => setOpen(true)}
-            className="bg-[#00685F] px-4 py-2 text-white rounded-lg"
+            className={`${primaryButtonClass} flex items-center gap-2`}
           >
-            <div className="flex items-center gap-2 w-full cursor-pointer">
-              <Plus className="w-4 h-4" />
-              Add Appointment
-            </div>
+            <Plus aria-hidden="true" className="w-4 h-4" />
+            Add Appointment
           </button>
         </div>
       </div>
@@ -257,16 +292,16 @@ export default function Dashboard() {
       <div className="flex flex-col lg:flex-row gap-4 mt-4">
         <div className="flex-1 min-w-0 flex flex-col gap-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg px-5 py-4">
-              <p className="text-sm">TODAY&apos;S EXPECTED VISITS</p>
-              <p className="mt-1 text-3xl font-bold text-[#00685F]">
+            <div className="bg-white border border-gray-200 rounded-lg px-5 py-4">
+              <p className="text-sm text-gray-500">Today&apos;s expected visits</p>
+              <p className="mt-1 text-3xl font-bold tabular-nums text-[#00685F]">
                 {upcomingLoading ? "–" : todaysExpectedVisits}
               </p>
             </div>
-            <div className="bg-white border border-gray-500 border-l-4 border-l-[#00685F] rounded-lg px-5 py-4">
-              <p className="text-sm">PENDING APPOINTMENTS</p>
+            <div className="bg-white border border-gray-200 rounded-lg px-5 py-4">
+              <p className="text-sm text-gray-500">Pending appointments</p>
               {/* "–" until loaded, so a slow fetch doesn't read as "0 pending" */}
-              <p className="mt-1 text-3xl font-bold text-[#00685F]">
+              <p className="mt-1 text-3xl font-bold tabular-nums text-[#00685F]">
                 {pendingLoading || pendingError ? "–" : pendingRequests.length}
               </p>
             </div>
@@ -292,211 +327,134 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="flex flex-wrap gap-2 justify-between items-center mt-6">
-        <h2 className="font-bold text-lg">All Appointments</h2>
+      <section className={`${panelClass} mt-6`}>
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
+          <h2 className="font-bold text-lg">All Appointments</h2>
 
-        {/* Same look as the Patient Records tabs: gray track, white pill.
-            appearance-none hides the browser arrow; the chevron replaces it
-            and pointer-events-none lets clicks reach the select underneath. */}
-        <div className="relative bg-gray-100 rounded-full p-1">
-          <select
-            value={statusFilter}
-            onChange={handleStatusFilterChange}
-            aria-label="Filter appointments by status"
-            className="appearance-none bg-white shadow-sm rounded-full pl-4 pr-9 py-1.5 text-sm font-medium text-[#00685F] cursor-pointer outline-none transition-shadow duration-150 hover:shadow focus-visible:ring-2 focus-visible:ring-[#00685F]/30"
-          >
-            {/* No "requested": website requests live in Pending Requests until scheduled */}
-            <option value="all">All Statuses</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="no_show">No Show</option>
-          </select>
-          <ChevronDown
-            aria-hidden="true"
-            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#00685F]"
-          />
+          {/* Same look as the Patient Records tabs: gray track, white pill.
+              appearance-none hides the browser arrow; the chevron replaces it
+              and pointer-events-none lets clicks reach the select underneath. */}
+          <div className="relative bg-gray-100 rounded-full p-1">
+            <select
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              aria-label="Filter appointments by status"
+              className="appearance-none bg-white shadow-sm rounded-full pl-4 pr-9 py-1.5 text-sm font-medium text-[#00685F] cursor-pointer outline-none transition-shadow duration-150 hover:shadow focus-visible:ring-2 focus-visible:ring-[#00685F]/30"
+            >
+              {/* No "requested": website requests live in Pending Requests until scheduled */}
+              <option value="all">All Statuses</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="no_show">No Show</option>
+            </select>
+            <ChevronDown
+              aria-hidden="true"
+              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#00685F]"
+            />
+          </div>
         </div>
-      </div>
 
-      {error && (
-        <p className="mt-4 text-sm text-red-600 bg-red-50 p-3 rounded">
-          {error}
-        </p>
-      )}
+        {error && (
+          <p className="mx-4 mb-3 text-sm text-red-600 bg-red-50 p-3 rounded">
+            {error}
+          </p>
+        )}
 
-      {/* Too many columns for a phone: the table scrolls sideways in its box */}
-      <div className="rounded-lg border border-gray-200 overflow-x-auto mt-4">
-        <table className="w-full min-w-[720px] border-collapse rounded-lg">
-          <thead>
-            <tr>
-              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Patient Name
-              </th>
-              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Date
-              </th>
-              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Time
-              </th>
-              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Service
-              </th>
-              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Status
-              </th>
-              <th className="text-left p-3 bg-gray-100 border-b border-gray-300">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
+        {/* Too many columns for a phone: the table scrolls sideways in the panel */}
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] border-collapse">
+            <thead>
               <tr>
-                <td colSpan={6} className="p-3 text-center text-gray-500">
-                  Loading appointments...
-                </td>
+                {APPOINTMENT_COLUMNS.map((column) => (
+                  <th key={column} className={tableHeaderCellClass}>
+                    {column}
+                  </th>
+                ))}
               </tr>
-            ) : appointments.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="p-3 text-center text-gray-500">
-                  {statusFilter === "all"
-                    ? "No appointments yet."
-                    : `No ${STATUS_LABELS[statusFilter].toLowerCase()} appointments.`}
-                </td>
-              </tr>
-            ) : (
-              appointments.map((appt) => (
-                <tr key={appt.id}>
-                  <td className="p-3 border-b border-gray-200">
-                    {appt.patient_name}
-                  </td>
-                  <td className="p-3 border-b border-gray-200">
-                    {appt.appointment_date}
-                  </td>
-                  <td className="p-3 border-b border-gray-200">
-                    {formatTime(appt.start_time)} - {formatTime(appt.end_time)}
-                  </td>
-                  <td className="p-3 border-b border-gray-200">
-                    {appt.service}
-                  </td>
-                  <td className="p-3 border-b border-gray-200">
-                    {STATUS_LABELS[appt.status] || appt.status}
-                  </td>
-                  <td className="p-3 border-b border-gray-200">
-                    {/* Buttons (not bare icons) give a finger-sized tap area
-                        and keyboard access */}
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => handleEditAppointment(appt)}
-                        aria-label={`Edit ${appt.patient_name}'s appointment`}
-                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-[#00685F] hover:bg-[#F0FDFA]"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleViewAppointment(appt)}
-                        aria-label={`View ${appt.patient_name}'s appointment`}
-                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-[#00685F] hover:bg-[#F0FDFA]"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteAppointment(appt)}
-                        aria-label={`Delete ${appt.patient_name}'s appointment`}
-                        className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-red-500 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className={`${tableCellClass} text-center text-gray-500`}>
+                    Loading appointments...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={6} className="p-4 border-t border-gray-200">
-                <div className="flex justify-between items-center">
-                  <p className="text-sm text-gray-500">
-                    Showing{" "}
-                    {totalAppointments === 0
-                      ? 0
-                      : (currentPage - 1) * appointmentsPerPage + 1}{" "}
-                    -{" "}
-                    {Math.min(
-                      currentPage * appointmentsPerPage,
-                      totalAppointments,
-                    )}{" "}
-                    of {totalAppointments} patients
-                  </p>
-
-                  <div className="flex gap-2 items-center">
-                    <button
-                      onClick={() => goToPage(Math.max(1, currentPage - 1))}
-                      disabled={currentPage === 1}
-                      className="px-3 py-1 border border-gray-300 rounded items-center"
-                    >
-                      {"<"}
-                    </button>
-
-                    {/* Calculate total pages */}
-                    {[
-                      ...Array(
-                        Math.max(
-                          1,
-                          Math.ceil(totalAppointments / appointmentsPerPage),
-                        ),
-                      ),
-                    ].map((_, index) => {
-                      const pageNumber = index + 1;
-                      return (
+              ) : appointments.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className={`${tableCellClass} text-center text-gray-500`}>
+                    {statusFilter === "all"
+                      ? "No appointments yet."
+                      : `No ${STATUS_LABELS[statusFilter].toLowerCase()} appointments.`}
+                  </td>
+                </tr>
+              ) : (
+                appointments.map((appt) => (
+                  <tr key={appt.id} className="hover:bg-gray-50">
+                    <td className={`${tableCellClass} font-medium`}>
+                      {appt.patient_name}
+                    </td>
+                    <td className={`${tableCellClass} tabular-nums whitespace-nowrap`}>
+                      {formatAppointmentDate(appt.appointment_date)}
+                    </td>
+                    <td className={`${tableCellClass} tabular-nums whitespace-nowrap`}>
+                      {formatTime(appt.start_time)} – {formatTime(appt.end_time)}
+                    </td>
+                    <td className={tableCellClass}>{appt.service}</td>
+                    <td className={tableCellClass}>
+                      <span
+                        className={`inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-sm font-medium ${
+                          STATUS_PILL_STYLES[appt.status] || "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {STATUS_LABELS[appt.status] || appt.status}
+                      </span>
+                    </td>
+                    <td className={tableCellClass}>
+                      {/* Buttons (not bare icons) give a finger-sized tap area
+                          and keyboard access */}
+                      <div className="flex gap-1">
                         <button
-                          key={pageNumber}
-                          onClick={() => goToPage(pageNumber)}
-                          className={`px-3 py-1 border border-gray-300 rounded items-center ${
-                            currentPage === pageNumber
-                              ? "bg-[#00685F] text-white"
-                              : ""
-                          }`}
+                          type="button"
+                          onClick={() => handleEditAppointment(appt)}
+                          aria-label={`Edit ${appt.patient_name}'s appointment`}
+                          className={rowActionButtonClass}
                         >
-                          {pageNumber}
+                          <Pencil className="w-4 h-4" />
                         </button>
-                      );
-                    })}
+                        <button
+                          type="button"
+                          onClick={() => handleViewAppointment(appt)}
+                          aria-label={`View ${appt.patient_name}'s appointment`}
+                          className={rowActionButtonClass}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteAppointment(appt)}
+                          aria-label={`Delete ${appt.patient_name}'s appointment`}
+                          className="p-1.5 rounded text-gray-500 cursor-pointer hover:text-red-600 hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-[#00685F]"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
-                    <button
-                      onClick={() =>
-                        goToPage(
-                          Math.min(
-                            Math.max(
-                              1,
-                              Math.ceil(
-                                totalAppointments / appointmentsPerPage,
-                              ),
-                            ),
-                            currentPage + 1,
-                          ),
-                        )
-                      }
-                      disabled={
-                        currentPage >=
-                        Math.max(
-                          1,
-                          Math.ceil(totalAppointments / appointmentsPerPage),
-                        )
-                      }
-                      className="px-3 py-1 border border-gray-300 rounded items-center"
-                    >
-                      {">"}
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+        <Pagination
+          currentPage={currentPage}
+          pageSize={appointmentsPerPage}
+          totalItems={totalAppointments}
+          itemLabel="appointments"
+          onPageChange={goToPage}
+        />
+      </section>
 
       {open && (
         <AddAppointmentPopup
