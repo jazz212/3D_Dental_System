@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
+import { supabase } from "@/lib/supabase";
+import Sidebar from "@/app/components/staff/Sidebar";
+import Navbar from "@/app/components/staff/Navbar";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  // Phone-only slide-in menu. Lives here because both the Navbar (opens it)
+  // and the Sidebar (is it) need it.
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -19,6 +22,15 @@ export default function DashboardLayout({ children }) {
       }
     };
     checkSession();
+
+    // Signing out in another tab, or the session expiring, would otherwise
+    // leave this page up with every load failing.
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") {
+        router.push("/login");
+      }
+    });
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
   if (checking) {
@@ -26,10 +38,15 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Navbar />
+    // h-dvh follows the phone's visible height as the browser bar hides/shows.
+    <div className="flex h-dvh overflow-hidden">
+      <Sidebar
+        mobileOpen={mobileNavOpen}
+        onMobileClose={() => setMobileNavOpen(false)}
+      />
+      {/* min-w-0 lets wide tables scroll inside instead of stretching the page */}
+      <div className="flex flex-1 flex-col overflow-hidden min-w-0">
+        <Navbar onOpenMenu={() => setMobileNavOpen(true)} />
         <div className="overflow-y-auto flex-1">{children}</div>
       </div>
     </div>
