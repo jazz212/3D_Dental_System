@@ -77,6 +77,10 @@ export default function PatientRecords({ initialSearch = "" }) {
     filters.status !== "all" ||
     filters.nameSearch.trim() !== "" ||
     panelFilterCount > 0;
+  // Shown by both the phone card list and the table when nothing is found.
+  const noPatientsMessage = hasAnyFilter
+    ? "No patients match these filters."
+    : "No patients yet. Add one with Add New Patient.";
 
   const goToPage = (pageNumber) => {
     setLoading(true);
@@ -152,6 +156,30 @@ export default function PatientRecords({ initialSearch = "" }) {
     };
   }, [currentPage, filters, refreshKey]);
 
+  // The Archive / Restore button, shared by the table row and the phone card.
+  const renderArchiveButton = (patient) => {
+    const isArchived = patient.archived_at !== null;
+    return (
+      <button
+        type="button"
+        onClick={(event) => {
+          // Without this the click also reaches the table row and opens the patient.
+          event.stopPropagation();
+          handleArchiveToggle(patient);
+        }}
+        disabled={archivingId === patient.id}
+        className={`${rowActionButtonClass} flex items-center gap-1 text-sm`}
+      >
+        {isArchived ? (
+          <ArchiveRestore aria-hidden="true" className="w-4 h-4" />
+        ) : (
+          <Archive aria-hidden="true" className="w-4 h-4" />
+        )}
+        {isArchived ? "Restore" : "Archive"}
+      </button>
+    );
+  };
+
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
@@ -187,7 +215,7 @@ export default function PatientRecords({ initialSearch = "" }) {
                 type="button"
                 onClick={() => updateFilter("status", tab.value)}
                 aria-pressed={filters.status === tab.value}
-                className={`relative px-2 sm:px-4 py-1.5 text-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-150 ease-smooth active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-[#00685F] ${
+                className={`relative px-2 sm:px-4 py-1.5 pointer-coarse:min-h-11 text-sm rounded-full whitespace-nowrap cursor-pointer transition-all duration-150 ease-smooth active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-[#00685F] ${
                   filters.status === tab.value
                     ? "text-[#00685F] font-medium"
                     : "text-gray-500 hover:text-gray-800"
@@ -295,7 +323,56 @@ export default function PatientRecords({ initialSearch = "" }) {
           </p>
         )}
 
-        <div className="overflow-x-auto">
+        {/* Phones: one card per patient. The card is a link to the patient's
+            page; Archive sits beside it as its own button. From sm the table
+            is used. */}
+        <ul
+          aria-busy={loading}
+          className={`divide-y divide-gray-200 border-t border-gray-200 transition-opacity duration-300 ease-smooth motion-reduce:transition-none sm:hidden ${
+            loading && patients.length > 0 ? "opacity-50" : "opacity-100"
+          }`}
+        >
+          {loading && patients.length === 0 ? (
+            <li className="px-4 py-3 text-center text-gray-500">Loading patients...</li>
+          ) : patients.length === 0 ? (
+            <li className="px-4 py-3 text-center text-gray-500">{noPatientsMessage}</li>
+          ) : (
+            patients.map((patient) => {
+              const isArchived = patient.archived_at !== null;
+              return (
+                <li key={patient.id} className="flex items-center gap-2 pr-2">
+                  <Link
+                    href={`/dashboard/patient-records/${patient.id}`}
+                    className={`min-w-0 flex-1 px-4 py-3 active:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#00685F] ${
+                      isArchived ? "text-gray-400" : ""
+                    }`}
+                  >
+                    <span className="flex flex-wrap items-center gap-x-2">
+                      <span className="font-medium break-words">{patient.full_name}</span>
+                      {isArchived && (
+                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                          Archived
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-0.5 block text-sm text-gray-600 tabular-nums">
+                      {[
+                        patient.patient_id,
+                        patient.age === null ? null : `${patient.age} yrs`,
+                        patient.contact_number,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </span>
+                  </Link>
+                  {renderArchiveButton(patient)}
+                </li>
+              );
+            })
+          )}
+        </ul>
+
+        <div className="hidden overflow-x-auto sm:block">
           <table className="w-full min-w-[720px] border-collapse">
             <thead>
               <tr>
@@ -323,9 +400,7 @@ export default function PatientRecords({ initialSearch = "" }) {
               ) : patients.length === 0 ? (
                 <tr>
                   <td colSpan={6} className={`${tableCellClass} text-center text-gray-500`}>
-                    {hasAnyFilter
-                      ? "No patients match these filters."
-                      : "No patients yet. Add one with Add New Patient."}
+                    {noPatientsMessage}
                   </td>
                 </tr>
               ) : (
@@ -370,25 +445,7 @@ export default function PatientRecords({ initialSearch = "" }) {
                       <td className={`${tableCellClass} tabular-nums whitespace-nowrap`}>
                         {formatRegisteredDate(patient.created_at)}
                       </td>
-                      <td className={tableCellClass}>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            // Without this the click also reaches the row and opens the patient.
-                            event.stopPropagation();
-                            handleArchiveToggle(patient);
-                          }}
-                          disabled={archivingId === patient.id}
-                          className={`${rowActionButtonClass} flex items-center gap-1 text-sm`}
-                        >
-                          {isArchived ? (
-                            <ArchiveRestore aria-hidden="true" className="w-4 h-4" />
-                          ) : (
-                            <Archive aria-hidden="true" className="w-4 h-4" />
-                          )}
-                          {isArchived ? "Restore" : "Archive"}
-                        </button>
-                      </td>
+                      <td className={tableCellClass}>{renderArchiveButton(patient)}</td>
                     </tr>
                   );
                 })

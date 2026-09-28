@@ -33,9 +33,10 @@ export default function PendingRequests({
           No pending requests. New bookings from the website show up here.
         </p>
       ) : (
-        // Sorted most urgent first. max-h-96 (~5 rows) keeps the panel from
-        // growing; staff scroll inside it for the rest.
-        <ul className="max-h-96 overflow-y-auto divide-y divide-gray-100 pr-1">
+        // Sorted most urgent first. On desktop max-h-96 (~5 rows) keeps the
+        // panel from growing; on phones the page scrolls instead, because a
+        // scroll area inside a scrolling page traps a finger's swipe.
+        <ul className="lg:max-h-96 lg:overflow-y-auto divide-y divide-gray-100 pr-1">
           {requests.map((request) => (
             <li
               key={request.id}
@@ -55,17 +56,17 @@ export default function PendingRequests({
                 </p>
               </div>
 
-              <div className="flex shrink-0 gap-2 self-start sm:self-center">
+              <div className="flex shrink-0 gap-2 pointer-coarse:gap-3 self-start sm:self-center">
                 <button
                   onClick={() => onDecline(request)}
                   disabled={decliningId === request.id}
-                  className="border border-gray-300 px-3 py-1.5 text-sm text-gray-600 rounded-lg cursor-pointer transition-all duration-100 hover:border-red-300 hover:bg-red-50 hover:text-red-600 active:scale-95 disabled:cursor-default disabled:opacity-50"
+                  className="pointer-coarse:min-h-11 border border-gray-300 px-3 py-1.5 text-sm text-gray-600 rounded-lg cursor-pointer transition-all duration-100 hover:border-red-300 hover:bg-red-50 hover:text-red-600 active:scale-95 disabled:cursor-default disabled:opacity-50"
                 >
                   {decliningId === request.id ? "Declining..." : "Decline"}
                 </button>
                 <button
                   onClick={() => onSchedule(request)}
-                  className="bg-[#00685F] px-3 py-1.5 text-sm text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
+                  className="pointer-coarse:min-h-11 bg-[#00685F] px-3 py-1.5 text-sm text-white rounded-lg cursor-pointer transition-all duration-100 active:scale-95 active:brightness-90"
                 >
                   Schedule
                 </button>

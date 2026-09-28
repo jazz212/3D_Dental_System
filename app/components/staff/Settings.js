@@ -2,6 +2,8 @@
 
 import { Info, MapPin, Phone } from "lucide-react";
 import OperatingHoursEditor from "./OperatingHoursEditor";
+import PhoneLink from "./PhoneLink";
+import { CLINIC_PHONE } from "@/lib/clinicContact";
 
 // Same details the public Location page shows. Read-only here for now.
 const CLINIC_DETAILS = [
@@ -12,7 +14,7 @@ const CLINIC_DETAILS = [
     value:
       "FGC Building, Tagaytay-Nasugbu Road, Aguinaldo Highway, cor. Airborne St., Maharlika East, Tagaytay City.",
   },
-  { icon: Phone, label: "Phone", value: "0966 990 8551" },
+  { icon: Phone, label: "Phone", value: <PhoneLink number={CLINIC_PHONE} /> },
 ];
 
 export default function Settings() {

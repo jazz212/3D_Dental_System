@@ -25,3 +25,11 @@
     font-size: 1.125rem;
   }
 }
+/* Touch screens: FullCalendar's today / back / forward buttons are about
+   34px; grow them to 44px so a finger hits them reliably. */
+@media (pointer: coarse) {
+  .fc .fc-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

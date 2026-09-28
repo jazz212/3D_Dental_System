@@ -1,8 +1,9 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+// 32px with a mouse, 44px on touch screens (pointer-coarse).
 const pageButtonClass =
-  "flex min-w-8 h-8 items-center justify-center rounded-lg border border-gray-300 px-2 text-sm tabular-nums cursor-pointer enabled:hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-[#00685F] disabled:cursor-not-allowed disabled:text-gray-300";
+  "flex min-w-8 h-8 pointer-coarse:min-w-11 pointer-coarse:h-11 items-center justify-center rounded-lg border border-gray-300 px-2 text-sm tabular-nums cursor-pointer enabled:hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-[#00685F] disabled:cursor-not-allowed disabled:text-gray-300";
 
 // "Showing 11-20 of 34 patients" plus page buttons, shared by the
 // Dashboard and Patient Records tables. itemLabel names what is counted.

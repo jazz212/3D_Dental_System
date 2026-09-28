@@ -42,3 +42,8 @@ next-env.d.ts
 
 # supabase cli local cache
 supabase/.temp/
+
+# impeccable design-tool output (review screenshots, question logs)
+/.impeccable/questions/
+/.impeccable/review/
+/.impeccable/hook.cache.json

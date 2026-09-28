@@ -215,7 +215,9 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
               <input
                 id="edit-contact-number"
                 name="contactNumber"
-                type="text"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 placeholder="+63 9XX XXX XXXX"
                 value={formData.contactNumber}
                 onChange={handleChange}
@@ -298,13 +300,13 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
               {serviceChoices.map((service) => (
                 <label
                   key={service}
-                  className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-900 cursor-pointer hover:bg-white"
+                  className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 pointer-coarse:min-h-11 text-sm text-gray-900 cursor-pointer hover:bg-white"
                 >
                   <input
                     type="checkbox"
                     checked={formData.services.includes(service)}
                     onChange={() => toggleService(service)}
-                    className="w-4 h-4 shrink-0 cursor-pointer accent-[#00685F]"
+                    className="w-4 h-4 pointer-coarse:w-5 pointer-coarse:h-5 shrink-0 cursor-pointer accent-[#00685F]"
                   />
                   {service}
                 </label>

@@ -94,6 +94,8 @@ export default function PatientPicker({
       event.preventDefault();
       choosePatient(results[highlightedIndex]);
     } else if (event.key === "Escape") {
+      // Marked as handled so the pop-up around the picker stays open.
+      event.preventDefault();
       setIsOpen(false);
     }
   };
@@ -123,7 +125,9 @@ export default function PatientPicker({
         <ul
           id={listboxId}
           role="listbox"
-          className="absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-gray-300 bg-white py-1 shadow-lg"
+          // Shorter on touch screens (about four results) so the list still
+          // fits above the phone keyboard, which covers the lower half.
+          className="absolute z-10 mt-1 max-h-64 pointer-coarse:max-h-52 w-full overflow-y-auto rounded-xl border border-gray-300 bg-white py-1 shadow-lg"
         >
           {searchFailed && (
             <li className="px-4 py-2 text-sm text-red-700">

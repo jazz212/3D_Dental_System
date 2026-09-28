@@ -26,6 +26,7 @@ import {
   rowActionButtonClass,
   secondaryButtonClass,
 } from "./staffStyles";
+import PhoneLink from "./PhoneLink";
 
 // Started from Zyrel's MedicalRecords design (part-ni-zyrel branch), filled
 // from the database. Organised as a visit timeline: each day on it carries
@@ -102,7 +103,7 @@ export default function MedicalRecords({ patientId }) {
     <div className="bg-white w-full p-4 pt-2 pb-8">
       <Link
         href="/dashboard/patient-records"
-        className="inline-flex items-center gap-1 rounded text-sm text-gray-600 hover:text-[#00685F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00685F]"
+        className="inline-flex items-center gap-1 pointer-coarse:min-h-11 rounded text-sm text-gray-600 hover:text-[#00685F] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00685F]"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         Patient Records
@@ -764,7 +765,7 @@ function DisclosureButton({ isOpen, onToggle, controls, children }) {
       onClick={onToggle}
       aria-expanded={isOpen}
       aria-controls={controls}
-      className="mt-2 inline-flex items-center gap-1 rounded text-sm font-medium text-[#00685F] hover:text-[#004D45] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00685F]"
+      className="mt-2 inline-flex items-center gap-1 pointer-coarse:min-h-11 rounded text-sm font-medium text-[#00685F] hover:text-[#004D45] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00685F]"
     >
       <ChevronDown
         aria-hidden="true"
@@ -873,7 +874,7 @@ function PersonalDetails({ patient }) {
       <DetailGrid
         singleColumn
         rows={[
-          ["Mobile / phone", patient.contact_number],
+          ["Mobile / phone", <PhoneLink key="phone" number={patient.contact_number} />],
           ["Email", formatEmailForWrapping(patient.email)],
           ["Address", patient.address],
           ["Birth date", formatDate(patient.date_of_birth)],
