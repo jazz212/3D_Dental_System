@@ -10,6 +10,7 @@ import {
   Eye,
   Pencil,
   Plus,
+  ScanBox,
 } from "lucide-react";
 import { fetchPatientRecord, getCurrentAge } from "@/lib/patients";
 import { fetchPatientAppointments } from "@/lib/appointments";
@@ -319,23 +320,36 @@ function PatientHeader({ patient, onBook }) {
           </p>
         </div>
       </div>
-      {/* The booking forms' patient list leaves archived patients out, so
-          this page doesn't offer booking for them either. */}
-      {patient.archived_at ? (
-        <p className="max-w-xs text-sm text-gray-600 lg:text-right">
-          Archived patients can&apos;t be booked. Restore them in Patient Records
-          to book a visit.
-        </p>
-      ) : (
-        <button
-          type="button"
-          onClick={onBook}
-          className={`${primaryButtonClass} flex shrink-0 items-center justify-center gap-2 self-start lg:self-center`}
+      <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+        {/* Shown for archived patients too: their chart can still be viewed.
+            The 3D chart page itself is not built yet. primaryButtonClass
+            styles hover with "enabled:", which only works on buttons, so this
+            link adds its own hover colour. */}
+        <Link
+          href={`/dashboard/patient-records/${patient.id}/3d-chart`}
+          className={`${primaryButtonClass} flex shrink-0 items-center justify-center gap-2 hover:bg-[#004d45]`}
         >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          Add Appointment
-        </button>
-      )}
+          <ScanBox className="h-4 w-4" aria-hidden="true" />
+          3D Chart
+        </Link>
+        {/* The booking forms' patient list leaves archived patients out, so
+            this page doesn't offer booking for them either. */}
+        {patient.archived_at ? (
+          <p className="max-w-xs text-sm text-gray-600 lg:text-right">
+            Archived patients can&apos;t be booked. Restore them in Patient Records
+            to book a visit.
+          </p>
+        ) : (
+          <button
+            type="button"
+            onClick={onBook}
+            className={`${primaryButtonClass} flex shrink-0 items-center justify-center gap-2`}
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Add Appointment
+          </button>
+        )}
+      </div>
     </header>
   );
 }
