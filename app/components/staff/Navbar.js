@@ -91,7 +91,7 @@ export default function Navbar({ onOpenMenu }) {
       <button
         onClick={onOpenMenu}
         aria-label="Open menu"
-        className="md:hidden w-10 h-10 shrink-0 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors"
+        className="md:hidden w-11 h-11 shrink-0 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors"
       >
         <Menu className="w-5 h-5" />
       </button>
@@ -109,11 +109,14 @@ export default function Navbar({ onOpenMenu }) {
           }}
           aria-label="Search patients and appointments"
           className="w-full border border-gray-300 rounded-full pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-[#00685F]/10 focus:border-[#00685F]"
-          placeholder="Search patient name or appointments"
+          // Short enough to fit a phone's search box; the label above says it all.
+          placeholder="Search patients"
         />
 
         {open && trimmed !== "" && (
-          <div className="absolute left-0 right-0 sm:right-auto sm:w-96 mt-2 z-40 max-h-[70dvh] overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+          // Phones: results span the screen under the top bar instead of the
+          // narrow search box. From sm: a dropdown under the box.
+          <div className="fixed inset-x-4 top-16 sm:absolute sm:inset-x-auto sm:left-0 sm:top-auto sm:w-96 mt-2 z-40 max-h-[70dvh] overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg">
             {!canSearch ? (
               <p className="p-3 text-sm text-gray-500">Type at least 2 characters.</p>
             ) : error ? (
@@ -173,11 +176,19 @@ export default function Navbar({ onOpenMenu }) {
       </div>
 
       <div className="flex gap-2 items-center shrink-0">
-        <button className="w-10 h-10 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors">
-          <Bell className="w-5 h-5" />
+        <button
+          type="button"
+          aria-label="Notifications"
+          className="w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors"
+        >
+          <Bell className="w-5 h-5" aria-hidden="true" />
         </button>
-        <button className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors">
-          <CircleHelp className="w-5 h-5" />
+        <button
+          type="button"
+          aria-label="Help"
+          className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors"
+        >
+          <CircleHelp className="w-5 h-5" aria-hidden="true" />
         </button>
         <div className="w-8 h-8 rounded-full bg-gray-300"></div>
       </div>

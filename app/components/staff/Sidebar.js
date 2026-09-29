@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -22,10 +22,11 @@ const NAV_ITEMS = [
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
+// pointer-coarse: 44px rows and buttons on touch screens only.
 const itemBaseClass =
-  "flex items-center rounded-lg px-3 py-2 transition-colors duration-150 ease-smooth focus-visible:outline-2 focus-visible:outline-[#00685F]";
+  "flex items-center pointer-coarse:min-h-11 rounded-lg px-3 py-2 transition-colors duration-150 ease-smooth focus-visible:outline-2 focus-visible:outline-[#00685F]";
 const iconButtonClass =
-  "rounded-lg p-1.5 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-2 focus-visible:outline-[#00685F]";
+  "pointer-coarse:min-h-11 pointer-coarse:min-w-11 rounded-lg p-1.5 text-gray-500 cursor-pointer hover:bg-gray-100 hover:text-gray-800 focus-visible:outline-2 focus-visible:outline-[#00685F]";
 
 // Desktop: sits beside the page and can collapse to icons (isOpen).
 // Phone: hidden off-screen, slides in as a drawer when mobileOpen is true.
@@ -40,6 +41,16 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
     await supabase.auth.signOut();
     router.push("/login");
   };
+
+  // Escape closes the phone drawer, like the other pop-overs.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKey = (event) => {
+      if (event.key === "Escape") onMobileClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [mobileOpen, onMobileClose]);
 
   // Overview is exact; the others also stay active on their sub-pages
   // (e.g. a single patient's record under /dashboard/patient-records/...).
@@ -58,7 +69,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
       />
       <nav
         aria-label="Staff navigation"
-        className={`bg-white fixed inset-y-0 left-0 z-40 h-[calc(100dvh-1rem)] m-2 flex flex-col p-3 gap-1 rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-[width,translate,visibility] duration-300 ease-in-out w-64 md:static md:z-auto md:h-[calc(100vh-2rem)] md:translate-x-0 md:visible ${
+        className={`bg-white fixed inset-y-0 left-0 z-40 h-[calc(100dvh-1rem)] m-2 flex flex-col p-3 gap-1 rounded-2xl shadow-sm border border-gray-200 overflow-x-hidden overflow-y-auto transition-[width,translate,visibility] duration-300 ease-in-out w-64 md:static md:z-auto md:h-[calc(100vh-2rem)] md:translate-x-0 md:visible ${
           isOpen ? "md:w-64" : "md:w-16"
         } ${
           // Phone only; md:translate-x-0 / md:visible cancel this on desktop.

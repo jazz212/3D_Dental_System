@@ -20,9 +20,11 @@ import {
   isEndSlotTaken,
   toSlotValue,
 } from "@/lib/appointmentTimes";
+import PatientPicker from "./PatientPicker";
 
 export default function EditAppointment({ onClose, onSave, appointment }) {
   const [formData, setFormData] = useState({
+    patientId: appointment?.patient_id || "",
     patientName: appointment?.patient_name || "",
     contactNumber: appointment?.contact_number || "",
     date: appointment?.appointment_date || "",
@@ -91,6 +93,27 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
     setFieldErrors((prev) => ({ ...prev, service: false }));
     setError(null);
     setSuccess(false);
+  };
+
+  // Same linking rules as the New appointment form: typing unlinks,
+  // choosing from the list links.
+  const handlePatientNameTyped = (text) => {
+    setFormData((prev) => ({ ...prev, patientName: text, patientId: "" }));
+    setFieldErrors((prev) => ({ ...prev, patientName: false }));
+    setError(null);
+    setSuccess(false);
+  };
+
+  // Relinking to another patient must bring their number, not keep the old
+  // patient's; the existing number stays only when the patient has none on file.
+  const handlePatientSelected = (patient) => {
+    setFormData((prev) => ({
+      ...prev,
+      patientId: patient.id,
+      patientName: patient.full_name,
+      contactNumber: patient.contact_number || prev.contactNumber,
+    }));
+    setFieldErrors((prev) => ({ ...prev, patientName: false }));
   };
 
   const handleSubmit = async (e) => {
@@ -176,14 +199,13 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
               <label htmlFor="edit-patient-name" className={labelClass}>
                 Patient name
               </label>
-              <input
+              <PatientPicker
                 id="edit-patient-name"
-                name="patientName"
-                type="text"
-                placeholder="Full name"
-                value={formData.patientName}
-                onChange={handleChange}
-                className={fieldClass(fieldErrors.patientName)}
+                patientName={formData.patientName}
+                linkedPatientId={formData.patientId}
+                onTypeName={handlePatientNameTyped}
+                onSelectPatient={handlePatientSelected}
+                inputClassName={fieldClass(fieldErrors.patientName)}
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -193,7 +215,9 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
               <input
                 id="edit-contact-number"
                 name="contactNumber"
-                type="text"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
                 placeholder="+63 9XX XXX XXXX"
                 value={formData.contactNumber}
                 onChange={handleChange}
@@ -276,13 +300,13 @@ export default function EditAppointment({ onClose, onSave, appointment }) {
               {serviceChoices.map((service) => (
                 <label
                   key={service}
-                  className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-gray-900 cursor-pointer hover:bg-white"
+                  className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 pointer-coarse:min-h-11 text-sm text-gray-900 cursor-pointer hover:bg-white"
                 >
                   <input
                     type="checkbox"
                     checked={formData.services.includes(service)}
                     onChange={() => toggleService(service)}
-                    className="w-4 h-4 shrink-0 cursor-pointer accent-[#00685F]"
+                    className="w-4 h-4 pointer-coarse:w-5 pointer-coarse:h-5 shrink-0 cursor-pointer accent-[#00685F]"
                   />
                   {service}
                 </label>

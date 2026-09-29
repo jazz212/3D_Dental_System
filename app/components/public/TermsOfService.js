@@ -42,14 +42,14 @@ export default function TermsOfService() {
   return (
     <div>
 
-      <section className="mx-auto max-w-4xl px-8 py-20 text-center">
-        <h1 className="text-5xl font-extrabold text-[#1F4A3D] md:text-6xl">Terms of Service</h1>
+      <section className="mx-auto max-w-4xl px-5 py-14 text-center sm:px-8 sm:py-20">
+        <h1 className="text-4xl font-extrabold sm:text-5xl text-[#1F4A3D] md:text-6xl">Terms of Service</h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-600">
           The terms governing your use of ToothPeak Dental Clinic&apos;s website and services.
         </p>
       </section>
 
-      <section className="mx-auto max-w-3xl px-8 pb-20">
+      <section className="mx-auto max-w-3xl px-5 sm:px-8 pb-20">
         <div className="space-y-10">
           {sections.map(({ title, body }) => (
             <div key={title}>

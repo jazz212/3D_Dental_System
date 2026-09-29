@@ -2,6 +2,7 @@
 import { formatTime } from "@/lib/appointmentTimes";
 import Dialog, { dialogBodyClass, dialogFooterClass } from "./Dialog";
 import { secondaryButtonClass } from "./staffStyles";
+import PhoneLink from "./PhoneLink";
 
 // "T00:00" reads the date as local time; a bare date is parsed as UTC.
 function formatDate(dateString) {
@@ -13,7 +14,7 @@ function formatDate(dateString) {
 export default function AppointmentDetailsPopup({ onClose, appointment }) {
   const details = [
     { label: "Patient name", value: appointment.patient_name || "N/A" },
-    { label: "Contact number", value: appointment.contact_number || "N/A" },
+    { label: "Contact number", value: <PhoneLink number={appointment.contact_number} fallback="N/A" /> },
     { label: "Date", value: formatDate(appointment.appointment_date) },
     {
       label: "Time",

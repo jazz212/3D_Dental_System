@@ -225,7 +225,7 @@ export default function OperatingHoursEditor() {
           <button
             type="button"
             onClick={retryLoad}
-            className="underline underline-offset-2 cursor-pointer hover:text-red-800"
+            className="inline-flex items-center pointer-coarse:min-h-11 underline underline-offset-2 cursor-pointer hover:text-red-800"
           >
             Try again
           </button>

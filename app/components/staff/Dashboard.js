@@ -76,6 +76,11 @@ const TIMEFRAME_TABS = [
 // its button or has to open upwards.
 const ACTION_MENU_HEIGHT = 190;
 
+// The menu's width (w-52) plus a small margin. The menu opens to the left of
+// its button; on a phone card the button is near the left edge, so the menu
+// is pushed right far enough to stay on screen.
+const ACTION_MENU_MIN_LEFT = 208 + 8;
+
 export default function Dashboard() {
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -163,7 +168,7 @@ export default function Dashboard() {
     const openUp = rect.bottom + ACTION_MENU_HEIGHT > window.innerHeight;
     setActionMenu({
       appointment,
-      left: rect.right,
+      left: Math.max(rect.right, ACTION_MENU_MIN_LEFT),
       top: openUp ? rect.top : rect.bottom,
       openUp,
     });
@@ -360,6 +365,63 @@ export default function Dashboard() {
     };
   }, [refreshKey]);
 
+  // Date and status look the same on the phone card and in the table row.
+  const renderAppointmentDate = (appt) =>
+    appt.appointment_date === todayString ? (
+      <span className="font-semibold text-[#00685F]">Today</span>
+    ) : (
+      formatTableDate(appt.appointment_date, todayString)
+    );
+
+  const renderStatusPill = (appt) => (
+    <span
+      className={`inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-sm font-medium ${
+        STATUS_PILL_STYLES[appt.status] || "bg-gray-100 text-gray-700"
+      }`}
+    >
+      {STATUS_LABELS[appt.status] || appt.status}
+    </span>
+  );
+
+  // View, Edit and More actions for one appointment: the same buttons in
+  // the table row and on the phone card. Buttons (not bare icons) give a
+  // finger-sized tap area and keyboard access.
+  const renderRowActions = (appt) => (
+    <div className="flex gap-1">
+      <button
+        type="button"
+        onClick={() => handleViewAppointment(appt)}
+        aria-label={`View ${appt.patient_name}'s appointment`}
+        title="View"
+        className={rowActionButtonClass}
+      >
+        <Eye className="w-4 h-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => handleEditAppointment(appt)}
+        aria-label={`Edit ${appt.patient_name}'s appointment`}
+        title="Edit"
+        className={rowActionButtonClass}
+      >
+        <Pencil className="w-4 h-4" />
+      </button>
+      <button
+        type="button"
+        data-row-menu-button
+        onClick={(e) => toggleActionMenu(e, appt)}
+        disabled={statusChangingId === appt.id}
+        aria-label={`More actions for ${appt.patient_name}'s appointment`}
+        aria-haspopup="menu"
+        aria-expanded={actionMenu?.appointment.id === appt.id}
+        title="More actions"
+        className={`${rowActionButtonClass} aria-expanded:text-[#00685F] aria-expanded:bg-[#F0FDFA]`}
+      >
+        <Ellipsis className="w-4 h-4" />
+      </button>
+    </div>
+  );
+
   return (
     <div className="bg-white w-full p-4 pt-2 pb-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
@@ -389,10 +451,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Calendar and Upcoming Visits sit side by side only on wide screens */}
-      <div className="flex flex-col lg:flex-row gap-4 mt-4">
-        <div className="flex-1 min-w-0 flex flex-col gap-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* The code order is the phone order: the numbers, who is coming, the
+          requests to act on, then the calendar. From lg a grid puts the
+          calendar under the numbers and Upcoming Visits in a right column. */}
+      <div className="mt-4 flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-x-4 lg:gap-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:col-start-1 lg:row-start-1">
             <div className="bg-white border border-gray-200 rounded-lg px-5 py-4">
               <p className="text-sm text-gray-500">Today&apos;s expected visits</p>
               <p className="mt-1 text-3xl font-bold tabular-nums text-[#00685F]">
@@ -408,8 +471,15 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <CalendarView />
+        <div className="flex lg:col-start-2 lg:row-start-1 lg:row-span-3">
+          <UpcomingVisits
+            visits={upcomingVisits}
+            loading={upcomingLoading}
+            onSelectVisit={handleViewAppointment}
+          />
+        </div>
 
+        <div className="min-w-0 lg:col-start-1 lg:row-start-3">
           <PendingRequests
             requests={pendingRequests}
             loading={pendingLoading}
@@ -421,11 +491,9 @@ export default function Dashboard() {
           />
         </div>
 
-        <UpcomingVisits
-          visits={upcomingVisits}
-          loading={upcomingLoading}
-          onSelectVisit={handleViewAppointment}
-        />
+        <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+          <CalendarView />
+        </div>
       </div>
 
       <section className={`${panelClass} mt-6`}>
@@ -445,7 +513,7 @@ export default function Dashboard() {
                   type="button"
                   onClick={() => handleTimeframeChange(tab.value)}
                   aria-pressed={timeframe === tab.value}
-                  className={`px-4 py-1.5 text-sm rounded-full cursor-pointer transition-all duration-150 ${
+                  className={`px-4 py-1.5 pointer-coarse:min-h-11 text-sm rounded-full cursor-pointer transition-all duration-150 ${
                     timeframe === tab.value
                       ? "bg-white shadow-sm font-medium text-[#00685F]"
                       : "text-gray-500 hover:text-gray-800"
@@ -463,7 +531,7 @@ export default function Dashboard() {
                 value={statusFilter}
                 onChange={handleStatusFilterChange}
                 aria-label="Filter appointments by status"
-                className="appearance-none bg-white shadow-sm rounded-full pl-4 pr-9 py-1.5 text-sm font-medium text-[#00685F] cursor-pointer outline-none transition-shadow duration-150 hover:shadow focus-visible:ring-2 focus-visible:ring-[#00685F]/30"
+                className="appearance-none bg-white shadow-sm rounded-full pl-4 pr-9 py-1.5 pointer-coarse:min-h-11 text-base sm:text-sm font-medium text-[#00685F] cursor-pointer outline-none transition-shadow duration-150 hover:shadow focus-visible:ring-2 focus-visible:ring-[#00685F]/30"
               >
                 {/* No "requested": website requests live in Pending Requests until scheduled */}
                 <option value="all">All Statuses</option>
@@ -491,8 +559,37 @@ export default function Dashboard() {
           </p>
         )}
 
-        {/* Too many columns for a phone: the table scrolls sideways in the panel */}
-        <div className="overflow-x-auto">
+        {/* Phones: one card per appointment, so status and actions are on
+            screen without scrolling sideways. From sm the table is used. */}
+        <ul className="divide-y divide-gray-200 border-t border-gray-200 sm:hidden">
+          {loading ? (
+            <li className="px-4 py-3 text-center text-gray-500">Loading appointments...</li>
+          ) : appointments.length === 0 ? (
+            <li className="px-4 py-3 text-center text-gray-500">
+              {emptyTableMessage(timeframe, statusFilter)}
+            </li>
+          ) : (
+            appointments.map((appt) => (
+              <li key={appt.id} className="flex flex-col gap-2 px-4 py-3">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="min-w-0 font-medium break-words">{appt.patient_name}</p>
+                  <div className="shrink-0">{renderStatusPill(appt)}</div>
+                </div>
+                <p className="text-sm text-gray-600 tabular-nums">
+                  {renderAppointmentDate(appt)}
+                  {" · "}
+                  {formatTime(appt.start_time)} – {formatTime(appt.end_time)}
+                </p>
+                {/* Full service list: phones have no hover tooltip to reveal it */}
+                <p className="text-sm break-words">{appt.service}</p>
+                <div className="-ml-1.5">{renderRowActions(appt)}</div>
+              </li>
+            ))
+          )}
+        </ul>
+
+        {/* Wider screens: the table, scrolling sideways in the panel if needed */}
+        <div className="hidden overflow-x-auto sm:block">
           <table className="w-full min-w-[720px] border-collapse">
             <thead>
               <tr>
@@ -523,11 +620,7 @@ export default function Dashboard() {
                       {appt.patient_name}
                     </td>
                     <td className={`${tableCellClass} tabular-nums whitespace-nowrap`}>
-                      {appt.appointment_date === todayString ? (
-                        <span className="font-semibold text-[#00685F]">Today</span>
-                      ) : (
-                        formatTableDate(appt.appointment_date, todayString)
-                      )}
+                      {renderAppointmentDate(appt)}
                     </td>
                     <td className={`${tableCellClass} tabular-nums whitespace-nowrap`}>
                       {formatTime(appt.start_time)} – {formatTime(appt.end_time)}
@@ -538,52 +631,8 @@ export default function Dashboard() {
                         {appt.service}
                       </span>
                     </td>
-                    <td className={tableCellClass}>
-                      <span
-                        className={`inline-block whitespace-nowrap rounded-full px-2.5 py-0.5 text-sm font-medium ${
-                          STATUS_PILL_STYLES[appt.status] || "bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {STATUS_LABELS[appt.status] || appt.status}
-                      </span>
-                    </td>
-                    <td className={tableCellClass}>
-                      {/* Buttons (not bare icons) give a finger-sized tap area
-                          and keyboard access */}
-                      <div className="flex gap-1">
-                        <button
-                          type="button"
-                          onClick={() => handleViewAppointment(appt)}
-                          aria-label={`View ${appt.patient_name}'s appointment`}
-                          title="View"
-                          className={rowActionButtonClass}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleEditAppointment(appt)}
-                          aria-label={`Edit ${appt.patient_name}'s appointment`}
-                          title="Edit"
-                          className={rowActionButtonClass}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          type="button"
-                          data-row-menu-button
-                          onClick={(e) => toggleActionMenu(e, appt)}
-                          disabled={statusChangingId === appt.id}
-                          aria-label={`More actions for ${appt.patient_name}'s appointment`}
-                          aria-haspopup="menu"
-                          aria-expanded={actionMenu?.appointment.id === appt.id}
-                          title="More actions"
-                          className={`${rowActionButtonClass} aria-expanded:text-[#00685F] aria-expanded:bg-[#F0FDFA]`}
-                        >
-                          <Ellipsis className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+                    <td className={tableCellClass}>{renderStatusPill(appt)}</td>
+                    <td className={tableCellClass}>{renderRowActions(appt)}</td>
                   </tr>
                 ))
               )}

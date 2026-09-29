@@ -5,6 +5,12 @@ import {
   createPatientWithHistory,
   createExamination,
 } from "@/lib/patients";
+import { fieldClass, primaryButtonClass } from "./staffStyles";
+
+// Radio and checkbox rows. On touch screens the whole label grows to 44px
+// so a finger can hit the option text, not just the small box.
+const choiceInputClass = "h-5 w-5 shrink-0 accent-[#00685F]";
+const choiceLabelClass = "flex items-center gap-2 pointer-coarse:min-h-11 pointer-coarse:pr-2";
 
 const MEDICAL_CONDITIONS = [
   "Rheumatic Heart Disease",
@@ -193,29 +199,32 @@ export default function AddPatient({ patientId }) {
                 <hr className="border border-gray-200" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Full Name</label>
+                    <label htmlFor="patient-fullName" className="text-sm font-medium">Full Name</label>
                     <input
+                      id="patient-fullName"
                       type="text"
                       name="fullName"
                       value={profile.fullName}
                       onChange={handleProfileChange}
                       placeholder="Last, First, M.I."
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Birth Date</label>
+                    <label htmlFor="patient-birthDate" className="text-sm font-medium">Birth Date</label>
                     <input
+                      id="patient-birthDate"
                       type="date"
                       name="birthDate"
                       value={profile.birthDate}
                       onChange={handleProfileChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Age</label>
+                    <label htmlFor="patient-age" className="text-sm font-medium">Age</label>
                     <input
+                      id="patient-age"
                       type="number"
                       name="age"
                       min="1"
@@ -223,16 +232,17 @@ export default function AddPatient({ patientId }) {
                       value={profile.age}
                       onChange={handleProfileChange}
                       placeholder="0"
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Sex</label>
+                    <label htmlFor="patient-sex" className="text-sm font-medium">Sex</label>
                     <select
+                      id="patient-sex"
                       name="sex"
                       value={profile.sex}
                       onChange={handleProfileChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     >
                       <option value="">Select</option>
                       <option value="male">Male</option>
@@ -243,59 +253,66 @@ export default function AddPatient({ patientId }) {
 
                 <div className="flex flex-col md:flex-row gap-4 mt-4">
                   <div className="flex flex-col gap-1 w-full md:w-72">
-                    <label className="text-sm font-medium">Tel/CP No.</label>
+                    <label htmlFor="patient-contactNumber" className="text-sm font-medium">Tel/CP No.</label>
                     <input
-                      type="text"
+                      id="patient-contactNumber"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       name="contactNumber"
                       value={profile.contactNumber}
                       onChange={handleProfileChange}
                       placeholder="09XX-XXX-XXXX"
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1 w-full md:w-72">
-                    <label className="text-sm font-medium">
+                    <label htmlFor="patient-email" className="text-sm font-medium">
                       Email (optional)
                     </label>
                     <input
+                      id="patient-email"
                       type="email"
                       name="email"
                       value={profile.email}
                       onChange={handleProfileChange}
                       placeholder="name@example.com"
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1 flex-1">
-                    <label className="text-sm font-medium">Complete Address</label>
+                    <label htmlFor="patient-address" className="text-sm font-medium">Complete Address</label>
                     <input
+                      id="patient-address"
                       type="text"
                       name="address"
                       value={profile.address}
                       onChange={handleProfileChange}
                       placeholder="Street, City, State, Zip"
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Occupation</label>
+                    <label htmlFor="patient-occupation" className="text-sm font-medium">Occupation</label>
                     <input
+                      id="patient-occupation"
                       type="text"
                       name="occupation"
                       value={profile.occupation}
                       onChange={handleProfileChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Civil Status</label>
+                    <label htmlFor="patient-civilStatus" className="text-sm font-medium">Civil Status</label>
                     <select
+                      id="patient-civilStatus"
                       name="civilStatus"
                       value={profile.civilStatus}
                       onChange={handleProfileChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     >
                       <option value="">Select</option>
                       <option value="single">Single</option>
@@ -306,23 +323,25 @@ export default function AddPatient({ patientId }) {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Nationality</label>
+                    <label htmlFor="patient-nationality" className="text-sm font-medium">Nationality</label>
                     <input
+                      id="patient-nationality"
                       type="text"
                       name="nationality"
                       value={profile.nationality}
                       onChange={handleProfileChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium">Religion</label>
+                    <label htmlFor="patient-religion" className="text-sm font-medium">Religion</label>
                     <input
+                      id="patient-religion"
                       type="text"
                       name="religion"
                       value={profile.religion}
                       onChange={handleProfileChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                      className={fieldClass()}
                     />
                   </div>
                 </div>
@@ -330,25 +349,29 @@ export default function AddPatient({ patientId }) {
                 <hr className="border border-gray-200" />
                 <div className="flex flex-col md:flex-row gap-4 mt-2">
                   <div className="flex flex-col gap-1 flex-1">
-                    <label className="text-sm font-medium">
+                    <label htmlFor="patient-chiefComplaint" className="text-sm font-medium">
                       CHIEF COMPLAINT (Patient&apos;s own words)
                     </label>
-                    <textarea
+                    <input
+                      id="patient-chiefComplaint"
+                      type="text"
                       name="chiefComplaint"
                       value={history.chiefComplaint}
                       onChange={handleHistoryChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24"
+                      className={fieldClass()}
                     />
                   </div>
                   <div className="flex flex-col gap-1 flex-1">
-                    <label className="text-sm font-medium">
+                    <label htmlFor="patient-presentIllness" className="text-sm font-medium">
                       History of Present Illness
                     </label>
-                    <textarea
+                    <input
+                      id="patient-presentIllness"
+                      type="text"
                       name="presentIllness"
                       value={history.presentIllness}
                       onChange={handleHistoryChange}
-                      className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full h-24"
+                      className={fieldClass()}
                     />
                   </div>
                 </div>
@@ -360,9 +383,10 @@ export default function AddPatient({ patientId }) {
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mt-3">
                     {MEDICAL_CONDITIONS.map((condition) => (
-                      <label key={condition} className="flex flex-wrap items-center gap-2">
+                      <label key={condition} className="flex flex-wrap items-center gap-2 pointer-coarse:min-h-11">
                         <input
                           type="checkbox"
+                          className={choiceInputClass}
                           checked={history.conditions.includes(condition)}
                           onChange={() => handleConditionToggle(condition)}
                         />{" "}
@@ -376,9 +400,10 @@ export default function AddPatient({ patientId }) {
                     <label className="text-sm font-medium">
                       1. Are you under any medication/s?
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="takesMedication"
                         value="yes"
                         checked={history.takesMedication === "yes"}
@@ -386,9 +411,10 @@ export default function AddPatient({ patientId }) {
                       />{" "}
                       Yes
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="takesMedication"
                         value="no"
                         checked={history.takesMedication === "no"}
@@ -397,6 +423,8 @@ export default function AddPatient({ patientId }) {
                       No
                     </label>
                     <input
+                      id="patient-medicationDetails"
+                      aria-label="Medication details"
                       type="text"
                       name="medicationDetails"
                       value={history.medicationDetails}
@@ -410,9 +438,10 @@ export default function AddPatient({ patientId }) {
                     <label className="text-sm font-medium">
                       2. Do your gums bleed easily when brushing?
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="gumsBleed"
                         value="yes"
                         checked={history.gumsBleed === "yes"}
@@ -420,9 +449,10 @@ export default function AddPatient({ patientId }) {
                       />{" "}
                       Yes
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="gumsBleed"
                         value="no"
                         checked={history.gumsBleed === "no"}
@@ -434,9 +464,10 @@ export default function AddPatient({ patientId }) {
 
                   <div className="flex flex-wrap items-center gap-2">
                     <label className="text-sm font-medium">3. Do you smoke?</label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="smokes"
                         value="yes"
                         checked={history.smokes === "yes"}
@@ -444,9 +475,10 @@ export default function AddPatient({ patientId }) {
                       />{" "}
                       Yes
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="smokes"
                         value="no"
                         checked={history.smokes === "no"}
@@ -455,6 +487,8 @@ export default function AddPatient({ patientId }) {
                       No
                     </label>
                     <input
+                      id="patient-sticksPerDay"
+                      aria-label="Sticks per day"
                       type="number"
                       name="sticksPerDay"
                       min="0"
@@ -469,9 +503,10 @@ export default function AddPatient({ patientId }) {
                     <label className="text-sm font-medium">
                       4. Do you have any known ALLERGY/ies?
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="hasAllergies"
                         value="yes"
                         checked={history.hasAllergies === "yes"}
@@ -479,9 +514,10 @@ export default function AddPatient({ patientId }) {
                       />{" "}
                       Yes
                     </label>
-                    <label className="flex items-center gap-1">
+                    <label className={choiceLabelClass}>
                       <input
                         type="radio"
+                        className={choiceInputClass}
                         name="hasAllergies"
                         value="no"
                         checked={history.hasAllergies === "no"}
@@ -490,6 +526,8 @@ export default function AddPatient({ patientId }) {
                       No
                     </label>
                     <input
+                      id="patient-allergyDetails"
+                      aria-label="Allergy details"
                       type="text"
                       name="allergyDetails"
                       value={history.allergyDetails}
@@ -508,9 +546,10 @@ export default function AddPatient({ patientId }) {
                         <label className="text-sm font-medium">
                           Previous Oral Prophylaxis
                         </label>
-                        <label className="flex items-center gap-1">
+                        <label className={choiceLabelClass}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hadProphylaxis"
                             value="yes"
                             checked={history.hadProphylaxis === "yes"}
@@ -518,9 +557,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Yes
                         </label>
-                        <label className="flex items-center gap-1">
+                        <label className={choiceLabelClass}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hadProphylaxis"
                             value="no"
                             checked={history.hadProphylaxis === "no"}
@@ -541,9 +581,10 @@ export default function AddPatient({ patientId }) {
                         <label className="text-sm font-medium">
                           Previous Dental Extraction
                         </label>
-                        <label className="flex items-center gap-1">
+                        <label className={choiceLabelClass}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hadExtraction"
                             value="yes"
                             checked={history.hadExtraction === "yes"}
@@ -551,9 +592,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Yes
                         </label>
-                        <label className="flex items-center gap-1">
+                        <label className={choiceLabelClass}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hadExtraction"
                             value="no"
                             checked={history.hadExtraction === "no"}
@@ -570,14 +612,15 @@ export default function AddPatient({ patientId }) {
                         placeholder="If yes, when?"
                         className="border-b border-gray-300 outline-none w-full sm:w-58"
                       />
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-dentureType" className="text-sm font-medium">
                         Denture Type (if applicable)
                       </label>
                       <select
+                      id="patient-dentureType"
                         name="dentureType"
                         value={history.dentureType}
                         onChange={handleHistoryChange}
-                        className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2"
+                        className="pointer-coarse:min-h-11 bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2"
                       >
                         <option value="">Select</option>
                         <option value="none">None</option>
@@ -613,55 +656,59 @@ export default function AddPatient({ patientId }) {
                   <hr className="border border-gray-200 w-full" />
                   <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex flex-col flex-1">
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-bloodPressure" className="text-sm font-medium">
                         Blood Pressure(mmHg)
                       </label>
                       <input
+                      id="patient-bloodPressure"
                         type="text"
                         name="bloodPressure"
                         value={exam.bloodPressure}
                         onChange={handleExamChange}
                         placeholder="120/80"
-                        className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                        className={fieldClass()}
                       />
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-respiratoryRate" className="text-sm font-medium">
                         Respiratory Rate (cpm)
                       </label>
                       <input
+                      id="patient-respiratoryRate"
                         type="number"
                         name="respiratoryRate"
                         min="1"
                         value={exam.respiratoryRate}
                         onChange={handleExamChange}
                         placeholder="16"
-                        className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                        className={fieldClass()}
                       />
                     </div>
 
                     <div className="flex flex-col  flex-1">
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-pulseRate" className="text-sm font-medium">
                         Pulse Rate (bpm)
                       </label>
                       <input
+                      id="patient-pulseRate"
                         type="number"
                         name="pulseRate"
                         min="1"
                         value={exam.pulseRate}
                         onChange={handleExamChange}
                         placeholder="72"
-                        className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                        className={fieldClass()}
                       />
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-temperature" className="text-sm font-medium">
                         Temperature (°C)
                       </label>
                       <input
+                      id="patient-temperature"
                         type="number"
                         name="temperature"
                         step="0.1"
                         value={exam.temperature}
                         onChange={handleExamChange}
                         placeholder="36.5"
-                        className="bg-[#F0FDFA] border border-gray-300 rounded-lg px-3 py-2 w-full outline-none focus:border-[#00685F]"
+                        className={fieldClass()}
                       />
                     </div>
                   </div>
@@ -670,19 +717,21 @@ export default function AddPatient({ patientId }) {
                   <div className="flex flex-col gap-2 mt-2">
                     <div className="flex flex-wrap items-center gap-2">
                       <label className="w-16">Head:</label>
-                      <label className="flex items-center gap-1">
+                      <label className={choiceLabelClass}>
                         <input
                           type="checkbox"
+                          className={choiceInputClass}
                           name="headNormal"
                           checked={exam.headNormal}
                           onChange={handleExamChange}
                         />{" "}
                         Normal
                       </label>
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-headNotes" className="text-sm font-medium">
                         Abnormality, specify
                       </label>
                       <input
+                      id="patient-headNotes"
                         type="text"
                         name="headNotes"
                         value={exam.headNotes}
@@ -693,19 +742,21 @@ export default function AddPatient({ patientId }) {
 
                     <div className="flex flex-wrap items-center gap-2">
                       <label className="w-16">Eyes:</label>
-                      <label className="flex items-center gap-1">
+                      <label className={choiceLabelClass}>
                         <input
                           type="checkbox"
+                          className={choiceInputClass}
                           name="eyesNormal"
                           checked={exam.eyesNormal}
                           onChange={handleExamChange}
                         />{" "}
                         Normal
                       </label>
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-eyesNotes" className="text-sm font-medium">
                         Abnormality, specify
                       </label>
                       <input
+                      id="patient-eyesNotes"
                         type="text"
                         name="eyesNotes"
                         value={exam.eyesNotes}
@@ -716,19 +767,21 @@ export default function AddPatient({ patientId }) {
 
                     <div className="flex flex-wrap items-center gap-2">
                       <label className="w-16">TMJ:</label>
-                      <label className="flex items-center gap-1">
+                      <label className={choiceLabelClass}>
                         <input
                           type="checkbox"
+                          className={choiceInputClass}
                           name="tmjNormal"
                           checked={exam.tmjNormal}
                           onChange={handleExamChange}
                         />{" "}
                         Normal
                       </label>
-                      <label className="text-sm font-medium">
+                      <label htmlFor="patient-tmjNotes" className="text-sm font-medium">
                         Abnormality, specify
                       </label>
                       <input
+                      id="patient-tmjNotes"
                         type="text"
                         name="tmjNotes"
                         value={exam.tmjNotes}
@@ -746,19 +799,21 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Lips</label>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="checkbox"
+                            className={choiceInputClass}
                             name="lipsNormal"
                             checked={exam.lipsNormal}
                             onChange={handleExamChange}
                           />{" "}
                           Normal
                         </label>
-                        <label className="text-sm font-medium">
+                        <label htmlFor="patient-lipsNotes" className="text-sm font-medium">
                           Abnormal, specify
                         </label>
                         <input
+                      id="patient-lipsNotes"
                           type="text"
                           name="lipsNotes"
                           value={exam.lipsNotes}
@@ -771,19 +826,21 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Palate</label>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="checkbox"
+                            className={choiceInputClass}
                             name="palateNormal"
                             checked={exam.palateNormal}
                             onChange={handleExamChange}
                           />{" "}
                           Normal
                         </label>
-                        <label className="text-sm font-medium">
+                        <label htmlFor="patient-palateNotes" className="text-sm font-medium">
                           Abnormal, specify
                         </label>
                         <input
+                      id="patient-palateNotes"
                           type="text"
                           name="palateNotes"
                           value={exam.palateNotes}
@@ -796,19 +853,21 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Tongue</label>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="checkbox"
+                            className={choiceInputClass}
                             name="tongueNormal"
                             checked={exam.tongueNormal}
                             onChange={handleExamChange}
                           />{" "}
                           Normal
                         </label>
-                        <label className="text-sm font-medium">
+                        <label htmlFor="patient-tongueNotes" className="text-sm font-medium">
                           Abnormal, specify
                         </label>
                         <input
+                      id="patient-tongueNotes"
                           type="text"
                           name="tongueNotes"
                           value={exam.tongueNotes}
@@ -823,19 +882,21 @@ export default function AddPatient({ patientId }) {
                         Floor of the mouth
                       </label>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="checkbox"
+                            className={choiceInputClass}
                             name="mouthFloorNormal"
                             checked={exam.mouthFloorNormal}
                             onChange={handleExamChange}
                           />{" "}
                           Normal
                         </label>
-                        <label className="text-sm font-medium">
+                        <label htmlFor="patient-mouthFloorNotes" className="text-sm font-medium">
                           Abnormal, specify
                         </label>
                         <input
+                      id="patient-mouthFloorNotes"
                           type="text"
                           name="mouthFloorNotes"
                           value={exam.mouthFloorNotes}
@@ -847,10 +908,11 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-2 mt-4">
                       <div className="text-sm font-medium">Occlusion</div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="w-40 text-sm">
+                        <label htmlFor="patient-molarRelationship" className="w-40 text-sm">
                           1st Molar Relationship
                         </label>
                         <input
+                      id="patient-molarRelationship"
                           type="text"
                           name="molarRelationship"
                           value={exam.molarRelationship}
@@ -859,8 +921,9 @@ export default function AddPatient({ patientId }) {
                         />
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="w-40 text-sm">Canine Relationship</label>
+                        <label htmlFor="patient-canineRelationship" className="w-40 text-sm">Canine Relationship</label>
                         <input
+                      id="patient-canineRelationship"
                           type="text"
                           name="canineRelationship"
                           value={exam.canineRelationship}
@@ -869,8 +932,9 @@ export default function AddPatient({ patientId }) {
                         />
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="w-40 text-sm">Classification</label>
+                        <label htmlFor="patient-occlusionClassification" className="w-40 text-sm">Classification</label>
                         <input
+                      id="patient-occlusionClassification"
                           type="text"
                           name="occlusionClassification"
                           value={exam.occlusionClassification}
@@ -884,9 +948,10 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1">
                       <label className="text-sm font-medium">Gingiva</label>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingiva"
                             value="normal"
                             checked={exam.gingiva === "normal"}
@@ -894,9 +959,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Normal
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingiva"
                             value="inflamed"
                             checked={exam.gingiva === "inflamed"}
@@ -904,9 +970,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Inflamed
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingiva"
                             value="receded"
                             checked={exam.gingiva === "receded"}
@@ -920,9 +987,10 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1">
                       <label className="text-sm text-gray-500">Color</label>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingivaColor"
                             value="coral_pink"
                             checked={exam.gingivaColor === "coral_pink"}
@@ -930,9 +998,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Coral Pink
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingivaColor"
                             value="bright_red"
                             checked={exam.gingivaColor === "bright_red"}
@@ -940,9 +1009,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Bright Red
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingivaColor"
                             value="bluish_red"
                             checked={exam.gingivaColor === "bluish_red"}
@@ -956,9 +1026,10 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1">
                       <label className="text-sm text-gray-500">Consistency</label>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingivaConsistency"
                             value="firm"
                             checked={exam.gingivaConsistency === "firm"}
@@ -966,9 +1037,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Firm
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingivaConsistency"
                             value="hyperplastic"
                             checked={exam.gingivaConsistency === "hyperplastic"}
@@ -976,9 +1048,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Hyperplastic
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="gingivaConsistency"
                             value="smooth"
                             checked={exam.gingivaConsistency === "smooth"}
@@ -991,9 +1064,10 @@ export default function AddPatient({ patientId }) {
                     <div className="flex flex-col gap-1 mt-2">
                       <label className="text-sm font-medium">Oral Hygiene</label>
                       <div className="flex items-center gap-4 flex-wrap">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="oralHygiene"
                             value="healthy"
                             checked={exam.oralHygiene === "healthy"}
@@ -1001,9 +1075,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Healthy
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="oralHygiene"
                             value="gingivitis"
                             checked={exam.oralHygiene === "gingivitis"}
@@ -1011,9 +1086,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Gingivitis
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="oralHygiene"
                             value="periodontitis"
                             checked={exam.oralHygiene === "periodontitis"}
@@ -1023,9 +1099,10 @@ export default function AddPatient({ patientId }) {
                         </label>
                       </div>
                       <div className="flex items-center gap-4 flex-wrap pl-4">
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hygieneSeverity"
                             value="mild"
                             checked={exam.hygieneSeverity === "mild"}
@@ -1033,9 +1110,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Mild
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hygieneSeverity"
                             value="moderate"
                             checked={exam.hygieneSeverity === "moderate"}
@@ -1043,9 +1121,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Moderate
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hygieneSeverity"
                             value="severe"
                             checked={exam.hygieneSeverity === "severe"}
@@ -1053,9 +1132,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Severe
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hygieneSeverity"
                             value="aggressive"
                             checked={exam.hygieneSeverity === "aggressive"}
@@ -1063,9 +1143,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Aggressive
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hygieneSeverity"
                             value="chronic"
                             checked={exam.hygieneSeverity === "chronic"}
@@ -1079,9 +1160,10 @@ export default function AddPatient({ patientId }) {
                       <label className="text-sm font-medium">Deposits</label>
                       <div className="flex flex-wrap items-center gap-2">
                         <label className="w-12 text-sm">Soft:</label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="softDeposits"
                             value="none"
                             checked={exam.softDeposits === "none"}
@@ -1089,9 +1171,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           None
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="softDeposits"
                             value="slight"
                             checked={exam.softDeposits === "slight"}
@@ -1099,9 +1182,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Slight
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="softDeposits"
                             value="moderate"
                             checked={exam.softDeposits === "moderate"}
@@ -1109,9 +1193,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Moderate
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="softDeposits"
                             value="severe"
                             checked={exam.softDeposits === "severe"}
@@ -1122,9 +1207,10 @@ export default function AddPatient({ patientId }) {
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <label className="w-12 text-sm">Hard:</label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hardDeposits"
                             value="none"
                             checked={exam.hardDeposits === "none"}
@@ -1132,9 +1218,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           None
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hardDeposits"
                             value="slight"
                             checked={exam.hardDeposits === "slight"}
@@ -1142,9 +1229,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Slight
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hardDeposits"
                             value="moderate"
                             checked={exam.hardDeposits === "moderate"}
@@ -1152,9 +1240,10 @@ export default function AddPatient({ patientId }) {
                           />{" "}
                           Moderate
                         </label>
-                        <label className="flex items-center gap-1 text-sm">
+                        <label className={`${choiceLabelClass} text-sm`}>
                           <input
                             type="radio"
+                            className={choiceInputClass}
                             name="hardDeposits"
                             value="severe"
                             checked={exam.hardDeposits === "severe"}
@@ -1177,7 +1266,7 @@ export default function AddPatient({ patientId }) {
                 type="button"
                 onClick={handleSubmitIntake}
                 disabled={saving}
-                className="rounded-lg bg-[#00685F] px-4 py-2 text-sm font-medium text-white hover:bg-[#004c4a] disabled:opacity-50"
+                className={`${primaryButtonClass} text-sm font-medium`}
               >
                 {saving ? "Submitting..." : "Submit"}
               </button>
@@ -1196,7 +1285,7 @@ export default function AddPatient({ patientId }) {
                   type="button"
                   onClick={handleSaveExamination}
                   disabled={saving}
-                  className="rounded-lg bg-[#00685F] px-4 py-2 text-sm font-medium text-white hover:bg-[#004c4a] disabled:opacity-50"
+                  className={`${primaryButtonClass} text-sm font-medium`}
                 >
                   {saving ? "Saving..." : "Save"}
                 </button>
