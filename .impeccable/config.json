@@ -1,1 +1,15 @@
-{ "buildPath": "code" }
+{
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-color",
+        "value": "#f4efe3",
+        "createdAt": "2026-09-28T14:42:26.792Z",
+        "reason": "Claude: 3D tooth enamel material colour in ToothModelViewer.js, not a UI colour"
+      }
+    ]
+  }
+}
