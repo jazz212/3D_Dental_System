@@ -70,10 +70,11 @@ export default function Navbar({ onOpenMenu }) {
     setTerm("");
   };
 
-  // Patient Records reads ?search= and fills its own search box with it.
+  // Open the record by its uuid: a name in the URL would end up in browser
+  // history and server logs (patient data stays out of URLs).
   const openPatient = (patient) => {
     closeSearch();
-    router.push(`/dashboard/patient-records?search=${encodeURIComponent(patient.full_name)}`);
+    router.push(`/dashboard/patient-records/${patient.id}`);
   };
 
   const openAppointment = (appointment) => {

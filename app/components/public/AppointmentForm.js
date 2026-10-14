@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Calendar, ChevronDown, Clock, ClipboardList } from "lucide-react";
 import { ageFromDateOfBirth, submitAppointmentRequest } from "@/lib/appointmentRequests";
 import { getLocalDateString } from "@/lib/appointmentTimes";
+import { CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
+
+// Postgres's code for a RAISE EXCEPTION without its own code: the friendly
+// field checks inside submit_appointment_request.
+const DATABASE_CHECK_FAILED = "P0001";
 
 const TREATMENT_OPTIONS = [
   "General Checkup & Cleaning",
@@ -108,8 +113,10 @@ export default function AppointmentForm() {
       setStatus("success");
       setForm(initialForm);
     } catch (err) {
-      // Already logged in lib.
-      setErrorMessage(err?.message || "");
+      // Already logged in lib. Only the database function's own checks
+      // (RAISE EXCEPTION, code P0001) are written for visitors; any other
+      // error is technical text, so the generic message is shown instead.
+      setErrorMessage(err?.code === DATABASE_CHECK_FAILED ? err.message : "");
       setStatus("error");
     }
   }
@@ -315,7 +322,17 @@ export default function AppointmentForm() {
       {status === "error" && (
         <p role="alert" className="mt-4 text-sm text-red-600">
           Something went wrong sending your request.
-          {errorMessage ? ` ${errorMessage}` : " Try again."}
+          {errorMessage ? (
+            ` ${errorMessage}`
+          ) : (
+            <>
+              {" "}Please try again, or call the clinic at{" "}
+              <a href={CLINIC_PHONE_LINK} className="font-medium underline underline-offset-2">
+                {CLINIC_PHONE}
+              </a>
+              .
+            </>
+          )}
         </p>
       )}
     </form>

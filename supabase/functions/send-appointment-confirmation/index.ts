@@ -21,6 +21,31 @@ function jsonResponse(body, status) {
   });
 }
 
+// Logs only an error's message and code. A Supabase error's `details` can
+// repeat row values (such as the patient's email), which must stay out of
+// the function logs. Same rule as lib/errorLogging.js in the app.
+function describeError(error) {
+  if (!error) return String(error);
+  const parts = [error.message || String(error)];
+  if (error.code) parts.push(`code: ${error.code}`);
+  return parts.join(" | ");
+}
+
+// Sets the "sent" flag back to null after a send that didn't go out, so staff
+// can try again. Without this the request would look emailed forever.
+async function releaseEmailClaim(supabase, requestId) {
+  const { error } = await supabase
+    .from("appointments")
+    .update({ confirmation_email_sent_at: null })
+    .eq("id", requestId);
+  if (error) {
+    console.error(
+      `Could not release the email claim for request ${requestId}; clear confirmation_email_sent_at in Supabase before resending:`,
+      describeError(error),
+    );
+  }
+}
+
 // Patient names come from the public booking form, so they must not be able
 // to inject HTML into the email.
 function escapeHtml(text) {
@@ -133,7 +158,7 @@ Deno.serve(async (req) => {
       .eq("id", requestId)
       .single();
     if (requestError) {
-      console.error(`Could not load request ${requestId}. Check the id and that the caller is signed-in staff:`, requestError);
+      console.error(`Could not load request ${requestId}. Check the id and that the caller is signed-in staff:`, describeError(requestError));
       return jsonResponse({ error: "Request not found." }, 404);
     }
     // Only email about requests that really ended up confirmed.
@@ -153,7 +178,7 @@ Deno.serve(async (req) => {
       .eq("id", bookingId)
       .single();
     if (bookingError) {
-      console.error(`Could not load booking ${bookingId}. Check the id and that the caller is signed-in staff:`, bookingError);
+      console.error(`Could not load booking ${bookingId}. Check the id and that the caller is signed-in staff:`, describeError(bookingError));
       return jsonResponse({ error: "Booking not found." }, 404);
     }
 
@@ -168,43 +193,53 @@ Deno.serve(async (req) => {
       .is("confirmation_email_sent_at", null)
       .select("id");
     if (claimError) {
-      console.error(`Could not mark the email for request ${requestId} as sent:`, claimError);
+      console.error(`Could not mark the email for request ${requestId} as sent:`, describeError(claimError));
       return jsonResponse({ error: "Unexpected error sending email." }, 500);
     }
     if (claimed.length === 0) {
       return jsonResponse({ error: "The confirmation email was already sent." }, 409);
     }
 
-    const resendResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: FROM_ADDRESS,
-        to: [request.requester_email],
-        subject: "Your ToothPeak appointment is confirmed",
-        text,
-        html,
-      }),
-    });
+    // The claim is already taken, so a send that throws (network down, Resend
+    // unreachable) must release it too; otherwise the outer catch would leave
+    // the request marked as emailed and nothing could resend it.
+    let resendResponse;
+    try {
+      resendResponse = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: FROM_ADDRESS,
+          to: [request.requester_email],
+          subject: "Your ToothPeak appointment is confirmed",
+          text,
+          html,
+        }),
+      });
+    } catch (sendError) {
+      console.error(`Could not reach Resend for request ${requestId}:`, describeError(sendError));
+      await releaseEmailClaim(supabase, requestId);
+      return jsonResponse({ error: "Unexpected error sending email." }, 500);
+    }
 
-    const resendResult = await resendResponse.json();
     if (!resendResponse.ok) {
+      // Only the status is logged: Resend's error body can repeat the
+      // recipient's address.
       console.error(
-        `Resend rejected the email for request ${requestId}. With onboarding@resend.dev you can only send to your own Resend account email until a domain is verified:`,
-        resendResult,
+        `Resend rejected the email for request ${requestId} with status ${resendResponse.status}. With onboarding@resend.dev you can only send to your own Resend account email until a domain is verified.`,
       );
       // Nothing was sent, so release the claim and let staff try again.
-      await supabase
-        .from("appointments")
-        .update({ confirmation_email_sent_at: null })
-        .eq("id", requestId);
+      await releaseEmailClaim(supabase, requestId);
       return jsonResponse({ error: "Email provider rejected the message." }, 502);
     }
 
-    return jsonResponse({ emailId: resendResult.id }, 200);
+    // Resend accepted the email, so the claim stays even if its reply can't
+    // be read: releasing it here would let staff send the same email twice.
+    const resendResult = await resendResponse.json().catch(() => null);
+    return jsonResponse({ emailId: resendResult?.id ?? null }, 200);
   } catch (error) {
     console.error("send-appointment-confirmation failed unexpectedly:", error);
     return jsonResponse({ error: "Unexpected error sending email." }, 500);
