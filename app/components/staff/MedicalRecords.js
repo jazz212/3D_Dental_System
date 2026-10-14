@@ -322,7 +322,7 @@ function PatientHeader({ patient, onBook }) {
       </div>
       <div className="flex flex-wrap items-center gap-3 lg:justify-end">
         {/* Shown for archived patients too: their chart can still be viewed.
-            The 3D chart page itself is not built yet. primaryButtonClass
+            primaryButtonClass
             styles hover with "enabled:", which only works on buttons, so this
             link adds its own hover colour. */}
         <Link

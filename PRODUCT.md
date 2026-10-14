@@ -22,7 +22,7 @@ Success: patients can request a visit without calling, and staff can handle requ
 
 ## Positioning
 
-The planned differentiator is an interactive **3D dental chart** in the patient record, where staff record findings per tooth and surface. It is not in the current `main` branch; earlier uncommitted work on it was discarded. Treat it as the intended key feature, not a shipped one.
+The planned differentiator is an interactive **3D dental chart** in the patient record, where staff record findings per tooth and surface. The chart page is built (3D Chart button on the patient record): staff pick a cavity class and mark it on the BodyParts3D teeth. Findings are not saved to the database yet, so treat it as the intended key feature, not a finished one.
 
 ## Operating Context
 
