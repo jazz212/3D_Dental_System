@@ -6,6 +6,8 @@ import {
   createExamination,
 } from "@/lib/patients";
 import { fieldClass, primaryButtonClass } from "./staffStyles";
+import DiagnosticTests from "./DiagnosticTests";
+import PatientConsent from "./PatientConsent";
 
 // Radio and checkbox rows. On touch screens the whole label grows to 44px
 // so a finger can hit the option text, not just the small box.
@@ -104,6 +106,9 @@ export default function AddPatient({ patientId }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [recordNumber, setRecordNumber] = useState(null);
+  // Bumped by "Discard changes" on the diagnostic tests step so the form
+  // remounts empty (DiagnosticTests keeps its own state).
+  const [diagnosticsKey, setDiagnosticsKey] = useState(0);
 
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
@@ -162,7 +167,7 @@ export default function AddPatient({ patientId }) {
     setError(null);
     try {
       await createExamination(patientId, exam);
-      router.push("/dashboard");
+      setStep(4);
     } catch {
       setError(
         "Examination wasn't saved. Vital signs must be numbers (e.g. 72, 36.5).",
@@ -1256,6 +1261,18 @@ export default function AddPatient({ patientId }) {
                   </div>
                 </div>
               </>
+            )}
+            {/* Diagnostic tests and consent are not stored in the database
+                yet; their Save buttons only move the form along. */}
+            {step === 4 && (
+              <DiagnosticTests
+                key={diagnosticsKey}
+                onSave={() => setStep(5)}
+                onDiscard={() => setDiagnosticsKey((k) => k + 1)}
+              />
+            )}
+            {step === 5 && (
+              <PatientConsent onSave={() => router.push("/dashboard")} />
             )}
           </div>
           {/* Footer buttons */}
