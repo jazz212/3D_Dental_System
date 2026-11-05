@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   CheckCircle2,
   ChevronDown,
+  ClipboardList,
   Eye,
   Pencil,
   Plus,
@@ -321,6 +322,15 @@ function PatientHeader({ patient, onBook }) {
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-3 lg:justify-end">
+        {/* Shown for archived patients too, like 3D Chart: past treatment
+            and balances still need to be viewed. */}
+        <Link
+          href={`/dashboard/patient-records/${patient.id}/treatment-records`}
+          className={`${primaryButtonClass} flex shrink-0 items-center justify-center gap-2 hover:bg-[#004d45]`}
+        >
+          <ClipboardList className="h-4 w-4" aria-hidden="true" />
+          Treatment Records
+        </Link>
         {/* Shown for archived patients too: their chart can still be viewed.
             primaryButtonClass
             styles hover with "enabled:", which only works on buttons, so this
