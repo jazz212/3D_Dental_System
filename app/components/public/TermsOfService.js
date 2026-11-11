@@ -19,9 +19,9 @@ const sections = [
     ],
   },
   {
-    title: "Account Responsibility",
+    title: "Information You Provide",
     body: [
-      "If you create an account or submit information through our website, you are responsible for maintaining the accuracy and confidentiality of that information. Please notify us promptly of any unauthorized use or changes to your details.",
+      "If you submit information through our website, please make sure it is accurate. If you book for a child or someone else, you confirm you are allowed to share their details with us. Let us know promptly if any of your details change.",
     ],
   },
   {

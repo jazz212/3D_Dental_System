@@ -14,6 +14,7 @@ import {
   setPatientArchived,
   AGE_GROUPS,
 } from "@/lib/patients";
+import { formatStoredAge } from "@/lib/age";
 import Pagination from "./Pagination";
 import {
   fieldClass,
@@ -358,7 +359,7 @@ export default function PatientRecords() {
                     <span className="mt-0.5 block text-sm text-gray-600 tabular-nums">
                       {[
                         patient.patient_id,
-                        patient.age === null ? null : `${patient.age} yrs`,
+                        formatStoredAge(patient.date_of_birth, patient.age),
                         patient.contact_number,
                       ]
                         .filter(Boolean)
@@ -437,7 +438,7 @@ export default function PatientRecords() {
                         )}
                       </td>
                       <td className={`${tableCellClass} tabular-nums`}>
-                        {patient.age === null ? "—" : patient.age}
+                        {formatStoredAge(patient.date_of_birth, patient.age) || "—"}
                       </td>
                       <td className={`${tableCellClass} tabular-nums`}>
                         {patient.contact_number || "—"}

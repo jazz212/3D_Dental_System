@@ -111,7 +111,7 @@ function FindingButton({ classOption, condition, isSelected, isOnTooth, inspecte
       }`}
     >
       <Image
-        src={`${THUMBNAIL_FOLDER}/${classOption.id}-${condition.id}.png`}
+        src={`${THUMBNAIL_FOLDER}/${classOption.thumbnail ?? classOption.id}-${condition.id}.png`}
         alt=""
         fill
         sizes="72px"

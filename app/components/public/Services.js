@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const clinicalServices = [
   { title: "Oral Prophylaxis", sub: "(Cleaning)", desc: "Routine cleaning to remove plaque and tartar, essential for maintaining healthy gums and teeth." },
@@ -113,7 +113,7 @@ export default function Services() {
 
 // A service that opens to show its description. It is a real button so it
 // can be reached with the keyboard and screen readers hear "collapsed" or
-// "expanded"; the arrow shows on touch screens (no hover there) that it opens.
+// "expanded".
 function ServiceCard({ title, sub, desc, isOpen, onToggle }) {
   return (
     <button
@@ -129,14 +129,10 @@ function ServiceCard({ title, sub, desc, isOpen, onToggle }) {
           <span className="block text-lg font-bold text-[#1F4A3D]">{title}</span>
           {sub && <span className="mt-1 block text-sm text-gray-600">{sub}</span>}
         </span>
-        <ChevronDown
-          aria-hidden="true"
-          className={`mt-1 h-5 w-5 shrink-0 text-[#1F4A3D] transition-transform duration-300 motion-reduce:transition-none ${
-            isOpen ? "rotate-180" : ""
-          }`}
-        />
       </span>
+      {/* Hidden from screen readers while collapsed, like it is on screen. */}
       <span
+        aria-hidden={!isOpen}
         className={`grid transition-all duration-300 ease-in-out motion-reduce:transition-none ${
           isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}

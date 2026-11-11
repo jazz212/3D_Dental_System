@@ -471,7 +471,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-        <div className="flex lg:col-start-2 lg:row-start-1 lg:row-span-3">
+        {/* The ids are where the notification bell jumps to. */}
+        <div id="upcoming-visits" className="flex lg:col-start-2 lg:row-start-1 lg:row-span-3">
           <UpcomingVisits
             visits={upcomingVisits}
             loading={upcomingLoading}
@@ -479,7 +480,7 @@ export default function Dashboard() {
           />
         </div>
 
-        <div className="min-w-0 lg:col-start-1 lg:row-start-3">
+        <div id="pending-requests" className="min-w-0 lg:col-start-1 lg:row-start-3">
           <PendingRequests
             requests={pendingRequests}
             loading={pendingLoading}

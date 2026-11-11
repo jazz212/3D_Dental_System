@@ -1,8 +1,13 @@
-"use client";
-
 import Image from "next/image";
 import { BadgeCheck, MapPin, Phone, Clock, ArrowRight } from "lucide-react";
-import { CLINIC_DIRECTIONS_URL, CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
+import {
+  CLINIC_ADDRESS,
+  CLINIC_CLOSED_DAYS,
+  CLINIC_DIRECTIONS_URL,
+  CLINIC_HOURS,
+  CLINIC_PHONE,
+  CLINIC_PHONE_LINK,
+} from "@/lib/clinicContact";
 
 const specialists = [
   { name: "Dr. Feliza Joy C. Taroy, DMD", role: "Doctor of Dental Medicine" },
@@ -33,7 +38,7 @@ export default function AboutUs() {
           <div className="relative overflow-hidden rounded-2xl md:col-span-2">
             <div className="flex h-72 items-end bg-gradient-to-t from-black/70 via-black/10 to-transparent bg-[#4A7C6F] p-8 md:h-full">
               <div className="text-white">
-                <h3 className="text-xl font-bold">State-of-the-Art Facility</h3>
+                <h2 className="text-xl font-bold">State-of-the-Art Facility</h2>
                 <p className="mt-2 max-w-md text-sm text-white/90">
                   Designed to reduce cognitive load and anxiety, our spaces
                   utilize natural lighting and premium aesthetics to create a
@@ -48,7 +53,7 @@ export default function AboutUs() {
               <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#EAF3EE]">
                 <BadgeCheck className="h-5 w-5 text-[#1F4A3D]" />
               </div>
-              <h3 className="text-lg font-bold text-[#1F4A3D]">Our Mission</h3>
+              <h2 className="text-lg font-bold text-[#1F4A3D]">Our Mission</h2>
               <p className="mt-2 text-sm text-gray-600">
                 To provide trustworthy, restorative, and highly efficient
                 dental care that bridges the gap between complex procedures
@@ -112,8 +117,7 @@ export default function AboutUs() {
                 <div>
                   <p className="font-semibold">Address</p>
                   <p className="text-sm text-gray-600">
-                    FGC Building, Tagaytay-Nasugbu Road, Aguinaldo Highway,
-                    cor. Airborne St., Maharlika East, Tagaytay City.
+                    {CLINIC_ADDRESS}
                   </p>
                 </div>
               </div>
@@ -133,11 +137,9 @@ export default function AboutUs() {
                 <div>
                   <p className="font-semibold">Hours</p>
                   <p className="text-sm text-gray-600">
-                    Sun & Mon: Closed
+                    {CLINIC_HOURS}
                     <br />
-                    Tue - Sat: 9AM-5PM
-                    <br />
-                  
+                    {CLINIC_CLOSED_DAYS}
                   </p>
                 </div>
               </div>

@@ -1,5 +1,11 @@
 import { MapPin, Phone, Clock } from "lucide-react";
-import { CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
+import {
+  CLINIC_ADDRESS,
+  CLINIC_CLOSED_DAYS,
+  CLINIC_HOURS,
+  CLINIC_PHONE,
+  CLINIC_PHONE_LINK,
+} from "@/lib/clinicContact";
 
 export default function ClinicInfoCard() {
   return (
@@ -7,8 +13,7 @@ export default function ClinicInfoCard() {
       <h3 className="mb-4 text-lg font-semibold text-[#1F4B3F]">Clinic Information</h3>
 
       <SidebarItem icon={<MapPin className="h-4 w-4" />} label="Location">
-        FGC Building, Tagaytay-Nasugbu Road, Aguinaldo Highway, cor. Airborne St., Maharlika East,
-        Tagaytay City.
+        {CLINIC_ADDRESS}
       </SidebarItem>
 
       <SidebarItem icon={<Phone className="h-4 w-4" />} label="Phone">
@@ -18,9 +23,9 @@ export default function ClinicInfoCard() {
       </SidebarItem>
 
       <SidebarItem icon={<Clock className="h-4 w-4" />} label="Hours" last>
-        Tue - Sat: 9:00 AM - 5:00 PM
+        {CLINIC_HOURS}
         <br />
-        Sun & Mon: Closed
+        {CLINIC_CLOSED_DAYS}
       </SidebarItem>
     </div>
   );

@@ -1,24 +1,14 @@
-"use client";
-
-import { useState } from "react";
+import Link from "next/link";
 import { Phone, Mail, Clock } from "lucide-react";
-import { CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
+import { CLINIC_HOURS, CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
 
 const contactDetails = [
   { icon: Phone, label: "Phone", value: CLINIC_PHONE, href: CLINIC_PHONE_LINK },
   { icon: Mail, label: "Email", value: "support@toothpeak.com" },
-  { icon: Clock, label: "Clinic Hours", value: "Tue – Sat, 9:00 AM – 5:00 PM" },
+  { icon: Clock, label: "Clinic Hours", value: CLINIC_HOURS },
 ];
 
 export default function ContactSupport() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setSubmitted(true);
-    e.target.reset();
-  }
-
   return (
     <div>
 
@@ -59,64 +49,32 @@ export default function ContactSupport() {
             </div>
           </div>
 
-          {/* Contact form */}
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8"
-          >
-            <h3 className="text-lg font-bold text-[#1F4A3D]">Send a Message</h3>
-
-            <div className="mt-6 space-y-4">
-              <div className="flex flex-col gap-1">
-                <label htmlFor="contact-name" className="text-sm font-semibold text-[#1F2D28]">Name</label>
-                <input
-                  id="contact-name"
-                  type="text"
-                  name="name"
-                  autoComplete="name"
-                  required
-                  placeholder="Your full name"
-                  className="rounded-lg border border-[#D8DAD2] bg-white px-3.5 py-2.5 text-base outline-none focus:border-[#1F4A3D] focus:ring-1 focus:ring-[#1F4A3D]"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label htmlFor="contact-email" className="text-sm font-semibold text-[#1F2D28]">Email</label>
-                <input
-                  id="contact-email"
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  required
-                  placeholder="you@example.com"
-                  className="rounded-lg border border-[#D8DAD2] bg-white px-3.5 py-2.5 text-base outline-none focus:border-[#1F4A3D] focus:ring-1 focus:ring-[#1F4A3D]"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label htmlFor="contact-message" className="text-sm font-semibold text-[#1F2D28]">Message</label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  required
-                  rows={5}
-                  placeholder="How can we help?"
-                  className="resize-none rounded-lg border border-[#D8DAD2] bg-white px-3.5 py-2.5 text-base outline-none focus:border-[#1F4A3D] focus:ring-1 focus:ring-[#1F4A3D]"
-                />
-              </div>
+          {/* There was a message form here, but nothing stored or sent what
+              people typed. Until there's a real inbox, point them to the ways
+              that do reach the clinic. */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8">
+            <h2 className="text-lg font-bold text-[#1F4A3D]">The fastest way to reach us</h2>
+            <p className="mt-3 text-gray-600">
+              Call during clinic hours for questions about treatment, prices, or an
+              existing appointment. To ask for a new visit, use the booking form and
+              we&apos;ll email you to confirm.
+            </p>
+            <div className="mt-6 flex flex-col gap-3">
+              <a
+                href={CLINIC_PHONE_LINK}
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-[#1F4A3D] px-6 font-semibold text-white transition-colors duration-200 hover:bg-[#163a2f]"
+              >
+                <Phone className="h-4 w-4" />
+                Call {CLINIC_PHONE}
+              </a>
+              <Link
+                href="/appointments"
+                className="inline-flex min-h-12 items-center justify-center rounded-md border border-[#1F4A3D] px-6 font-semibold text-[#1F4A3D] transition-colors duration-200 hover:bg-[#EDEFEE]"
+              >
+                Request an appointment
+              </Link>
             </div>
-
-            <button
-              type="submit"
-              className="mt-6 w-full rounded-md bg-[#1F4A3D] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[#163a2f] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
-            >
-              Send
-            </button>
-
-            {submitted && (
-              <p role="status" className="mt-4 text-sm text-[#1F4A3D]">
-                Thanks for reaching out — we&apos;ll get back to you shortly.
-              </p>
-            )}
-          </form>
+          </div>
         </div>
       </section>
 

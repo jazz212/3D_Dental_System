@@ -1,11 +1,14 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Bell, CircleHelp, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 import { searchPatients } from "@/lib/patients";
 import { searchAppointments } from "@/lib/appointments";
 import { formatTime } from "@/lib/appointmentTimes";
 import AppointmentDetailsPopup from "./AppointmentDetailsPopup";
+import NotificationBell from "./NotificationBell";
+import HelpMenu from "./HelpMenu";
+import AvatarMenu from "./AvatarMenu";
 
 // Per group, so the dropdown stays short.
 const RESULTS_PER_GROUP = 5;
@@ -19,7 +22,21 @@ export default function Navbar({ onOpenMenu }) {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [appointmentToView, setAppointmentToView] = useState(null);
+  // "notifications" | "help" | "account" | null: one header panel open at a time.
+  const [openPanel, setOpenPanel] = useState(null);
   const containerRef = useRef(null);
+
+  // Opening one panel replaces the other; closing only closes its own, so
+  // a late close from one panel can't shut the one just opened.
+  const setNotificationsOpen = useCallback((isOpen) => {
+    setOpenPanel((current) => (isOpen ? "notifications" : current === "notifications" ? null : current));
+  }, []);
+  const setHelpOpen = useCallback((isOpen) => {
+    setOpenPanel((current) => (isOpen ? "help" : current === "help" ? null : current));
+  }, []);
+  const setAccountOpen = useCallback((isOpen) => {
+    setOpenPanel((current) => (isOpen ? "account" : current === "account" ? null : current));
+  }, []);
 
   const trimmed = term.trim();
   const canSearch = trimmed.length >= 2;
@@ -177,21 +194,13 @@ export default function Navbar({ onOpenMenu }) {
       </div>
 
       <div className="flex gap-2 items-center shrink-0">
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full flex items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors"
-        >
-          <Bell className="w-5 h-5" aria-hidden="true" />
-        </button>
-        <button
-          type="button"
-          aria-label="Help"
-          className="hidden sm:flex w-10 h-10 rounded-full items-center justify-center text-gray-500 hover:bg-[#F0FDFA] hover:text-[#00685F] transition-colors"
-        >
-          <CircleHelp className="w-5 h-5" aria-hidden="true" />
-        </button>
-        <div className="w-8 h-8 rounded-full bg-gray-300"></div>
+        <NotificationBell
+          open={openPanel === "notifications"}
+          onOpenChange={setNotificationsOpen}
+          onOpenAppointment={setAppointmentToView}
+        />
+        <HelpMenu open={openPanel === "help"} onOpenChange={setHelpOpen} />
+        <AvatarMenu open={openPanel === "account"} onOpenChange={setAccountOpen} />
       </div>
 
       {appointmentToView && (

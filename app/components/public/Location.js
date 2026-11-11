@@ -2,6 +2,7 @@ import { ArrowRight, MapPin, Phone, Clock } from "lucide-react";
 import {
   CLINIC_ADDRESS,
   CLINIC_DIRECTIONS_URL,
+  CLINIC_HOURS,
   CLINIC_PHONE,
   CLINIC_PHONE_LINK,
 } from "@/lib/clinicContact";
@@ -10,7 +11,7 @@ import {
 const locationDetails = [
   { icon: MapPin, label: "Address", value: CLINIC_ADDRESS, href: CLINIC_DIRECTIONS_URL },
   { icon: Phone, label: "Phone", value: CLINIC_PHONE, href: CLINIC_PHONE_LINK },
-  { icon: Clock, label: "Clinic Hours", value: "Tue – Sat, 9:00 AM – 5:00 PM" },
+  { icon: Clock, label: "Clinic Hours", value: CLINIC_HOURS },
 ];
 
 export default function Location() {

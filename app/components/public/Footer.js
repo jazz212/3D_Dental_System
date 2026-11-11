@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
 
 // The main pages come first: on phones the footer is the second place to
 // find them, after the header menu.
@@ -38,9 +39,15 @@ export default function Footer() {
           ))}
         </nav>
 
+        {/* The header has no phone number, so on desktop this is the one
+            place outside the booking page to find it. */}
+        <a href={CLINIC_PHONE_LINK} className={footerLinkClass + " font-semibold"}>
+          Call {CLINIC_PHONE}
+        </a>
+
         <div className="flex flex-col items-center gap-1">
           <span className="text-center text-sm text-gray-700">
-            © 2026 ToothPeak Dental Clinic. Precision Care, Natural Smiles.
+            © {new Date().getFullYear()} ToothPeak Dental Clinic. Precision Care, Natural Smiles.
           </span>
           {/* "/" is the public website, so staff need a way in from here.
               Kept apart from the patient links so patients don't mistake it

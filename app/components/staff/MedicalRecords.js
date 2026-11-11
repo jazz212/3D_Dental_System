@@ -12,7 +12,8 @@ import {
   Plus,
   ScanBox,
 } from "lucide-react";
-import { fetchPatientRecord, getCurrentAge } from "@/lib/patients";
+import { fetchPatientRecord } from "@/lib/patients";
+import { formatStoredAge } from "@/lib/age";
 import { fetchPatientAppointments } from "@/lib/appointments";
 import { formatTime, getLocalDateString } from "@/lib/appointmentTimes";
 import { fetchPatientImages } from "@/lib/patientImages";
@@ -354,12 +355,11 @@ function PatientHeader({ patient, onBook }) {
   );
 }
 
-// "47 years old", or nothing when neither a birth date nor an age was given.
-// The birth date itself is listed under Personal and Contact.
+// "47 years old" or "8 months old", or nothing when neither a birth date nor
+// an age was given. The birth date itself is listed under Personal and Contact.
 function describeAge(patient) {
-  const age = getCurrentAge(patient);
-  if (age === null || age === undefined) return null;
-  return `${age} years old`;
+  const age = formatStoredAge(patient.date_of_birth, patient.age);
+  return age ? `${age} old` : null;
 }
 
 /* ---------- Medical status ---------- */

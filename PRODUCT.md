@@ -47,7 +47,7 @@ The planned differentiator is an interactive **3D dental chart** in the patient 
 ## Evidence on Hand
 
 - Real: clinic address (FGC Building, Tagaytay-Nasugbu Road, Aguinaldo Highway, cor. Airborne St., Maharlika East, Tagaytay City), phone 0966 990 8551, dentists Dr. Feliza Joy C. Taroy, DMD and Dr. Justin Louis F. Valerio, DMD, and the services and imaging list in `app/components/public/Services.js`.
-- Not real: the testimonial in `app/components/public/TestimonialCard.js` is placeholder text (it names a "Dr. Smith" who does not work there). Do not add testimonials, ratings, patient counts or awards without real sources.
+- Not real: the placeholder testimonial (it named a "Dr. Smith" who does not work there) has been removed from the booking page. Do not add testimonials, ratings, patient counts or awards without real sources.
 - Unknown: clinic email, registration number, tagline, and the confirmed official opening hours.
 
 ## Product Principles

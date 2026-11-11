@@ -14,7 +14,9 @@ const nextConfig = {
   },
   // The 3D tooth models are ~10 MB and never change, so browsers may keep
   // them for a year instead of downloading them on every visit. If a model
-  // is ever replaced, give the new file a new name so browsers fetch it.
+  // is ever replaced, give the new file a new name (or, for the preset GLBs
+  // and presets.json, bump PRESETS_VERSION in presetOverlays.js) so browsers
+  // fetch it.
   async headers() {
     return [
       {

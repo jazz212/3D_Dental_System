@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { fetchBookedRanges } from "@/lib/appointments";
+import { formatStoredAge } from "@/lib/age";
 import Dialog, { dialogBodyClass, dialogFooterClass } from "./Dialog";
 import {
   fieldClass,
@@ -111,7 +112,9 @@ export default function ScheduleRequestPopup({ request, onClose, onRequestHandle
             <p className="font-semibold text-gray-900">{request.requester_full_name}</p>
             <p>
               {request.requester_email}
-              {request.requester_age ? ` · ${request.requester_age} yrs` : ""}
+              {formatStoredAge(request.requester_date_of_birth, request.requester_age)
+                ? ` · ${formatStoredAge(request.requester_date_of_birth, request.requester_age)}`
+                : ""}
             </p>
             <p>
               <span className="font-medium text-gray-900">Reason:</span> {request.reason}

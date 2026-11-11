@@ -1,4 +1,5 @@
 "use client";
+import { formatStoredAge } from "@/lib/age";
 
 export default function PendingRequests({
   requests,
@@ -45,8 +46,10 @@ export default function PendingRequests({
               <div className="min-w-0">
                 <p className="text-sm font-medium text-gray-800 truncate">
                   {request.requester_full_name}
-                  {request.requester_age ? (
-                    <span className="font-normal text-gray-500"> · {request.requester_age} yrs</span>
+                  {formatStoredAge(request.requester_date_of_birth, request.requester_age) ? (
+                    <span className="font-normal text-gray-500">
+                      {" "}· {formatStoredAge(request.requester_date_of_birth, request.requester_age)}
+                    </span>
                   ) : null}
                 </p>
                 <p className="text-xs text-gray-500 truncate">{request.requester_email}</p>

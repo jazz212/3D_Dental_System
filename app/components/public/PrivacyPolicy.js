@@ -3,13 +3,13 @@ const sections = [
   {
     title: "Information We Collect",
     body: [
-      "We collect personal information you provide when scheduling appointments, including your name, contact details, date of birth, and medical or dental history. This may also include insurance information, treatment records, and any correspondence you send through our website or by email.",
+      "We collect personal information you provide when scheduling appointments, including your name, contact details, date of birth, and medical or dental history. When you request an appointment online we collect the patient's name, email address, date of birth, the reason for the visit, and any notes you add. Treatment records are created by our staff during your visits.",
     ],
   },
   {
     title: "How We Use Your Information",
     body: [
-      "Your information is used to schedule and manage appointments, deliver and coordinate dental care, process billing and insurance claims, and communicate with you about your treatment. We may also use anonymized data to improve our services and patient experience.",
+      "Your information is used to schedule and manage appointments, deliver and coordinate dental care, and communicate with you about your treatment. We may also use anonymized data to improve our services and patient experience.",
     ],
   },
   {
@@ -21,7 +21,13 @@ const sections = [
   {
     title: "Sharing of Information",
     body: [
-      "We do not sell your personal information. We may share information with third-party providers who assist in operating our practice — such as payment processors, laboratories, or specialist referrals — only as necessary to provide care, and always under confidentiality obligations.",
+      "We do not sell your personal information. We may share information with third-party providers who assist in operating our practice — such as dental laboratories, specialist referrals, or the service that sends our appointment emails — only as necessary to provide care, and always under confidentiality obligations.",
+    ],
+  },
+  {
+    title: "Data Privacy Act of 2012",
+    body: [
+      "We process personal and health information in line with the Data Privacy Act of 2012 (Republic Act No. 10173) and the rules of the National Privacy Commission. Health information is sensitive personal information, so we only collect what we need to arrange and provide your care, and we ask for your consent before you send an appointment request. If you believe your data has been mishandled, you may also file a complaint with the National Privacy Commission.",
     ],
   },
   {
@@ -33,7 +39,7 @@ const sections = [
   {
     title: "Contact Us",
     body: [
-      "If you have questions about this Privacy Policy or how your information is handled, please reach out to ToothPeak Dental Clinic through our Contact Support page or by phone during clinic hours.",
+      "If you have questions about this Privacy Policy or how your information is handled, or to use any of your rights above, call ToothPeak Dental Clinic during clinic hours or visit us at the clinic. Details are on our Contact Support page.",
     ],
   },
 ];

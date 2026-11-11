@@ -1,10 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Calendar, ChevronDown, Clock, ClipboardList } from "lucide-react";
-import { ageFromDateOfBirth, submitAppointmentRequest } from "@/lib/appointmentRequests";
+import { submitAppointmentRequest } from "@/lib/appointmentRequests";
+import { ageInYears, formatAge, isFutureDate, isValidDate } from "@/lib/age";
 import { getLocalDateString } from "@/lib/appointmentTimes";
-import { CLINIC_PHONE, CLINIC_PHONE_LINK } from "@/lib/clinicContact";
+import {
+  CLINIC_OPEN_DAYS_TEXT,
+  CLINIC_OPEN_WEEKDAYS,
+  CLINIC_PHONE,
+  CLINIC_PHONE_LINK,
+} from "@/lib/clinicContact";
 
 // Postgres's code for a RAISE EXCEPTION without its own code: the friendly
 // field checks inside submit_appointment_request.
@@ -29,7 +36,7 @@ const TIME_WINDOWS = [
 
 // Form fields in the order they appear, so a failed submit can jump to the
 // first one with a problem (on a phone it may be far above the button).
-const FIELD_ORDER = ["fullName", "email", "dateOfBirth", "preferredDate", "reasons"];
+const FIELD_ORDER = ["fullName", "email", "dateOfBirth", "preferredDate", "reasons", "consent"];
 
 // The element to focus for each field; reasons focuses its first checkbox.
 const FOCUS_TARGET_ID = {
@@ -38,6 +45,7 @@ const FOCUS_TARGET_ID = {
   dateOfBirth: "booking-date-of-birth",
   preferredDate: "booking-preferred-date",
   reasons: "booking-reason-0",
+  consent: "booking-consent",
 };
 
 const initialForm = {
@@ -48,7 +56,22 @@ const initialForm = {
   preferredTime: "",
   reasons: [],
   notes: "",
+  consent: false,
+  // Honeypot: hidden from people, so only a bot fills it in.
+  website: "",
 };
+
+// Why a preferred date can't be requested, or null when it's fine. Compared
+// with the visitor's own date, which is the clinic's (UTC+8) for patients.
+function preferredDateProblem(date) {
+  if (!date) return "Choose a preferred date.";
+  if (date < getLocalDateString(new Date())) return "Choose today or a later date.";
+  const [year, month, day] = date.split("-").map(Number);
+  if (!CLINIC_OPEN_WEEKDAYS.includes(new Date(year, month - 1, day).getDay())) {
+    return `The clinic is closed that day. We're open ${CLINIC_OPEN_DAYS_TEXT}.`;
+  }
+  return null;
+}
 
 export default function AppointmentForm() {
   const [form, setForm] = useState(initialForm);
@@ -71,7 +94,8 @@ export default function AppointmentForm() {
   }
 
   // Age is never typed in; it always comes from the date of birth, so the two can't disagree.
-  const age = ageFromDateOfBirth(form.dateOfBirth);
+  // Newborns are accepted, so a baby shows as e.g. "8 months".
+  const ageText = formatAge(form.dateOfBirth);
 
   function validate() {
     const next = {};
@@ -79,12 +103,14 @@ export default function AppointmentForm() {
     if (!form.email.trim()) next.email = "Enter an email address.";
     else if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = "Enter a valid email address.";
     if (!form.dateOfBirth) next.dateOfBirth = "Enter the patient's date of birth.";
-    else if (age === null || age < 0) next.dateOfBirth = "Date of birth can't be in the future.";
-    // Same 1-120 range the database accepts.
-    else if (age < 1) next.dateOfBirth = "Patient must be at least 1 year old.";
-    else if (age > 120) next.dateOfBirth = "Check the date of birth.";
-    if (!form.preferredDate) next.preferredDate = "Choose a preferred date.";
+    else if (!isValidDate(form.dateOfBirth)) next.dateOfBirth = "Enter a valid date of birth.";
+    else if (isFutureDate(form.dateOfBirth)) next.dateOfBirth = "Date of birth can't be in the future.";
+    // Same 0-120 range the database accepts.
+    else if (ageInYears(form.dateOfBirth) > 120) next.dateOfBirth = "Check the date of birth.";
+    const dateProblem = preferredDateProblem(form.preferredDate);
+    if (dateProblem) next.preferredDate = dateProblem;
     if (form.reasons.length === 0) next.reasons = "Select at least one reason for visit.";
+    if (!form.consent) next.consent = "Please agree so we can process your request.";
     setErrors(next);
     return next;
   }
@@ -102,6 +128,15 @@ export default function AppointmentForm() {
     const foundErrors = validate();
     if (Object.keys(foundErrors).length > 0) {
       focusFirstError(foundErrors);
+      return;
+    }
+
+    // A bot filled the hidden field: act as if it worked so it doesn't retry,
+    // but send nothing. The database function has its own limits for bots
+    // that skip this form.
+    if (form.website) {
+      setStatus("success");
+      setForm(initialForm);
       return;
     }
 
@@ -174,8 +209,8 @@ export default function AppointmentForm() {
             tabIndex={-1}
             aria-readonly="true"
             placeholder="Calculated from date of birth"
-            value={age !== null && age >= 0 ? age : ""}
-            className={inputClass(false) + " cursor-not-allowed bg-[#F2F3EF] text-[#8A8D82]"}
+            value={ageText}
+            className={inputClass(false) + " cursor-not-allowed bg-[#F2F3EF] text-[#5B5F55]"}
           />
         </Field>
         <Field label="Date of birth" htmlFor="booking-date-of-birth" required error={errors.dateOfBirth}>
@@ -209,11 +244,21 @@ export default function AppointmentForm() {
                 e.target.min = getLocalDateString(new Date());
               }}
               value={form.preferredDate}
-              onChange={(e) => update("preferredDate", e.target.value)}
+              onChange={(e) => {
+                update("preferredDate", e.target.value);
+                // Said right away: a phone's date picker can't grey out
+                // the days the clinic is closed.
+                const problem = e.target.value && preferredDateProblem(e.target.value);
+                if (problem) setErrors((prev) => ({ ...prev, preferredDate: problem }));
+              }}
               aria-invalid={!!errors.preferredDate}
+              aria-describedby="booking-preferred-date-hint"
               className={inputClass(!!errors.preferredDate) + " pl-9"}
             />
           </div>
+          <p id="booking-preferred-date-hint" className="mt-1.5 text-sm text-[#5B5F55]">
+            Open {CLINIC_OPEN_DAYS_TEXT}.
+          </p>
         </Field>
         <Field label="Preferred time" htmlFor="booking-preferred-time">
           <div className="relative">
@@ -242,7 +287,7 @@ export default function AppointmentForm() {
           screen readers announce the question before each option. */}
       <fieldset className="mb-6">
         <legend className="mb-2 block text-sm font-medium text-[#33362F]">
-          Reason for visit (select all that apply) <span className="text-red-500">*</span>
+          Reason for visit (select all that apply) <span className="text-red-600">*</span>
         </legend>
         <div
           className={`grid grid-cols-1 gap-1 rounded-lg border p-2 sm:grid-cols-2 ${
@@ -288,6 +333,51 @@ export default function AppointmentForm() {
         </Field>
       </div>
 
+      {/* Off screen rather than display:none, which some bots know to skip.
+          Out of the tab order and hidden from screen readers. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="booking-website">Website (leave blank)</label>
+        <input
+          id="booking-website"
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={form.website}
+          onChange={(e) => update("website", e.target.value)}
+        />
+      </div>
+
+      {/* Required by the Data Privacy Act: the form collects health details. */}
+      <div className="mb-8">
+        <label
+          htmlFor="booking-consent"
+          className="flex min-h-11 cursor-pointer items-start gap-3 text-sm text-[#33362F]"
+        >
+          <input
+            id="booking-consent"
+            type="checkbox"
+            checked={form.consent}
+            onChange={(e) => update("consent", e.target.checked)}
+            aria-invalid={!!errors.consent}
+            className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-[#1F4B3F]"
+          />
+          <span>
+            I agree that ToothPeak Dental Clinic may use these details to arrange this visit, as
+            described in the{" "}
+            <Link href="/privacy-policy" className="font-medium text-[#1F4B3F] underline underline-offset-2">
+              Privacy Policy
+            </Link>
+            . <span className="text-red-600">*</span>
+          </span>
+        </label>
+        {errors.consent && (
+          <p role="alert" className="mt-1.5 text-sm text-red-600">
+            {errors.consent}
+          </p>
+        )}
+      </div>
+
       <hr className="mb-6 border-[#E4E6E0]" />
 
       {/* The one main action is full width on phones. "Clear form" is a quiet
@@ -295,7 +385,7 @@ export default function AppointmentForm() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-4 sm:justify-start">
           <p className="text-sm text-[#5B5F55]">
-            <span className="text-red-500">*</span> Required
+            <span className="text-red-600">*</span> Required
           </p>
           <button
             type="button"
@@ -354,7 +444,7 @@ function Field({ label, htmlFor, required, error, children }) {
   return (
     <div>
       <label htmlFor={htmlFor} className="mb-2 block text-sm font-medium text-[#33362F]">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} {required && <span className="text-red-600">*</span>}
       </label>
       {children}
       {error && (

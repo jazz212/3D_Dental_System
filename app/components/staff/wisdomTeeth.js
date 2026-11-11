@@ -94,11 +94,17 @@ export function makeWisdomTooth({ secondMolar, firstMolar, archCenter, isUpper }
     .addScaledVector(backwards, (secondCrown.length * (1 + SIZE)) / 2);
 
   // Shrink, tilt and turn about the crown's middle, then move it into place.
+  // Kept as one matrix in userData.fromSecondMolar, so anything drawn on the
+  // second molar (its preset overlays) can be moved onto this tooth exactly.
+  const placement = new THREE.Matrix4()
+    .compose(newCrownCenter, rotation, new THREE.Vector3(SIZE, SIZE, SIZE))
+    .multiply(
+      new THREE.Matrix4().makeTranslation(-secondCrown.center.x, -secondCrown.center.y, -secondCrown.center.z)
+    );
   const wisdomTooth = secondMolar.clone();
-  wisdomTooth.translate(-secondCrown.center.x, -secondCrown.center.y, -secondCrown.center.z);
-  wisdomTooth.applyMatrix4(
-    new THREE.Matrix4().compose(newCrownCenter, rotation, new THREE.Vector3(SIZE, SIZE, SIZE))
-  );
+  wisdomTooth.applyMatrix4(placement);
   wisdomTooth.computeVertexNormals();
+  // A fresh object: clone() shares userData with the second molar.
+  wisdomTooth.userData = { fromSecondMolar: placement };
   return wisdomTooth;
 }

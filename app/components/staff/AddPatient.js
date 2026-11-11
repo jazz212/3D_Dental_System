@@ -5,6 +5,7 @@ import {
   createPatientWithHistory,
   createExamination,
 } from "@/lib/patients";
+import { formatAge, isFutureDate } from "@/lib/age";
 import { fieldClass, primaryButtonClass } from "./staffStyles";
 import DiagnosticTests from "./DiagnosticTests";
 import PatientConsent from "./PatientConsent";
@@ -35,7 +36,6 @@ const EMPTY_PROFILE = {
   fullName: "",
   email: "",
   birthDate: "",
-  age: "",
   sex: "",
   contactNumber: "",
   address: "",
@@ -145,6 +145,10 @@ export default function AddPatient({ patientId }) {
       setError("Enter the patient's full name before submitting.");
       return;
     }
+    if (profile.birthDate && isFutureDate(profile.birthDate)) {
+      setError("Birth date can't be in the future.");
+      return;
+    }
     setSaving(true);
     setError(null);
     try {
@@ -228,16 +232,16 @@ export default function AddPatient({ patientId }) {
                   </div>
                   <div className="flex flex-col gap-1">
                     <label htmlFor="patient-age" className="text-sm font-medium">Age</label>
+                    {/* Worked out from the birth date, so the two can't disagree. */}
                     <input
                       id="patient-age"
-                      type="number"
-                      name="age"
-                      min="1"
-                      max="120"
-                      value={profile.age}
-                      onChange={handleProfileChange}
-                      placeholder="0"
-                      className={fieldClass()}
+                      type="text"
+                      readOnly
+                      tabIndex={-1}
+                      aria-readonly="true"
+                      value={formatAge(profile.birthDate)}
+                      placeholder="From birth date"
+                      className={fieldClass() + " cursor-not-allowed bg-gray-50 text-gray-600"}
                     />
                   </div>
                   <div className="flex flex-col gap-1">

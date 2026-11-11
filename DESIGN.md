@@ -161,7 +161,7 @@ A restrained palette of white and grey with one green voice per half, plus a ter
 **Display Font:** system sans-serif (`ui-sans-serif, system-ui, sans-serif`)
 **Body Font:** the same
 
-**Character:** one plain, familiar sans-serif carries everything, so the interface feels native and readable rather than styled. Note that `app/layout.js` loads Geist but never applies it, so the system font is what actually renders. Adopting Geist would be a deliberate future change, not a fix.
+**Character:** one plain, familiar sans-serif carries everything, so the interface feels native and readable rather than styled. No web font is loaded (`app/layout.js` used to download Geist without applying it; that was removed). Adopting a web font would be a deliberate future change, not a fix.
 
 ### Hierarchy
 - **Display** (800, 3rem → 3.75rem on desktop, tight leading): public hero and page titles only ("Our Services").

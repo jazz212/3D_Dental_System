@@ -9,10 +9,10 @@ import {
   findClassOption,
   findCondition,
   isLowerTooth,
-  markDrawingsFor,
+  presetNamesFor,
 } from "@/lib/cavityClasses";
-import { createMarkMeshes, onMarkImageLoaded } from "./cavityMarks";
 import { makeWisdomTooth } from "./wisdomTeeth";
+import { loadPresetOverlays, makeOverlayMeshes, overlayMaterial, overlayUrlFor, PRESETS_VERSION } from "./presetOverlays";
 
 // BodyParts3D 3.0 teeth, from Kevin Moerman's copy of the dataset
 // (github.com/Kevin-Mattheus-Moerman/BodyParts3D). Each file is one tooth,
@@ -32,20 +32,43 @@ const TOOTH_FILES = {
   45: "FMA55695", 46: "FMA55705", 47: "FMA55706",
 };
 
+// The 3D class presets, made for these exact STL files. Findings are shown
+// with each tooth's smooth preset overlays (see presetOverlays.js), loaded
+// the first time a tooth gets a finding. presets.json lists, for each tooth
+// (by FMA id) and preset, the triangles it covers as [firstTriangle, count]
+// ranges: those triangles are coloured instead only if a tooth's overlays
+// can't be loaded (the edges come out stair-stepped).
+const PRESETS_URL = `/models/bodyparts3d/presets.json?v=${PRESETS_VERSION}`;
+
 // A press that moves further than this (in pixels) is a drag to rotate,
 // not a click on a tooth.
 const CLICK_MOVE_LIMIT = 5;
 
-const toothMaterial = new THREE.MeshStandardMaterial({ color: "#F4EFE3", roughness: 0.35 });
+// One material for every tooth: each triangle's colour (enamel, the hint
+// tint or a finding) comes from the tooth's own colour attribute.
+const toothMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.35 });
+const ENAMEL_COLOR = "#F4EFE3";
 
-// Tinted enamel for teeth that can take the chosen finding (one per colour).
-const hintMaterials = new Map();
+// THREE.Color converts the sRGB hex codes to the linear values a colour
+// attribute holds, so the teeth show the exact colours of the hex codes.
+const colorCache = new Map();
 
-function hintMaterialFor(hintColor) {
-  if (!hintMaterials.has(hintColor)) {
-    hintMaterials.set(hintColor, new THREE.MeshStandardMaterial({ color: hintColor, roughness: 0.35 }));
+function colorFor(hex) {
+  if (!colorCache.has(hex)) colorCache.set(hex, new THREE.Color(hex));
+  return colorCache.get(hex);
+}
+
+// How far the hint tint moves a tooth from enamel towards the condition's
+// hintColor. Kept light so red and blue markings on a tinted tooth still
+// stand out clearly.
+const HINT_STRENGTH = 0.4;
+const hintTintCache = new Map();
+
+function hintTintFor(hex) {
+  if (!hintTintCache.has(hex)) {
+    hintTintCache.set(hex, colorFor(ENAMEL_COLOR).clone().lerp(colorFor(hex), HINT_STRENGTH));
   }
-  return hintMaterials.get(hintColor);
+  return hintTintCache.get(hex);
 }
 
 // Renders the teeth in a WebGL canvas that fills its parent, starting from
@@ -186,9 +209,14 @@ export default function ToothModelViewer({
 async function loadDentition() {
   const loader = new STLLoader();
   const entries = Object.entries(TOOTH_FILES);
-  const loaded = await Promise.all(
-    entries.map(([, fileName]) => loader.loadAsync(`${TEETH_FOLDER}/${fileName}.stl`))
-  );
+  const [loaded, presetManifest] = await Promise.all([
+    Promise.all(entries.map(([, fileName]) => loader.loadAsync(`${TEETH_FOLDER}/${fileName}.stl`))),
+    fetch(PRESETS_URL).then((response) => {
+      if (!response.ok) throw new Error(`Could not load ${PRESETS_URL} (${response.status})`);
+      return response.json();
+    }),
+  ]);
+  const presetsByFile = new Map(presetManifest.teeth.map((entry) => [entry.fma, entry]));
   const geometryByNumber = new Map(entries.map(([number], index) => [Number(number), loaded[index]]));
   addWisdomTeeth(geometryByNumber);
 
@@ -199,11 +227,64 @@ async function loadDentition() {
 
   geometryByNumber.forEach((geometry, toothNumber) => {
     geometry.computeVertexNormals();
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(geometry.getAttribute("position").count * 3, 3));
     const tooth = new THREE.Mesh(geometry, toothMaterial);
     tooth.name = `tooth-${toothNumber}`;
+    tooth.userData.presetFaces = presetFacesFor(toothNumber, geometry, presetsByFile);
+    tooth.userData.overlaySource = overlaySourceFor(toothNumber, geometry);
+    tooth.userData.overlayState = "none"; // none | loading | ready | failed
+    paintTooth(tooth, colorFor(ENAMEL_COLOR), []);
     arches[isLowerTooth(toothNumber) ? "lower" : "upper"].add(tooth);
   });
   return arches;
+}
+
+// presetName -> face ranges for one tooth. A wisdom tooth is a moved copy of
+// the second molar with its triangles in the same order, so it uses the
+// second molar's presets. Face numbers only fit the exact file they were
+// made from, so a tooth whose triangle count doesn't match gets none rather
+// than colours in the wrong places.
+function presetFacesFor(toothNumber, geometry, presetsByFile) {
+  const sourceNumber = toothNumber % 10 === 8 ? toothNumber - 1 : toothNumber;
+  const entry = presetsByFile.get(TOOTH_FILES[sourceNumber]);
+  const triangleCount = geometry.getAttribute("position").count / 3;
+  if (!entry || entry.triangle_count !== triangleCount) {
+    console.warn(`No 3D presets for tooth ${toothNumber}: presets.json doesn't match its model file.`);
+    return {};
+  }
+  return entry.presets;
+}
+
+// Where a tooth's preset overlays come from: { url, placement }. The
+// overlays are in the file's STL coordinates, so placement is the change
+// made to this tooth's geometry, to be made to the overlays too: none for
+// the 28 real teeth (their geometry is used as loaded), and for a wisdom
+// tooth the move from its second molar (see wisdomTeeth.js).
+function overlaySourceFor(toothNumber, geometry) {
+  const isWisdomTooth = toothNumber % 10 === 8;
+  const sourceNumber = isWisdomTooth ? toothNumber - 1 : toothNumber;
+  return {
+    url: overlayUrlFor(sourceNumber, TOOTH_FILES[sourceNumber]),
+    placement: isWisdomTooth ? geometry.userData.fromSecondMolar : null,
+  };
+}
+
+// Colours a tooth: baseColor everywhere, then each mark's triangles.
+// marks: [{ faces: [[firstTriangle, count], ...], color }]. STL geometry
+// isn't indexed, so triangle i is vertices 3i, 3i + 1 and 3i + 2.
+function paintTooth(tooth, baseColor, marks) {
+  const colors = tooth.geometry.getAttribute("color");
+  for (let vertex = 0; vertex < colors.count; vertex++) {
+    colors.setXYZ(vertex, baseColor.r, baseColor.g, baseColor.b);
+  }
+  for (const { faces, color } of marks) {
+    for (const [firstTriangle, count] of faces) {
+      for (let vertex = firstTriangle * 3; vertex < (firstTriangle + count) * 3; vertex++) {
+        colors.setXYZ(vertex, color.r, color.g, color.b);
+      }
+    }
+  }
+  colors.needsUpdate = true;
 }
 
 // Adds 18, 28, 38 and 48, made from the second molars (see wisdomTeeth.js).
@@ -253,8 +334,8 @@ function createViewer(container, toothHandlers) {
   controls.enableDamping = true;
 
   // Each arch hangs from a pivot at its own centre, so each can be turned to
-  // show its biting side and moved into place on its own. Marks are attached
-  // to their tooth, so they turn and hide with it.
+  // show its biting side and moved into place on its own. Findings hang
+  // under the teeth (overlays), so they turn and hide with them.
   const pivots = { upper: new THREE.Group(), lower: new THREE.Group() };
   Object.values(pivots).forEach((pivot) => scene.add(pivot));
   let teeth = [];
@@ -262,7 +343,8 @@ function createViewer(container, toothHandlers) {
   let archCenters = null; // each arch's centre while standing upright
   let archDepths = null; // each arch's front-to-back size
   let currentArch = "upper";
-  let markMeshes = [];
+  let shownFindings = [];
+  let hintFinding = null;
 
   // Drawing a still picture 60 times a second wastes battery, so a frame is
   // only drawn when something on screen has changed. Camera moves are picked
@@ -295,8 +377,6 @@ function createViewer(container, toothHandlers) {
     () => isGrabMode
   );
 
-  const stopImageListening = onMarkImageLoaded(requestRender);
-
   // "change" fires on every camera move. Listening for it, rather than
   // checking what the loop's own controls.update() returns, matters for zoom:
   // the wheel and pinch handlers apply the whole zoom in their own update()
@@ -313,13 +393,66 @@ function createViewer(container, toothHandlers) {
     }
   });
 
-  // Both arches back to their natural, upright place (as loaded).
-  const standUpright = () => {
-    for (const arch of ["upper", "lower"]) {
-      pivots[arch].rotation.x = 0;
-      pivots[arch].position.copy(archCenters[arch]);
-      pivots[arch].updateMatrixWorld(true);
-    }
+  // Starts loading a tooth's preset overlays (once) and repaints when they
+  // arrive. They hang under the tooth mesh, so they take its position, turn
+  // and visibility. If they can't be loaded, the tooth's own triangles are
+  // coloured instead, so the finding still shows.
+  let isDisposed = false;
+  const loadOverlays = (tooth) => {
+    const { userData } = tooth;
+    if (userData.overlayState !== "none") return;
+    userData.overlayState = "loading";
+    loadPresetOverlays(userData.overlaySource.url)
+      .then((geometries) => {
+        if (isDisposed) return;
+        userData.overlays = makeOverlayMeshes(geometries, userData.overlaySource.placement);
+        userData.overlays.forEach((overlay) => tooth.add(overlay));
+        userData.overlayState = "ready";
+        repaint();
+      })
+      .catch((error) => {
+        if (isDisposed) return;
+        console.warn(
+          `Couldn't load the preset overlays for tooth ${toothNumberOf(tooth)} (${userData.overlaySource.url}); colouring its triangles instead.`,
+          error
+        );
+        userData.overlayState = "failed";
+        repaint();
+      });
+  };
+
+  // Shows every tooth's findings from shownFindings: each one turns on its
+  // preset overlay in the finding's colour; the rest stay hidden. Teeth that
+  // can take the chosen hintFinding (the same rule the page uses to accept a
+  // click) get a light tint of its colour. The tint is on the tooth
+  // only, so the overlays on top always show in full colour.
+  const repaint = () => {
+    const classOption = hintFinding && findClassOption(hintFinding.classId);
+    const hintColor = hintFinding && hintTintFor(findCondition(hintFinding.conditionId).hintColor);
+    teeth.forEach((tooth) => {
+      const toothNumber = toothNumberOf(tooth);
+      const isMarkable = classOption && classAppliesToTooth(classOption, toothNumber);
+      const marks = shownFindings
+        .filter((finding) => finding.toothNumber === toothNumber)
+        .flatMap((finding) => {
+          const color = findCondition(finding.conditionId).color;
+          return presetNamesFor(finding.classId, toothNumber).map((presetName) => ({ presetName, color }));
+        });
+      if (marks.length > 0) loadOverlays(tooth);
+
+      const { overlays, overlayState, presetFaces } = tooth.userData;
+      overlays?.forEach((overlay, presetName) => {
+        const mark = marks.findLast((candidate) => candidate.presetName === presetName);
+        overlay.visible = Boolean(mark);
+        if (mark) overlay.material = overlayMaterial(mark.color);
+      });
+      const faceMarks =
+        overlayState === "failed"
+          ? marks.map(({ presetName, color }) => ({ faces: presetFaces[presetName] ?? [], color: colorFor(color) }))
+          : [];
+      paintTooth(tooth, isMarkable ? hintColor : colorFor(ENAMEL_COLOR), faceMarks);
+    });
+    requestRender();
   };
 
   // Shows "upper", "lower" or "both" from the biting side, front teeth
@@ -362,17 +495,11 @@ function createViewer(container, toothHandlers) {
       }
       requestRender();
     },
-    // Tints the teeth the chosen finding can go on (the same rule the page
-    // uses to accept a click), so staff can see where it may be placed.
-    // null puts every tooth back to plain enamel.
+    // Tints the teeth the chosen finding can go on, so staff can see where
+    // it may be placed. null puts every tooth back to plain enamel.
     showHint(selectedFinding) {
-      const classOption = selectedFinding && findClassOption(selectedFinding.classId);
-      const hintMaterial = selectedFinding && hintMaterialFor(findCondition(selectedFinding.conditionId).hintColor);
-      teeth.forEach((tooth) => {
-        const isMarkable = classOption && classAppliesToTooth(classOption, toothNumberOf(tooth));
-        tooth.material = isMarkable ? hintMaterial : toothMaterial;
-      });
-      requestRender();
+      hintFinding = selectedFinding;
+      repaint();
     },
     setGrabMode(isOn) {
       isGrabMode = isOn;
@@ -388,58 +515,33 @@ function createViewer(container, toothHandlers) {
       frameTeeth(shownTeeth(), camera, controls);
       requestRender();
     },
-    // Rebuilds every mark from the findings list, so the model always
+    // Repaints every tooth from the findings list, so the model always
     // matches the list exactly (adding and removing work the same way).
-    // The mark code expects upright teeth, so the arches stand upright
-    // while the marks are built, then go back to the current layout.
+    // Several presets can be on one tooth at once.
     showFindings(findings) {
-      clearMarks(markMeshes);
-      standUpright();
-
-      markMeshes = findings.flatMap((finding) => {
-        const toothMesh = teeth.find((tooth) => toothNumberOf(tooth) === finding.toothNumber);
-        if (!toothMesh) return [];
-        const meshes = createMarkMeshes({
-          toothMesh,
-          toothNumber: finding.toothNumber,
-          drawings: markDrawingsFor(finding.classId, finding.toothNumber),
-          color: findCondition(finding.conditionId).color,
-        });
-        // Marks are built in world space; attaching them to the tooth keeps
-        // them in the same place while it moves.
-        const worldToTooth = toothMesh.matrixWorld.clone().invert();
-        meshes.forEach((mesh) => {
-          mesh.applyMatrix4(worldToTooth);
-          toothMesh.add(mesh);
-        });
-        return meshes;
-      });
-
-      layOut(currentArch);
-      requestRender();
+      shownFindings = findings;
+      repaint();
     },
     dispose() {
+      isDisposed = true;
       renderer.setAnimationLoop(null);
       stopClickTracking();
-      stopImageListening();
       resizeObserver.disconnect();
-      clearMarks(markMeshes);
       // Each visit loads its own copy of the teeth, so free this one's
-      // graphics memory rather than letting copies pile up.
-      teeth.forEach((tooth) => tooth.geometry.dispose());
+      // graphics memory rather than letting copies pile up. Overlay shapes
+      // are shared through the load cache, except the wisdom teeth's moved
+      // copies.
+      teeth.forEach((tooth) => {
+        tooth.geometry.dispose();
+        tooth.userData.overlays?.forEach((overlay) => {
+          if (overlay.userData.ownsGeometry) overlay.geometry.dispose();
+        });
+      });
       controls.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     },
   };
-}
-
-// Marks share cached materials, so only their geometry is disposed.
-function clearMarks(markMeshes) {
-  markMeshes.forEach((mark) => {
-    mark.removeFromParent();
-    mark.geometry.dispose();
-  });
 }
 
 const toothNumberOf = (toothMesh) => Number(toothMesh.name.replace("tooth-", ""));
@@ -459,6 +561,7 @@ function trackToothClicks(canvas, camera, getShownTeeth, { onClick, onDoubleClic
       -((event.clientY - bounds.top) / bounds.height) * 2 + 1
     );
     raycaster.setFromCamera(pointer, camera);
+    // false: the teeth only, not their preset overlays (children).
     const [hit] = raycaster.intersectObjects(getShownTeeth(), false);
     return hit ? toothNumberOf(hit.object) : null;
   };
